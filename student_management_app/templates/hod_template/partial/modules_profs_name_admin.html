@@ -1,0 +1,8 @@
+                                <label>Professeur </label>
+                                <select class="form-control" name="staffs" id="staffs" required>
+                                    <option value="">--Professeur--</option>
+                                    {% for staff in staffs %}
+                                    <option value="{{ staff.id }}">{{ staff.admin.first_name }} {{ staff.admin.last_name }} </option>
+                                    {% endfor %}
+                                </select>
+                                </div>

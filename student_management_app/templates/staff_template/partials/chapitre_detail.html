@@ -1,0 +1,58 @@
+{% load static %}
+    <div hx-target="this" class="mt-3 py-3 px-3 bg-white shadow border border-gray-100">
+        <p class="text-gray-600">Numero: {{ chapitres.numero_chapitres }}</p>
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Chapitre : {{ chapitres.titre_chapitres }}
+        </h3>
+   
+        <!-- entete liste des lecons -->
+        <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
+            liste des lecons
+        </h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Num</th>
+                    <th>Semaine du:</th>
+                    <th>Contenu</th>
+                    <th>Vol.horaire prev.</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody hx-trigger="load, leconListChanged from:body" 
+            hx-get="{% url 'lecons_detail' chapitres.id  %}" 
+            hx-target="this">
+                <tr>
+                    <td class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
+        <!-- fin entete liste des lecon -->
+
+        <!-- <div id="leconforms" ></div> -->
+    
+        <div class="mt-2">
+            <button hx-get="{% url 'update_chapitre' chapitres.id %}" hx-swap="outerHTML"
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Editer chapitre
+            </button>
+            <button hx-post="{% url 'delete_chapitre' chapitres.id %}" hx-swap="outerHTML swap:1s"
+                class="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Supprimer chapitre
+            </button>
+    
+        <!-- for lessons entry -->
+        
+            <!--<button hx-get=" "  hx-target="#leconforms" hx-swap="outerHTML" -->
+            <button hx-get="{% url 'creer_lecons' chapitres.id %}"  hx-target="#dialog"
+                class="ml-2 items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Creer une lecon
+            </button> 
+        </div>
+    </div>
+
+    
+      

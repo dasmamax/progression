@@ -1,0 +1,50 @@
+
+<!--3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333-->
+
+{% for chapitre in chapitres %}
+{% for lecon in lecons %}   
+   {% if chapitre.id == lecon.chapitres_id_id %}    <!--recuperation des lecons du chapitre -->
+     {% for semainelecon in semaineslecons %}  
+         {% if semainelecon.lecons_id_id == lecon.id %} <!--recuperation des semaineslecons (statuts)      -->
+            {% for semaine in semaines %}  
+                {% if semainelecon.semaines_id_id == semaine.id %}  <!--recuperation de la semaine -->
+                     
+                <tr >
+                    <td class="px-2 py-1 align-middle">{{ chapitre.id }}</td>
+                    <td class="px-2 py-1 align-middle">{{ semaine.debut_semaines}} au {{ semaine.fin_semaines }}</td>
+                    <td class="px-2 py-1 align-middle">{{ chapitre.titre_chapitres }}</td>
+                    <td class="px-2 py-1 align-middle">{{ lecon.detail_lecons}}<p class="m-0 text-truncate"></p></td>
+                    <td class="px-2 py-1 align-middle">{{ lecon.nombre_heures}} H</td> 
+                    <td class="px-2 py-1 align-middle">
+                        {% if semainelecon.status == '1' %}
+                        <span class="badge bg-danger bg-gradient rounded-pill px-2">En attente</span> 
+                        {% elif semainelecon.status == '2'%}
+                        <span class="badge bg-warning bg-gradient rounded-pill px-2">En cours</span>
+                        {% elif semainelecon.status == '3'%} 
+                        <span class="badge bg-success bg-gradient rounded-pill px-2">Termine</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-2 py-1 align-middle text-center">
+                       
+                            <a class="btn btn-outline-primary btn-sm edit-data" 
+                            hx-get="{% url 'editer_status' pk=semainelecon.pk %}" 
+                            hx-target="#dialog" 
+                            title="Editer">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                    </td>
+                </tr>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endfor %}
+{% endfor %}
+
+
+
+
+
+

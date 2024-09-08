@@ -1,0 +1,309 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Suivre les progressions
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Suivre les progressions</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Annee scolaire </label>
+                                <select class="form-control" name="anneescolaire" id="anneescolaire" 
+                                 hx-get="{% url 'modules_classe_name_admin' %}" 
+                                 hx-trigger="change" 
+                                 hx-target="#modules_classe_name_admin" required>
+                                    <option value="">--Annee scolaire--</option>
+                                    {% for anneescolaire in anneescolaires %}
+                                        <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                           
+                            <!-- <div class="form-group">
+                                <label>Classe </label>
+                                <select class="form-control" name="classe" id="classe" required>
+                                    <option value="">--Classe--</option>
+                                    {% for classe in classess %}
+                                        <option value="{{ classe.id }}">{{ classe.nom_classes }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> -->
+
+                            <div id="modules_classe_name_admin">
+                                {% include 'hod_template/partial/modules_classe_name_admin.html' %} 
+                            </div>
+
+                            <!-- <div class="form-group">
+                                <label>Matiere </label>
+                                <select class="form-control" name="matiere" id="matiere" required>
+                                    <option value="">--Matiere--</option>
+                                    {% for matiere in matieres %}
+                                        <option value="{{ matiere.id }}">{{ matiere.nom_matieres }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> -->
+
+                            <div id="modules_matiere_name_admin">
+                                {% include 'hod_template/partial/modules_matiere_name_admin.html' %} 
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer" id="fetch_student_block">
+
+                            <button type="button" class="btn btn-primary" id="fetch_progression">Afficher la progression</button>
+                        </div>
+
+                        <!-- <div class="card-footer">
+                            <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
+                        </div> -->
+
+                        <div class="card-footer">
+                            <!-- <div class="form-group" id="attendance_block" style="display:none;">
+                                    <label>Date </label>
+                                    <select class="form-control" name="attendance_date" id="attendance_date">
+                                        
+                                    </select>
+                                </div>
+                            </div> -->
+
+                            <div class="form-group">
+                                <div class="alert alert-danger" id="error_attendance" style="display:none;">
+
+                                </div>
+
+                                <div class="alert alert-success" id="success_attendance" style="display:none;">
+                                    
+                                </div>
+                            </div>
+
+                           
+                            
+                            <!-- /.card-body -->
+
+                            {% comment %} <div class="card-footer">
+                                <button type="button" class="btn btn-primary" id="save_student">Save Data</button>
+                            </div> {% endcomment %}
+
+                        </div>
+
+                        {% comment %} Displaying Students Here {% endcomment %}
+
+                        <div class="card-footer" id="student_data">
+                        </div> 
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+ 
+<script>
+    $(document).ready(function(){
+        
+
+        //Fetching Attendance Date
+        // $("#fetch_attendance" ).click(function(){
+        //         var subject = $("#subject").val()
+        //         var session_year_id = $("#session_year_id").val()
+        //         // var subject = $("#anneescolaire").val()
+        //         // var session_year_id = $("#classe").val()
+        //         // var subject = $("#matiere").val()
+               
+        //         $.ajax({
+        //             url:'{% url 'admin_get_attendance_dates' %}',
+        //             type:'POST',
+        //             data:{anneescolaire:anneescolaire, classe:classe, matiere:matiere },
+        //         })
+
+                
+        //         .done(function(response){
+        //             var json_data = JSON.parse(response);
+        //             if(json_data.length>0)
+        //             {
+        //                 var html_data = "";
+        //                 for (key in json_data)
+        //                 {
+        //                     html_data+="<option value='"+ json_data[key]["id"] +"'>"+ json_data[key]["attendance_date"] +"</option>"
+        //                 }
+        //                 $("#error_attendance").html("");
+        //                 $("#error_attendance").hide();
+        //                 $("#attendance_block").show();
+        //                 $("#fetch_student_block").show();
+        //                 $("#attendance_date").html(html_data);
+        //                 //console.log(response)
+        //                 //alert("Something")
+        //             }
+        //             else
+        //             {
+        //                 $("#error_attendance").html("No Attendance Data Found.");
+        //                 $("#error_attendance").show();
+        //                 $("#attendance_block").hide();
+        //                 $("#fetch_student_block").hide();
+        //                 $("#attendance_date")="" //Empty the Date Dropdown also
+        //             }
+                    
+        //         })
+
+        //         .fail(function(){
+        //             alert("Error in getting Attendance Dates.")
+        //             $("#error_attendance").html("");
+        //             $("#fetch_student_block").hide();
+        //             $("#attendance_block").hide();
+        //         });
+
+                
+        // })
+
+        // Now Working on Fetch Student after attendance date selected
+        $("#fetch_progression").click(function(){
+
+            // Displaying Students Based on Staff, Course and Session Enrolled
+
+            
+            // var attendance_date=$("#attendance_date").val()
+            var classe = $("#classe").val()
+            var anneescolaire = $("#anneescolaire").val()
+            var matiere = $("#matiere").val()
+
+            $.ajax({
+                url:'{% url 'admin_get_progression_matiere' %}',
+                type:'POST',
+                data:{anneescolaire:anneescolaire, classe:classe, matiere:matiere },
+            })
+
+            
+            .done(function(response){
+                var json_data=JSON.parse(response);
+                console.log(json_data)
+                //Displaying Attendance Date Input and Students Attendance
+                // var div_data="<div class='form-group'><label>Attendance Date: </label> <input type='date' name='attendance_date' id='attendance_date' class='form-control' /></div>"
+                // div_data+="<div class='form-group'><div class='row'>"
+                // table preparation
+                var div_data=""
+                div_data+="<div class='container-fluid' >"+
+                        "<table class='table table-bordered' id='product-list'>"+
+                            "<colgroup>"+
+                                "<col width='15%'>"+
+                                "<col width='30%'>"+
+                                "<col width='30%'>"+
+                                "<col width='10%'>"+
+                                "<col width='10%'>"+
+                            "</colgroup>"+
+                            "<thead>"+
+                                "<tr class='bg-gradient bg-primary bg-opacity-50 text-light'>"+
+                                    "<th class='px-2 py-2 text-center'>Semaines</th>"+
+                                   "<th class='px-2 py-2 text-center'>Chapitres</th>"+
+                                    "<th class='px-2 py-2 text-center'>Lecons</th>"+
+                                    "<th class='px-2 py-2 text-center'>Vol. horaires</th>"+
+                                    "<th class='px-2 py-2 text-center'>Statuts</th>"+
+                                "</tr>"+
+                            "</thead>"+
+                            
+                            "<tbody>"
+                            
+
+                // Rows insertion in the table
+                for(key in json_data)
+                {
+                    // div_data+="<div class='col-lg-2'><div class='form-check'><input type='checkbox' checked='checked' name='student_data[]' value='"+ json_data[key]['lecon_id'] +"' />  <label class='form-check-label'>"+ json_data[key]['statut']+" </label></div></div> ";
+                    div_data+="<tr>"+
+                    "<td class='px-2 py-1 align-middle' id="+json_data[key]['semaines_id']+ ">"+json_data[key]['debut_fin_semaines']+"</td>"+
+                    "<td class='px-2 py-1 align-middle'>"+json_data[key]['titre_chapitres']+"</td>"+
+                    "<td class='px-2 py-1 align-middle'>"+json_data[key]['detail_lecons']+"<p class='m-0 text-truncate'></p></td>"+
+                    "<td class='px-2 py-1 align-middle'>"+ json_data[key]['nombre_heures']+" H</td>"+
+                    // "<td class='px-2 py-1 align-middle'><div class='col-lg-2'><div class='form-check'><input type='checkbox' checked='checked' name='student_data[]' value='"+ json_data[key]['semainelecon_id'] +"' />  <label class='form-check-label'>"+ json_data[key]['statut']+" </label></div></div></td> "+
+                   
+
+                    "<td class='px-2 py-1 align-middle'>"
+                    // "<label for="+json_data[key]['lecon_id']+ " class='control-label'>Statut</label>"+
+                    // "<select  name='student_data[]' id="+json_data[key]['lecon_id']+ "class='form-control'>"
+                    if ( json_data[key]['statut'] == '1' )
+                        {
+                            // div_data+="<option value="+json_data[key]['lecon_id']+ " selected='selected'>"+json_data[key]['statut']+ "</option>"
+                            div_data+="<span class='badge bg-danger bg-gradient rounded-pill px-2'>En attente</span> "
+                            
+                        }
+                    else 
+                        { if ( json_data[key]['statut'] == '2' ){
+                            // div_data+="<option value="+json_data[key]['lecon_id']+ " >1</option>"
+                            div_data+="<span class='badge bg-warning bg-gradient rounded-pill px-2'>En cours</span> "
+                            }
+                           else 
+                            {
+                            div_data+="<span class='badge bg-success bg-gradient rounded-pill px-2'>Termine</span> "
+                            }
+                        }
+                    div_data+="</select>"
+                   
+                }
+                div_data+="</tbody>";
+                div_data+="</table>";
+
+                // div_data+="</div></div>";
+                // div_data+="<div class='form-group'>";
+                div_data+="<button id='save_attendance' class='btn btn-success' type='button'>Enregistrer</button>";
+                div_data+="</div>";
+                $("#student_data").html(div_data);
+
+            })
+            .fail(function(){
+                alert("Error in Fetching Students.")
+            })
+
+
+        })
+
+    })
+</script>
+{% endblock custom_js %}

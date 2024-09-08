@@ -1,0 +1,80 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Annee scolaire : {{ anneescolaire.session_start_year }} au {{ anneescolaire.session_end_year }}
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Creer les semaines</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    
+                        <h1 class = mb-4 text-primary> Ajouter des semaines </h1>
+                       <div id="form-semaines">
+                        {% include 'hod_template/partial/semaines_form.html' %}
+                       </div>
+                    
+                       <div class="my-4">
+                        <button type="button" class="btn btn-success me-2"
+                        hx-get ="{% url 'creer_semaines' annee_pk=anneescolaire.id %}"
+                        hx-target = "#form-semaines"
+                        hx-swap = "beforeend">+ Ajouter une ligne</button>
+
+                        <button type="button" class="btn btn-primary" id="submit-all"> Enregister tout</button>
+                       </div>
+
+                   
+                        <!-- entete liste des semaines -->
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
+                            liste des semaines
+                        </h3>
+                        <div class ="row">
+                            <div class = "col-4 col-md-3 text-center">
+                               Semaine 
+                            </div>
+                            <div class = "col-4 col-md-3 text-center">
+                                du 
+                            </div>
+                            <div class = "col-4 col-md-3 text-center">
+                                au 
+                            </div>
+                            <div class= "col-3 align-self-end">
+                                Action
+                            </div>
+                        </div>
+                   
+                                <!-- fin entete liste des semaines-->
+                                <div id="semaine-list">
+                                <!-- <ul id="semaine-list" > -->
+                                    
+                                    {% for semaine in semaines %}
+                                    {% if semaine.annee_scolaire_id_id == anneescolaire.id %}
+                                        {% include 'hod_template/partial/semaines_list.html' %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                <!-- </ul> -->
+                            </div>
+                            
+
+
+                </div>
+                    <!-- /.card -->
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

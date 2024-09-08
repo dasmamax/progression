@@ -1,0 +1,39 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<form hx-post="{% url 'detail_status' pk=semainelecon.pk %}" 
+      hx-target="this" 
+      hx-swap="outerHTML"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' >
+    <!-- <div class ="row"> -->
+    
+        <tr >
+            <td class="px-2 py-1 align-middle">  </td>
+            <td class="px-2 py-1 align-middle">  </td>
+            <td class="px-2 py-1 align-middle">  </td>
+            <td class="px-2 py-1 align-middle">  <p class="m-0 text-truncate"></p></td>
+            <td class="px-2 py-1 align-middle"> </td>
+            <td class="px-2 py-1 align-middle">
+                {% render_field form.status class="form-control" %}
+                <div class="invalid-feedback">{{ form.status.errors|first }}</div>
+            </td>
+            <td>
+                <div class= "col-3 align-self-end">
+                <!-- <button class="btn btn-primary btn-sm" >Enregister</button> -->
+                
+                    <button class="btn btn-outline-primary btn-sm edit-data" title="Enregistrer">
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm delete-data" 
+                        type="button" 
+                        hx-get="{% url 'detail_status' pk=semainelecon.pk %}" 
+                        title="Cancel">
+                        <i class="fa fa-close"></i>
+                    </button> 
+                </div>    
+            </td>
+        </tr>
+    <!-- </div> -->
+</form>
+{% endwith %}
+

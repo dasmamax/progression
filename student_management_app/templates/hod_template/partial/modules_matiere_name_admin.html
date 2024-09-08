@@ -1,0 +1,9 @@
+<div class="form-group">
+    <label>Matiere </label>
+    <select class="form-control" name="matiere" id="matiere" required>
+        <option value="">--Matiere--</option>
+        {% for matiere in matieres %}
+            <option value="{{ matiere.id }}">{{ matiere.nom_matieres }}</option>
+        {% endfor %}
+    </select>
+</div>

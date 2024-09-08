@@ -1,0 +1,61 @@
+ <!-- <div class ="row">
+    <div class = "col-4 col-md-3">
+    Semaine {{ semaine.numero_semaines }} du {{ semaine.debut_semaines }} au {{ semaine.fin_semaines }}
+</div>
+<div class= "col-3 align-self-end">
+         <button class="btn btn-primary btn-sm" hx-get="" hx-target="">Editer</button>
+</div>
+</div>
+<div>-</div> 
+ -->
+
+ <div class ="row"
+ hx-on="htmx:afterRequest: this.remove()"
+ hx-target="this" 
+ hx-swap="outerHTML">
+      
+    <div class = "col-4 col-md-3 text-center">
+        {{ semaine.numero_semaines }}
+    </div>
+    <div class = "col-4 col-md-3 text-center">
+        {{ semaine.debut_semaines }}
+    </div>
+    <div class = "col-4 col-md-3 text-center">
+        {{ semaine.fin_semaines }}
+    </div>
+    <div class= "col-3 align-self-end">
+        <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_semaines' pk=semaine.pk %}" >Editer</button>
+        <!-- <button class="btn btn-primary btn-sm" hx-get="/creer_semaines/16/editer_semaines/" >Editer</button> -->
+        <button class="btn btn-danger btn-sm" 
+                hx-post="{% url 'supprimer_semaines' semaine.id %}"
+                hx-on="click:this.closest('row').remove()">Supprimer</button>
+    </div>
+    <hr>
+</div>
+
+<!-- <table class="table">
+   
+        <tr>
+            <td>{{ semaine.numero_semaines }}</td>
+            <td>{{ semaine.debut_semaines }}</td>
+            <td>{{ semaine.fin_semaines }}</td>
+            <td><button class="btn btn-primary btn-sm" hx-get="" hx-target="">Editer</button>
+                <button class="btn btn-danger btn-sm" hx-get="" hx-target="">Supprimer</button>
+            </td>
+        </tr>
+</table> -->
+
+
+    <!-- <tr>
+        <td>{{ semaine.numero_semaines }}</td>
+        <td>{{ semaine.debut_semaines }}</td>
+        <td>{{ semaine.fin_semaines }}</td>
+        <td>
+            <a href="" class="btn btn-success">Editer</a> 
+            <a href="" class="btn btn-danger">Supprimer</a>
+        </td>
+    </tr> -->
+      
+
+
+    

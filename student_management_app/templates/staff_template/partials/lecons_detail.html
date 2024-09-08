@@ -1,0 +1,44 @@
+ <!-- {% for lecon in lecons %}
+ <tr id="lecon-{{ lecon.pk }}" class="movie-row">
+     <td>{{ lecon.id }}</td>
+            <td> </td>
+     <td>{{ lecon.detail_lecons }}</td>
+     <td>{{ lecon.nombre_heures }}</td>
+     <td>
+         <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_lecon' pk=lecon.pk %}" hx-target="#dialog">Editer</button>
+     </td>
+ </tr>
+{% endfor %} -->
+
+
+<!--    test -->
+{% for semainelecon in semaineslecons %}
+    {% for lecon in lecons %}
+        {% if semainelecon.lecons_id_id == lecon.id %}
+            {% for semaine in semaines %}
+                {% if semainelecon.semaines_id_id == semaine.id %}
+
+                <tr id="lecon-{{ lecon.pk }}" class="movie-row">
+                    <td>{{ lecon.id }}</td>
+                    <td> {{ semaine.debut_semaines }} au {{ semaine.fin_semaines }} </td>
+                    <td>{{ lecon.detail_lecons }}</td>
+                    <td>{{ lecon.nombre_heures }} H</td>
+                    {% if not semainelecon.status or semainelecon.status == '1' %}
+                    <td>En attente</td>
+                    {% elif semainelecon.status == '2' %}
+                    <td>En cours</td>
+                    {% elif semainelecon.status == '3' %}
+                    <td>Termine</td>
+                    {% endif %}
+                    
+                    <td>
+                        <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_lecon' pk=semainelecon.pk %}" hx-target="#dialog">Editer</button>
+                    </td>
+                </tr>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<!-- fin liste des lecons-->

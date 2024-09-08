@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label>Classe </label>
+    <select class="form-control" name="classe" id="classe" 
+    hx-get="{% url 'modules_matiere_name_admin' %}" 
+    hx-trigger="change" 
+    hx-target="#modules_matiere_name_admin" required>required>
+        <option value="">--Classe--</option>
+        {% for classe in classess %}
+            <option value="{{ classe.id }}">{{ classe.nom_classes }}</option>
+        {% endfor %}
+    </select>
+</div>

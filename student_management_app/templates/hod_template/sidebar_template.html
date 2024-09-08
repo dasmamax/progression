@@ -1,0 +1,174 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Brand Logo -->
+  <a href="{% url 'admin_home' %}" class="brand-link">
+    <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      style="opacity: .8">
+    <span class="brand-text font-weight-light">La Salle-Ouaga</span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="{% static 'dist/img/lasalle.jpg' %}" class="img-circle elevation-2" alt="User Image">
+      </div>
+      <div class="info">
+        <a href="{% url 'admin_profile' %}" class="d-block">{{ user.first_name }}  {{ user.last_name }}</a>
+      </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+
+        <li class="nav-item">
+          {% url 'admin_home' as admin_home %}
+          <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Accueil
+            </p>
+          </a>
+        </li>
+
+        
+
+        <li class="nav-item">
+          {% url 'manage_sessionAnnee' as manage_sessionAnnee %}
+          {% url 'edit_sessionAnnee' session_id=id as edit_sessionAnnee %}
+          <a href="{{ manage_sessionAnnee }}"
+            class="nav-link {% if request.path == manage_sessionAnnee %} active {% endif %} {% if request.path == edit_sessionAnnee %} active {% endif %}">
+            <i class="nav-icon fas fa-graduation-cap"></i>
+            <p>
+              Gerer annee scolaire
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'creer_annees_scolaires' as creer_annees_scolaires %}
+          <a href="{{ creer_annees_scolaires }}" class="nav-link {% if request.path == creer_annees_scolaires %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Creer annee scolaire
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'gerer_niveaux' as gerer_niveaux %}
+          {% url 'editer_niveaux' niveaux_id=id as editer_niveaux %}
+          <a href="{{ gerer_niveaux }}"
+            class="nav-link {% if request.path == gerer_niveaux %} active {% endif %} {% if request.path == editer_niveaux %} active {% endif %}">
+            <i class="nav-icon fas fa-chalkboard"></i>
+            <p>
+              Gerer les niveaux
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'creer_niveaux' as creer_niveaux %}
+          <a href="{{ creer_niveaux }}" class="nav-link {% if request.path == creer_niveaux %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Creer un niveau
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'gerer_classes' as gerer_classes %}
+          {% url 'editer_classes' classes_id=id as editer_classes %}
+          <a href="{{ gerer_classes }}"
+            class="nav-link {% if request.path == gerer_classes %} active {% endif %} {% if request.path == editer_classes %} active {% endif %}">
+            <i class="nav-icon fas fa-chalkboard"></i>
+            <p>
+              Gerer les classes
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'creer_classes' as creer_classes %}
+          <a href="{{ creer_classes }}" class="nav-link {% if request.path == creer_classes %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Creer une classe
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'gerer_professeurs' as gerer_professeurs %}
+          {% url 'editer_professeurs' professeurs_id=id as editer_professeurs %}
+          <a href="{{ gerer_professeurs }}"
+            class="nav-link {% if request.path == gerer_professeurs %} active {% endif %} {% if request.path == editer_professeurs %} active {% endif %}">
+            <i class="nav-icon fas fa-chalkboard"></i>
+            <p>
+              Gerer les professeurs
+            </p>
+          </a>
+        </li>
+
+
+        <li class="nav-item">
+          {% url 'creer_professeurs' as creer_professeurs %}
+          <a href="{{ creer_professeurs }}" class="nav-link {% if request.path == creer_professeurs %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Ajouter un professeur
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'gerer_matieres' as gerer_matieres %}
+          {% url 'editer_matieres' matieres_id=id as editer_matieres %}
+          <a href="{{gerer_matieres }}"
+            class="nav-link {% if request.path == gerer_matieres %} active {% endif %} {% if request.path == editer_matieres %} active {% endif %}">
+            <i class="nav-icon fas fa-chalkboard"></i>
+            <p>
+              Gerer les matieres
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'creer_matieres' as creer_matieres %}
+          <a href="{{ creer_matieres }}" class="nav-link {% if request.path == creer_matieres %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Creer une matiere
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'admin_view_progressions' as admin_view_progressions %}
+          <a href="{{ admin_view_progressions }}"
+            class="nav-link {% if request.path == admin_view_progressions %} active {% endif %}">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>
+              Suivre les progressions
+            </p> 
+          </a>
+        </li>
+
+        
+
+
+
+
+
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

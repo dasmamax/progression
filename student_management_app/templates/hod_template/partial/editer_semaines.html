@@ -1,0 +1,42 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{% url 'detail_semaines' pk=semaine.pk %}" 
+      hx-target="this" 
+      hx-swap="outerHTML"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' >
+    <div class ="row">
+
+        <div class = "col-4 col-md-3 text-center">
+            {% render_field form.numero_semaines class="form-control" %}
+            <div class="invalid-feedback">{{ form.numero_semaines.errors|first }}</div>
+        </div>
+
+        <div class = "col-4 col-md-3 text-center">
+            <input type="date" class="form-control" name="debut_semaines" value="{{ semaine.debut_semaines|date:'Y-m-d' }}">
+            <div class="invalid-feedback">{{ form.debut_semaines.errors|first }}</div>
+        </div>
+
+        <div class = "col-4 col-md-3 text-center">
+            <input type="date" class="form-control" name="fin_semaines" value="{{ semaine.fin_semaines|date:'Y-m-d' }}">
+            <div class="invalid-feedback">{{ form.fin_semaines.errors|first }}</div>
+        </div>
+
+        <!-- {% for field in form %}
+            <div class = "col-4 col-md-3 text-center">
+                {{ field }}
+            </div>
+        {% endfor %} -->
+
+            <div class= "col-3 align-self-end">
+                <button class="btn btn-primary btn-sm" >Enregister</button>
+                <button type="button" 
+                        class="btn btn-danger btn-sm"
+                        
+                        hx-get="{% url 'detail_semaines' pk=semaine.pk %}"
+                >Fermer</button>
+            </div>
+    
+        <hr>
+    </div>
+</form>
+{% endwith %}
