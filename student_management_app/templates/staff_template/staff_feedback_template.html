@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 
 {% block page_title %}
-    Feedback Message
+    Message de notification
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,7 +16,7 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Leave a Feedback Message</h3>
+                        <h3 class="card-title">Envoyer un message</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -50,8 +50,8 @@
                         <div class="card-body">
                            
                             <div class="form-group">
-                                <label>Feedback Message </label>
-                                <textarea name="feedback_message" class="form-control" rows="6" placeholder="Feedback Message"></textarea>
+                                <label>Message </label>
+                                <textarea name="feedback_message" class="form-control" rows="6" placeholder="Message"></textarea>
                             </div>
 
 
@@ -59,7 +59,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Leave a Feedback</button>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
                         </div>
 
                     </form>
@@ -76,7 +76,16 @@
                 <div class="col-md-12">
                     <div class="card card-success">
                         <div class="card-header">
-                            <h3 class="card-title">Feedback History</h3>
+                            <h3 class="card-title">Historique</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <div style="text-align: center;"> <i class="fa fa-search" ></i></div>
+                                    <input type="text" name="q" class="form-control float-right" placeholder="chercher"
+                                    hx-get="/staff_search_feedback/"
+                                    hx-trigger = "keyup changed delay:5ms"
+                                    hx-target="#staff_results_feedback"> 
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card-body">
@@ -85,11 +94,11 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th>#ID</th>
-                                        <th>Feedback Message</th>
-                                        <th>Feedback Reply</th>
+                                        <th>Messages envoyes</th>
+                                        <th>Reponses</th>
                                     </tr>
                                     </thead>
-                                    
+                                    <tbody id="staff_results_feedback">
                                     {% for row in feedback_data %}
                                     <tr>
                                         <td>{{ row.id }}</td>
@@ -97,6 +106,7 @@
                                         <td>{{ row.feedback_reply }}</td>
                                     </tr>
                                     {% endfor %}
+                                </tbody>
                                 </table>
                             </div>
                         </div>

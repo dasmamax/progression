@@ -21,6 +21,7 @@ from .models import Lecons, Matieres, Chapitres, Classess, Niveaux, Author, Book
 from .forms import ChapitreForm, LeconForm, SemainesForm, StatutForm
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
+from django.db.models import Q # for search rechercher
 
 # gestion de pages intermediaire avant Htmx
 
@@ -376,6 +377,17 @@ def staff_suivi_progression (request, pk): #ancien
     #return render(request, "staff_template/staff_suivi_progression2.html", context)
     return render(request, "staff_template/staff_suivi_progression.html", context)
 
+def staff_search_progressions(request):
+    q= request.GET.get('q')
+    print(q)
+    
+    if q:
+        results =Matieres.objects.filter(Q(nom_matieres__icontains=q)) \
+        .order_by("nom_matieres", "-id")[0:20]
+    else:
+        results=[]
+ 
+    return render(request, "staff_template/partials/search/staff_search_progressions.html", {"results":results})
 
 #def staff_creer_MAJ_progession(request, pk): # pk = SemainesLecons.id
     semainelecon = get_object_or_404(SemainesLecons, id=pk)
@@ -637,7 +649,7 @@ def staff_home(request):
         "attendance_absent_list": student_list_attendance_absent
     }
     return render(request, "staff_template/staff_home_template.html", context)
-
+ 
 
 # def staff_home(request):
     # Fetching All Students under Staff
@@ -774,7 +786,7 @@ def get_students(request):
     #     list_data.append(data_small)
 
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
-
+ 
 #-----------------Mise a jour des statuts de toutes les ------------#
 #                lecons de tous les chapitres d'un cours donnee     #
 @csrf_exempt
@@ -873,6 +885,19 @@ def staff_feedback(request):
     }
     return render(request, "staff_template/staff_feedback_template.html", context)
 
+def staff_search_feedback(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =FeedBackStaffs.objects.filter(Q(feedback__icontains=q) | Q(feedback_reply__icontains=q) | Q(staff_id__admin__first_name__icontains=q) | Q(staff_id__admin__last_name__icontains=q)) \
+        .order_by("feedback", "-id")[0:20]
+ 
+    else:
+        results=[]
+ 
+    return render(request, "staff_template/partials/search/staff_search_feedback.html", {"results":results})
+
 
 def staff_feedback_save(request):
     if request.method != "POST":
@@ -885,10 +910,10 @@ def staff_feedback_save(request):
         try:
             add_feedback = FeedBackStaffs(staff_id=staff_obj, feedback=feedback, feedback_reply="")
             add_feedback.save()
-            messages.success(request, "Feedback Sent.")
+            messages.success(request, "Message envoye.")
             return redirect('staff_feedback')
         except:
-            messages.error(request, "Failed to Send Feedback.")
+            messages.error(request, "Echec d'envoi.")
             return redirect('staff_feedback')
 
 

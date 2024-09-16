@@ -160,9 +160,26 @@
           </a>
         </li>
 
-        
-
-
+        <li class="nav-item">
+          {% url 'staff_feedback_message' as staff_feedback_message %}
+          <a href="{{ staff_feedback_message }}" class="nav-link {% if request.path == staff_feedback_message %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Ecrire
+            </p>
+          </a>
+        </li>
+ 
+        <li class="nav-item">
+          {% url 'rechercher' as rechercher %}
+          <a href="{{ rechercher }}" class="nav-link {% if request.path == rechercher %} active {% endif %}">
+            <i class="nav-icon fas fa-comments"></i>
+            <p>
+              Rechercher
+              {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+            </p>
+          </a>
+        </li>
 
 
 

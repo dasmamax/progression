@@ -1,0 +1,16 @@
+{% for result in results %}
+                                <tr>
+                                    <td>{{ result.id }}</td>
+                                    <td>{{ result.nom_classes }}</td>
+                                    <td>{{ result.niveaux_id.nom_niveaux }}</td>
+                                    <!--<td>{{ subject.staff_id.first_name }} {{ subject.staff_id.last_name }}</td>
+                                    <td>{{ subject.created_at }}</td>
+                                    <td>{{ subject.updated_at }}</td>-->
+                                    <td>
+                                        <a href="{% url 'editer_classes' result.id %}"
+                                            class="btn btn-success">Editer</a>
+                                        <a href="{% url 'supprimer_classes' result.id %}"
+                                            class="btn btn-danger">Supprimer</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}

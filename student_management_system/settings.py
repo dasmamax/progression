@@ -1,6 +1,8 @@
 
 import os
 
+ 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +33,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_tailwind',
     'widget_tweaks',
+
+   
    
 ]
 
@@ -56,12 +60,14 @@ MIDDLEWARE = [
     'student_management_app.LoginCheckMiddleWare.LoginCheckMiddleWare',
 ]
 
+TEMPLATE_DIR_DATATB = os.path.join(BASE_DIR, "django_dyn_dt/templates")
+
 ROOT_URLCONF = 'student_management_system.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR_DATATB],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,6 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
@@ -139,3 +147,5 @@ AUTH_USER_MODEL = "student_management_app.CustomUser"
 
 # Registering Custom Backend "EmailBackEnd"
 AUTHENTICATION_BACKENDS = ['student_management_app.EmailBackEnd.EmailBackEnd']
+
+

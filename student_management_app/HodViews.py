@@ -16,23 +16,37 @@ from .forms import SemainesForm
 from django.http.response import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-#from rest_framework.decorators import api_view
+from django.db.models import Q # for search rechercher
 #from rest_framework.response import Response
 
 
 def admin_home(request):
     all_anneescolaires_count = AnneeScolaire.objects.all().count()
-    all_staffs_count = Staffs.objects.all().count()
-    all_niveaux_count = Niveaux.objects.all().count()
     all_classes_count = Classess.objects.all().count()
+    all_staffs_count = Staffs.objects.all().count()
     all_matieres_count = Matieres.objects.all().count()
+    
+
+
+    all_niveaux_count = Niveaux.objects.all().count()
     all_chapitres_count = Chapitres.objects.all().count()
     all_semaines_count = Semaines.objects.all().count()
     all_lecons_count = Lecons.objects.all().count()
 
+     # remove the duplicate staff
+    customers = Staffs.objects.all()
+    staff_nom_prenom_list = []
+    for customer in customers:
+        staff_nom_prenom_list.append(customer.admin.first_name+" "+customer.admin.last_name)
     
+    final_staff_nom_prenom_list = []
+    for nom_prenom in staff_nom_prenom_list:
+        if nom_prenom not in final_staff_nom_prenom_list:
+            final_staff_nom_prenom_list.append(nom_prenom)
+    final_staff_nom_prenom_count = len(final_staff_nom_prenom_list)
 
-
+#----
+ 
     all_student_count = Students.objects.all().count()
     subject_count = Subjects.objects.all().count()
     course_count = Courses.objects.all().count()
@@ -43,6 +57,8 @@ def admin_home(request):
     course_name_list = []
     subject_count_list = []
     student_count_list_in_course = []
+
+   
 
     for course in course_all:
         subjects = Subjects.objects.filter(course_id=course.id).count()
@@ -92,8 +108,14 @@ def admin_home(request):
         student_attendance_present_list.append(attendance)
         student_attendance_leave_list.append(leaves+absent)
         student_name_list.append(student.admin.first_name)
-
+ 
     context = {
+        "all_anneescolaires_count": all_anneescolaires_count,
+        "all_classes_count": all_classes_count,
+         "all_staffs_count":all_staffs_count,
+         "final_staff_nom_prenom_count":final_staff_nom_prenom_count,
+         "all_matieres_count":all_matieres_count,
+        
         "all_student_count": all_student_count,
         "subject_count": subject_count,
         "course_count": course_count,
@@ -143,7 +165,19 @@ def manage_sessionAnnee(request):
         "session_years": session_years
     }
     return render(request, "hod_template/manage_session_template.html", context)
-
+ 
+def admin_search_annee(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =AnneeScolaire.objects.filter(Q(session_start_year__icontains=q)) \
+        .order_by("session_start_year", "-id")[0:20]
+ 
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_annee.html", {"results":results})
 
 # def add_sessionAnnee(request):
 #     return render(request, "hod_template/add_session_template.html")
@@ -239,6 +273,18 @@ def gerer_niveaux(request):
     }
     return render(request, 'hod_template/gerer_niveaux_template.html', context)
 
+def admin_search_niveaux(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =Niveaux.objects.filter(Q(nom_niveaux__icontains=q)) \
+        .order_by("nom_niveaux", "-id")[0:20]
+ 
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_niveaux.html", {"results":results})
 
 def editer_niveaux(request, niveaux_id):
     niveau = Niveaux.objects.get(id=niveaux_id)
@@ -302,6 +348,14 @@ def modules_profs_name_admin(request):
                 'staffs': staffs,
                 }
     return render(request, 'hod_template/partial/modules_profs_name_admin.html', context)
+# pour recuperer les prof de l annee pour editer la matiere
+def modules_profs_edit_name_admin(request):
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id_id=anneescolaire)
+    context = {
+                'staffs': staffs,
+                }
+    return render(request, 'hod_template/partial/modules_profs_edit_name_admin.html', context)
 
 def creer_matieres_save(request):
     if request.method != "POST":
@@ -321,9 +375,9 @@ def creer_matieres_save(request):
             messages.success(request, "Matiere creer avec succes!")
             return redirect('creer_matieres')
         except:
-            messages.error(request, "Echec de creation de la matiere!")
+            messages.error(request, "Echec de creation de la matiere! Cette combinaison existe peut etre deja.")
             return redirect('creer_matieres')
-
+ 
 
 def gerer_matieres(request):
     matieres = Matieres.objects.all()
@@ -332,16 +386,35 @@ def gerer_matieres(request):
     }
     return render(request, 'hod_template/gerer_matieres_template.html', context)
 
+def admin_search_matieres(request):
+    q= request.GET.get('q')
+    print(q)
+    
+    if q:
+        results =Matieres.objects.filter(Q(nom_matieres__icontains=q) |
+                                         Q(classes_id__nom_classes__icontains=q) |
+                                         Q(professeurs_id__admin__first_name__icontains=q) |
+                                         Q(professeurs_id__admin__last_name__icontains=q) |
+                                         Q(professeurs_id__annee_scolaire_id__session_start_year__icontains=q) |
+                                         Q(professeurs_id__annee_scolaire_id__session_end_year__icontains=q)) \
+        .order_by("nom_matieres", "-id")[0:20]
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_matieres.html", {"results":results})
+
 
 def editer_matieres(request, matieres_id):
     matiere = Matieres.objects.get(id=matieres_id)
     classe = Classess.objects.all()
     staff = Staffs.objects.all()
+    anneescolaires = AnneeScolaire.objects.all()
     context = {
         "matiere": matiere,
         "id": matieres_id,
         "classess": classe,
-        "staffs": staff
+        "staffs": staff,
+        "anneescolaires": anneescolaires
     }
     return render(request, 'hod_template/editer_matieres_template.html', context)
 
@@ -353,10 +426,10 @@ def editer_matieres_save(request):
         matieres_id = request.POST.get('matieres_id')
         nom_matieres = request.POST.get('matiere')
         classe_id = request.POST.get('classe')
-        professeur_id = request.POST.get('professeur')
+        professeur_id = request.POST.get('staff')
 
 
-
+ 
         try:
             matiere = Matieres.objects.get(id=matieres_id)
             matiere.nom_matieres = nom_matieres
@@ -373,7 +446,7 @@ def editer_matieres_save(request):
             return redirect('/editer_matieres/'+matieres_id)
 
         except:
-            messages.error(request, "Echec de mise a jour de la matiere.")
+            messages.error(request, "Echec de mise a jour de la matiere."+str(staff))
             return redirect('/editer_matieres/'+matieres_id)
 
 
@@ -424,6 +497,19 @@ def gerer_classes(request):
         "classes": classes
     }
     return render(request, 'hod_template/gerer_classes_template.html', context)
+
+def admin_search_classes(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =Classess.objects.filter(Q(nom_classes__icontains=q)) \
+        .order_by("nom_classes", "-id")[0:20]
+ 
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_classes.html", {"results":results})
 
 
 def editer_classes(request, classes_id):
@@ -512,13 +598,29 @@ def creer_professeurs_save(request):
         except:
             messages.error(request, "Echec d'ajout de professeur!" +str(annee_scolaire) )
             return redirect('creer_professeurs')
-        
+         
 def gerer_professeurs(request):
     staffs = Staffs.objects.all()
     context = {
         "staffs": staffs
     }
     return render(request, "hod_template/gerer_professeurs_template.html", context)
+
+def admin_search_professeurs(request):
+    q= request.GET.get('q')
+    print(q)
+    
+    if q:
+        results =CustomUser.objects.filter(Q(first_name__icontains=q,user_type='2') | 
+                                           Q(last_name__icontains=q,user_type='2') |
+                                           Q(staffs__annee_scolaire_id__session_start_year__icontains=q,user_type='2')|
+                                           Q(staffs__annee_scolaire_id__session_end_year__icontains=q,user_type='2'),) \
+        .order_by("first_name", "-id")[0:20]
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_professeurs.html", {"results":results})
+
 
 def editer_professeurs(request, staff_id):
     staff = Staffs.objects.get(admin=staff_id)
@@ -710,22 +812,27 @@ def admin_view_progressions(request):
         "semaineslecons": semaineslecons,
         "lecons": lecons,
         "anneescolaires": anneescolaires
-    }
+    }  
     return render(request, "hod_template/admin_view_progressions.html", context)
 
 #-------------  SUIVRE LES PROGRESSIONS: affichage des classes apres ----#
-#                avoir selectionne l'annee scolaire                      #
+#                avoir selectionne l'annee scolaire   doesn't work                    #
 def modules_classe_name_admin(request):
-    anneescolaire = request.GET.get('anneescolaire')  
-    staffs = Staffs.objects.filter(annee_scolaire_id_id=anneescolaire)
-    matieres = Matieres.objects.filter(professeurs_id_id__in=staffs)
-    classess = Classess.objects.filter(id__in=matieres)
+    
+    anneescolaire = request.GET.get('anneescolaire') 
+    # classess = Classess.objects.filter(id=matieres) 
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+   
+    
 
     context = {
-               'classess' : classess}
+                # 'classess' : classess
+                'matieres' : matieres
+               }
     return render(request, 'hod_template/partial/modules_classe_name_admin.html', context)
 
- 
+  
 #-------------  SUIVRE LES PROGRESSIONS: affichage des matieres apres ----#
 #                avoir selectionne la classe                             #
 def modules_matiere_name_admin(request):
@@ -775,6 +882,149 @@ def admin_get_progression_matiere(request):
                 list_data.append(data_small)
 
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+#------------------- rechercher --------------------
+def rechercher(request):
+    niveaux = Niveaux.objects.all()
+    return render(request, "hod_template/rechercher.html", {"niveaux": niveaux})
+
+def search(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =Niveaux.objects.filter(Q(id__icontains=q)| Q(nom_niveaux__icontains=q)) \
+        .order_by("nom_niveaux", "-id")[0:20]
+ 
+    else:
+        results=[]
+
+    return render(request, "hod_template/partial/results.html", {"results":results})
+
+##############################################################
+# ---------------- HOME PAGE Evaluation par matiere ----------
+
+def admin_evaluation_par_matiere(request):
+    #matieres = Matieres.objects.all()
+    #classess = Classess.objects.all()
+    niveaux = Niveaux.objects.all()
+    staffs = Staffs.objects.all()
+    semaines =Semaines.objects.all()
+    semaineslecons =SemainesLecons.objects.all()
+    lecons= Lecons.objects.all()
+    anneescolaires = AnneeScolaire.objects.all()
+    context = {
+        #"matieres": matieres,
+        #"classess": classess,
+        "niveaux": niveaux,
+        "staffs": staffs,
+        "semaines": semaines,
+        "semaineslecons": semaineslecons,
+        "lecons": lecons,
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_matiere.html", context)
+
+# ----------- HOME PAGE affichage des matieres apres avoir choisi l'annee 
+#               scolaire
+def modules_matiere_name_admin_home(request):
+    
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)
+    context = {
+                'matieres' : matieres
+               }
+    return render(request, 'hod_template/partial/modules_matiere_name_admin.html', context)
+ 
+#-----------  HOME PAGE affichage de la classe et du prof apres seletion
+#----------- de la matiere dans evaluation par matiere
+def modules_class_and_prof_name(request):
+
+    matiere_id = request.GET.get('matiere')  # matiere = matiere.id
+    matiere = Matieres.objects.get(id=matiere_id)
+    classe_name =  matiere.classes_id.nom_classes
+    professeur_fname = matiere.professeurs_id.admin.first_name
+    professeur_lname = matiere.professeurs_id.admin.last_name
+
+    context = {'classe_name': classe_name,
+               'professeur_fname': professeur_fname,
+               'professeur_lname': professeur_lname
+
+               }
+    return render(request, 'hod_template/partial/modules_class_and_prof_name.html', context)
+
+#------------- HOME PAGE Affichage desresultats  de 
+#-------------   l'evaluation apres click  sur 'afficher progression'
+@csrf_exempt
+def admin_get_eval_par_matiere_js(request):
+     # Fetching All Students under Staff
+    matieres = request.POST.get("matiere")                 # session_year
+
+    # staff_obj = Staffs.objects.get(admin=request.user.id)
+    # matieres = Matieres.objects.filter(professeurs_id=staff_obj)
+
+    # classes_id_list = []
+    # for matiere in matieres:
+    #     classe = Classess.objects.get(id=matiere.classes_id.id)
+    #     classes_id_list.append(classe.id)
+    
+    # # Remove the duplicate classes in list of classes' ids
+    # final_classe = []
+    # for classe_id in classes_id_list :
+    #     if classe_id not in final_classe:
+    #         final_classe.append(classe_id)
+
+    # # count classes and matieres
+    # classes_count = len(final_classe)
+    # matieres_count = matieres.count()
+
+    # Fetching volume horaire total
+    chapitres = Chapitres.objects.filter(matieres_id_id=matieres)
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    hours_list = []
+    for lecon in lecons:
+        hour = lecon.nombre_heures
+        hours_list.append(hour)
+    hours_count= sum(hours_list)
+
+    # Fetching status of lecons of all the courses of the staff
+    lecons_attente_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+
+    # Fetching the status of lecons per courses
+    # matiere_list =[]
+    lecons_attente_list=[]
+    lecons_encours_list=[]
+    lecons_termine_list=[]
+    # for matiere in matieres:
+    #     matiere_list.append(matiere.nom_matieres)
+    #     # find chapters of one matiere
+    chapitres = Chapitres.objects.filter(matieres_id_id=matieres)
+    #     # Find list of lessons
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+    lecons_attente_list.append(lecons_attente_count)
+    lecons_encours_list.append(lecons_encours_count)
+    lecons_termine_list.append(lecons_termine_count)
+
+    context={
+        # "classes_count": classes_count,
+        # "matieres_count": matieres_count,
+        "hours_count": hours_count,
+        "lecons_attente_gle_count" : lecons_attente_gle_count,
+        "lecons_encours_gle_count" :lecons_encours_gle_count,
+        "lecons_termine_gle_count" :lecons_termine_gle_count,
+        # "matiere_list":matiere_list,
+        "lecons_attente_list" :lecons_attente_list,
+        "lecons_encours_list":lecons_encours_list,
+        "lecons_termine_list":lecons_termine_list,
+    }
+
+    return render(request, "hod_template/partial/admin_get_eval_par_matiere_js.html", context)
 
 ##############################################################
 
@@ -1339,6 +1589,22 @@ def staff_feedback_message_reply(request):
 
     except:
         return HttpResponse("False")
+
+
+
+def admin_search_feedback(request):
+    q= request.GET.get('q')
+    print(q)
+ 
+    if q:
+        results =FeedBackStaffs.objects.filter(Q(feedback__icontains=q) | Q(feedback_reply__icontains=q) | Q(staff_id__admin__first_name__icontains=q) | Q(staff_id__admin__last_name__icontains=q)) \
+        .order_by("feedback", "-id")[0:20]
+ 
+    else:
+        results=[]
+ 
+    return render(request, "hod_template/partial/search/admin_search_feedback.html", {"results":results})
+
 
 
 def student_leave_view(request):

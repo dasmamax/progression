@@ -1,6 +1,9 @@
 <div class="form-group">
     <label>Matiere </label>
-    <select class="form-control" name="matiere" id="matiere" required>
+    <select class="form-control" name="matiere" id="matiere" required
+    hx-get="{% url 'modules_class_and_prof_name' %}" 
+                                 hx-trigger="change" 
+                                 hx-target="#modules_class_and_prof_name">
         <option value="">--Matiere--</option>
         {% for matiere in matieres %}
             <option value="{{ matiere.id }}">{{ matiere.nom_matieres }}</option>

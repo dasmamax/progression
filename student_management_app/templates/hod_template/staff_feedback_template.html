@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Staff Feedback
+    Messagerie
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,25 +16,36 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Staff Feedback</h3>
+                            <h3 class="card-title">Boite de reception</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <div style="text-align: center;"> <i class="fa fa-search" ></i></div>
+                                    <input type="text" name="q" class="form-control float-right" placeholder="chercher"
+                                    hx-get="/admin_search_feedback/"
+                                    hx-trigger = "keyup changed delay:5ms"
+                                    hx-target="#admin_results_feedback"> 
+                                </div>
+                            </div>
                         </div>
                         <!-- /.card-header -->
+                        
+                        
 
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Staff ID</th>
-                                    <th>Staff Name</th>
+                                    <th>Professeur ID</th>
+                                    <th>Nom professeur</th>
                                     <th>Message</th>
-                                    <th>Sended On</th>
-                                    <th>Reply</th>
+                                    <th>Envoye le</th>
+                                    <th>Repondre</th>
                                 </tr>
                                 </thead>
 
                                 {% for feedback in feedbacks %}
-                                <tbody>
+                                <tbody id="admin_results_feedback">
                                 <tr>
                                     <td>{{ feedback.id }}</td>
                                     <td>{{ feedback.staff_id.admin.id }}</td>
@@ -43,7 +54,7 @@
                                     <td>{{ feedback.created_at }}</td>
                                     <td>
                                         {% if feedback.feedback_reply == "" %}
-                                            <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#replyModal">Reply</button>
+                                            <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#replyModal">Repondre</button>
                                         {% else %}
                                             {{ feedback.feedback_reply }}
                                         {% endif %}
@@ -71,19 +82,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Reply Feedback</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Reponse</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Reply to: <b><span id="reply_name"></span></b></p>
+                <p>Repondre a: <b><span id="reply_name"></span></b></p>
                 <input type="hidden" id="reply_id" name="reply_id" />
                 <textarea class="form-control" rows="5" id="reply_message"></textarea>
             </div>
             <div class="modal-footer">
-                {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
-                <button type="button" class="btn btn-primary btn-block" id="reply_button">Reply</button>
+                {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button> {% endcomment %}
+                <button type="button" class="btn btn-primary btn-block" id="reply_button">Repondre</button>
             </div>
             </div>
         </div>

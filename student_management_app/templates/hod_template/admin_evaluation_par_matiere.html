@@ -1,0 +1,187 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Suivre les progressions
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Suivre les progressions</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                             
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Annee scolaire </label>
+                                <select class="form-control" name="anneescolaire" id="anneescolaire" 
+                                 hx-get="{% url 'modules_matiere_name_admin_home' %}" 
+                                 hx-trigger="change" 
+                                 hx-target="#modules_matiere_name_admin" required>
+                                    <option value="">--Annee scolaire--</option>
+                                    {% for anneescolaire in anneescolaires %}
+                                        <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> 
+                           
+                            <div id="modules_matiere_name_admin">
+                               {% include 'hod_template/partial/modules_matiere_name_admin.html' %} 
+                            </div>
+
+                            <div id="modules_class_and_prof_name">
+                                {% include 'hod_template/partial/modules_class_and_prof_name.html' %} 
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer" id="fetch_student_block">
+
+                            <button type="button" class="btn btn-primary" id="fetch_progression"
+                                hx-get="{% url 'admin_get_eval_par_matiere_js' %}"
+                                hx-trigger = "click"
+                                hx-target="#student_data"> >Afficher la progression</button>
+                        </div>
+
+                        <!-- <div class="card-footer">
+                            <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
+                        </div> -->
+
+                        {% comment %} Displaying Students Here {% endcomment %}
+
+                        <div class="card-footer" id="student_data">
+                        </div> 
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+ 
+<script>
+    $(document).ready(function(){
+
+            var barChart = new Chart(barChartCanvas, {
+            type: 'bar', 
+            data: barChartData,
+            options: barChartOptions
+            })
+
+
+
+
+
+        var matiere_list = {{ matiere_list|safe }};
+            var lecons_attente_list = {{ lecons_attente_list }}
+            var lecons_encours_list = {{ lecons_encours_list }}
+            var lecons_termine_list = {{ lecons_termine_list }}
+
+            var areaChartData2 = {
+            // labels  : student_list,
+            labels  : matiere_list,
+            datasets: [
+                {
+                label               : 'En attente',
+                backgroundColor     : 'rgba(239, 43, 14, 1)',
+                borderColor         : 'rgba(239, 43, 14, 1)',
+                pointRadius          : false,
+                pointColor          : '#3b8bba',
+                pointStrokeColor    : 'rgba(60,141,188,1)',
+                pointHighlightFill  : '#fff',
+                pointHighlightStroke: 'rgba(60,141,188,1)',
+                // data                : attendance_present_list
+                data                : lecons_attente_list
+                },
+                {
+                label               : 'En cours',
+                backgroundColor     : 'rgba(245, 186, 84, 1)',
+                borderColor         : 'rgba(245, 186, 84, 1)',
+                pointRadius         : false,
+                pointColor          : 'rgba(210, 214, 222, 1)',
+                pointStrokeColor    : '#c1c7d1',
+                pointHighlightFill  : '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                // data                : attendance_absent_list
+                data                :  lecons_encours_list
+                },
+                {
+                label               : 'Termine',
+                backgroundColor     : 'rgba(0, 166, 90, 1)',
+                borderColor         : 'rgba(0, 166, 90, 1)',
+                pointRadius         : false,
+                pointColor          : 'rgba(210, 214, 222, 1)',
+                pointStrokeColor    : '#c1c7d1',
+                pointHighlightFill  : '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                // data                : attendance_absent_list
+                data                :  lecons_termine_list
+                },
+            ]
+            }
+
+
+            var barChartCanvas2 = $('#barChart2').get(0).getContext('2d')
+            var barChartData2 = jQuery.extend(true, {}, areaChartData2)
+            var temp2 = areaChartData2.datasets[0]
+            barChartData2.datasets[0] = temp2
+
+            var barChartOptions2 = {
+            responsive              : true,
+            maintainAspectRatio     : false,
+            datasetFill             : false
+            }
+
+            var barChart2 = new Chart(barChartCanvas2, {
+            type: 'bar', 
+            data: barChartData2,
+            options: barChartOptions2
+            })
+
+       
+    })
+</script>
+{% endblock custom_js %}

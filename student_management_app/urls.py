@@ -126,6 +126,10 @@ urlpatterns = [
          name="staff_feedback_message"),
     path('staff_feedback_message_reply/', HodViews.staff_feedback_message_reply,
          name="staff_feedback_message_reply"),
+         #----- feedback search-----
+     path('admin_search_feedback/', HodViews.admin_search_feedback,
+         name="admin_search_feedback"),
+         
     path('student_leave_view/', HodViews.student_leave_view,
          name="student_leave_view"),
     path('student_leave_approve/<leave_id>/',
@@ -153,6 +157,7 @@ urlpatterns = [
     path('manage_sessionAnnee/', HodViews.manage_sessionAnnee, name="manage_sessionAnnee"),
 #     path('add_sessionAnnee/', HodViews.add_sessionAnnee, name="add_sessionAnnee"),
 #     path('add_session_saveAnnee/', HodViews.add_session_saveAnnee, name="add_session_saveAnnee"),
+    path('admin_search_annee/', HodViews.admin_search_annee, name="admin_search_annee"),
     path('edit_sessionAnnee/<session_id>', HodViews.edit_sessionAnnee, name="edit_sessionAnnee"),
     path('edit_session_saveAnnee/', HodViews.edit_session_saveAnnee,
          name="edit_session_saveAnnee"),
@@ -163,6 +168,8 @@ urlpatterns = [
     path('creer_niveaux_save/', HodViews.creer_niveaux_save,
          name="creer_niveaux_save"),
     path('gerer_niveaux/', HodViews.gerer_niveaux, name="gerer_niveaux"),
+    path('admin_search_niveaux/', HodViews.admin_search_niveaux, name="admin_search_niveaux"),
+    
     path('editer_niveaux/<niveaux_id>/',
          HodViews.editer_niveaux, name="editer_niveaux"),
     path('editer_niveaux_save/', HodViews.editer_niveaux_save,
@@ -173,8 +180,10 @@ urlpatterns = [
     path('creer_matieres/', HodViews.creer_matieres, name="creer_matieres"),
     path('creer_matieres_save/', HodViews.creer_matieres_save,
          name="creer_matieres_save"),
-     path('modules_profs_name_admin/', HodViews.modules_profs_name_admin, name="modules_profs_name_admin"),
+    path('modules_profs_name_admin/', HodViews.modules_profs_name_admin, name="modules_profs_name_admin"),
+    path('modules_profs_edit_name_admin/', HodViews.modules_profs_edit_name_admin, name="modules_profs_edit_name_admin"),
     path('gerer_matieres/', HodViews.gerer_matieres, name="gerer_matieres"),
+    path('admin_search_matieres/', HodViews.admin_search_matieres, name="admin_search_matieres"),
     path('editer_matieres/<matieres_id>/',
          HodViews.editer_matieres, name="editer_matieres"),
     path('editer_matieres_save/', HodViews.editer_matieres_save,
@@ -186,6 +195,7 @@ urlpatterns = [
     path('creer_classes_save/', HodViews.creer_classes_save,
          name="creer_classes_save"),
     path('gerer_classes/', HodViews.gerer_classes, name="gerer_classes"),
+    path('admin_search_classes/', HodViews.admin_search_classes, name="admin_search_classes"),
     path('editer_classes/<classes_id>/',
          HodViews.editer_classes, name="editer_classes"),
     path('editer_classes_save/', HodViews.editer_classes_save,
@@ -196,13 +206,14 @@ urlpatterns = [
      path('creer_professeurs/', HodViews.creer_professeurs, name="creer_professeurs"),
      path('creer_professeurs_save/', HodViews.creer_professeurs_save, name="creer_professeurs_save"),
      path('gerer_professeurs/', HodViews.gerer_professeurs, name="gerer_professeurs"),
+     path('admin_search_professeurs/', HodViews.admin_search_professeurs, name="admin_search_professeurs"),
      path('editer_professeurs/<staff_id>/',
          HodViews.editer_professeurs, name="editer_professeurs"),
      path('editer_professeurs_save/', HodViews.editer_professeurs_save,
          name="editer_professeurs_save"),
-    path('supprimer_professeurs/<staff_id>/',
+     path('supprimer_professeurs/<staff_id>/',
          HodViews.supprimer_professeurs, name="supprimer_professeurs"),
-
+  
     # URLS for Staff
     path('staff_home/', StaffViews.staff_home, name="staff_home"),
     path('staff_take_attendance/', StaffViews.staff_take_attendance,
@@ -223,6 +234,9 @@ urlpatterns = [
     path('staff_apply_leave_save/', StaffViews.staff_apply_leave_save,
          name="staff_apply_leave_save"),
     path('staff_feedback/', StaffViews.staff_feedback, name="staff_feedback"),
+    #------ feedback search -------
+    path('staff_search_feedback/', StaffViews.staff_search_feedback, name="staff_search_feedback"),
+
     path('staff_feedback_save/', StaffViews.staff_feedback_save,
          name="staff_feedback_save"),
     path('staff_profile/', StaffViews.staff_profile, name="staff_profile"),
@@ -275,19 +289,32 @@ urlpatterns = [
      path('staff_suivi_progression/<pk>', StaffViews.staff_suivi_progression, name="staff_suivi_progression"),
      path('staff_suivi_progression/<pk>/list', StaffViews.staff_progression_list, name='staff_progression_list'),
      path("staff_suivi_progression/<pk>/editer_status/",StaffViews.editer_status,name="editer_status"),
-     
+     path("staff_search_progressions/",StaffViews.staff_search_progressions,name="staff_search_progressions"),
+
      #************ for evaluation *********************
      #path("staff_apply_leave_save1/<pk>/",StaffViews.staff_apply_leave_save1,name="staff_apply_leave_save1"),
      #path("staff_suivi_progression/<pk>/staff_creer_MAJ_progession/",StaffViews.staff_creer_MAJ_progession,name="staff_creer_MAJ_progession"),
 
-
+ 
      #************ for tracking by the admin **********
      path("admin_view_progressions/",HodViews.admin_view_progressions,name="admin_view_progressions"),
      path('modules_classe_name_admin/',HodViews.modules_classe_name_admin, name='modules_classe_name_admin'),
      path('modules_matiere_name_admin/',HodViews.modules_matiere_name_admin, name='modules_matiere_name_admin'),
      path('admin_get_progression_matiere/',HodViews.admin_get_progression_matiere, name='admin_get_progression_matiere'),
 
-      
-      path('modules/', StaffViews.modules_classe_name, name='modules'),
+     #********** test rechercher ****************
+     path('rechercher/', HodViews.rechercher, name='rechercher'),
+     path('search/', HodViews.search, name='search'),
+     #           fin test rechercher 
+       
+     path('modules/', StaffViews.modules_classe_name, name='modules'),
+
+     #****************** Home page admin ***********
+     #- Evaluation par matiere
+     path('admin_evaluation_par_matiere/', HodViews.admin_evaluation_par_matiere, name='admin_evaluation_par_matiere'),
+     path('modules_matiere_name_admin_home/', HodViews.modules_matiere_name_admin_home, name='modules_matiere_name_admin_home'),
+     path('modules_class_and_prof_name/', HodViews.modules_class_and_prof_name, name='modules_class_and_prof_name'),
+     path('admin_get_eval_par_matiere_js/', HodViews.admin_get_eval_par_matiere_js, name='admin_get_eval_par_matiere_js'),
+
 ]
 

@@ -43,8 +43,17 @@ Gerer les classes
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Details des classes</h3>
-
                         <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <div style="text-align: center;"> <i class="fa fa-search" ></i></div>
+                                <input type="text" name="q" class="form-control float-right" placeholder="classe"
+                                hx-get="/admin_search_classes/"
+                                hx-trigger = "keyup changed delay:5ms"
+                                hx-target="#admin_results_classes"> 
+                            </div>
+                        </div>
+
+                        <!-- <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right"
                                     placeholder="Search">
@@ -53,7 +62,7 @@ Gerer les classes
                                     <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
@@ -69,7 +78,7 @@ Gerer les classes
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="admin_results_classes">
                                 {% for classe in classes %}
                                 <tr>
                                     <td>{{ classe.id }}</td>
@@ -99,5 +108,10 @@ Gerer les classes
 
     </div><!-- /.container-fluid -->
 </section>
-
+<!-- search security-->
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+  </script> 
 {% endblock main_content %}

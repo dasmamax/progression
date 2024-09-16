@@ -10,7 +10,7 @@ Gerer les matieres
 
 <section class="content">
     <div class="container-fluid">
-
+ 
         <a class="btn btn-primary" href="{% url 'creer_matieres' %}" role="button">+ Creer une matiere</a> <br />&nbsp;
 
         {% if messages %}
@@ -43,8 +43,16 @@ Gerer les matieres
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Details des matieres</h3>
-
                         <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <div style="text-align: center;"> <i class="fa fa-search" ></i></div>
+                                <input type="text" name="q" class="form-control float-right" placeholder="rechercher"
+                                hx-get="/admin_search_matieres/" 
+                                hx-trigger = "keyup changed delay:5ms"
+                                hx-target="#admin_results_matieres"> 
+                            </div>
+                        </div>
+                        <!-- <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right"
                                     placeholder="Search">
@@ -53,7 +61,7 @@ Gerer les matieres
                                     <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
@@ -64,10 +72,11 @@ Gerer les matieres
                                     <th>Nom de la matiere</th>
                                     <th>Classe</th>
                                     <th>Professeur</th>  
+                                    <th>Annee scol.</th> 
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="admin_results_matieres">
                                 {% for matiere in matieres %}
                                 <tr>
                                     <td>{{ matiere.id }}</td>
@@ -76,7 +85,7 @@ Gerer les matieres
                                     <td>{{ niveau.updated_at }}</td> -->
                                     <td>{{ matiere.classes_id.nom_classes }}</td>
                                     <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td>
-
+                                    <td>{{ matiere.professeurs_id.annee_scolaire_id.session_start_year }} - {{ matiere.professeurs_id.annee_scolaire_id.session_end_year }}</td>
                                     <td>
                                         <a href="{% url 'editer_matieres' matiere.id %}"
                                             class="btn btn-success">Editer</a>
@@ -98,5 +107,10 @@ Gerer les matieres
 
     </div><!-- /.container-fluid -->
 </section>
-
+<!-- search security-->
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+  </script> 
 {% endblock main_content %}

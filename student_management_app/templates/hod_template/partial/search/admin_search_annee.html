@@ -1,0 +1,13 @@
+{% for result in results %}
+                                <tr>
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.session_start_year }}</td>
+                                <td>{{ result.session_end_year }}</td>
+                                <td>
+                                     
+                                    <a href="{% url 'gerer_semaines' result.id %}" class="btn btn-success">Semaines</a>
+                                    <a href="{% url 'edit_sessionAnnee' result.id %}" class="btn btn-success">Editer</a> 
+                                    <a href="{% url 'delete_sessionAnnee' result.id %}" class="btn btn-danger">Supprimer</a>
+                                </td>
+                                </tr>
+ {% endfor %}  

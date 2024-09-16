@@ -56,13 +56,13 @@ Editer les matieres |: {{ niveau.id }}
                             <div class="form-group">
                                 <label>Nom de la matiere </label>
                                 <input type="text" class="form-control" name="matiere"
-                                    value="{{ matiere.nom_matieres }}">
+                                    value="{{ matiere.nom_matieres }}" required>
                                 <input type="hidden" name="matieres_id" value="{{ matiere.id }}" />
                             </div>
 
                             <div class="form-group">
                                 <label>Classe </label>
-                                <select class="form-control" name="classe">
+                                <select class="form-control" name="classe" required>
                                     {% for classe in classess %}
                                     <option value="{{ classe.id }}" {% if classe.id == matiere.classes_id.id %} selected
                                         {% endif %}>{{ classe.nom_classes }}</option>
@@ -70,7 +70,23 @@ Editer les matieres |: {{ niveau.id }}
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <label>Annee scolaire </label>
+                                <select class="form-control" name="anneescolaire" id="anneescolaire" 
+                                     hx-get="{% url 'modules_profs_edit_name_admin' %}" 
+                                     hx-trigger="change" 
+                                     hx-target="#modules_profs_name_admin" required>
+                                    <!-- <option value="">--Annee scolaire--</option> -->
+                                        {% for anneescolaire in anneescolaires %}
+                                            <option value="{{ anneescolaire.id }}" {% if anneescolaire.id == matiere.professeurs_id.annee_scolaire_id_id %} selected
+                                                {% endif %}>{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+                                        {% endfor %}
+                                </select>
+ 
+                                <div id="modules_profs_name_admin">
+                                    {% include 'hod_template/partial/modules_profs_edit_name_admin.html' %} 
+                                </div> 
+
+                            <!-- <div class="form-group">
                                 <label>Professeur </label>
                                 <select class="form-control" name="professeur">
                                     {% for staff in staffs %}
@@ -80,8 +96,8 @@ Editer les matieres |: {{ niveau.id }}
                                 </select>
 
                                 <input type="hidden" name="matiere_id" value="{{ matiere.id }}" />
-                            </div>
-
+                            </div> -->
+ 
 
                         </div>
                         <!-- /.card-body -->

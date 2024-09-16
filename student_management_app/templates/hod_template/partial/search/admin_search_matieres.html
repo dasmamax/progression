@@ -1,0 +1,17 @@
+{% for result in results %}
+                                <tr>
+                                    <td>{{ result.id }}</td>
+                                    <td>{{ result.nom_matieres }}</td>
+                                    <!--<td>{{ niveau.created_at }}</td>
+                                    <td>{{ niveau.updated_at }}</td> -->
+                                    <td>{{ result.classes_id.nom_classes }}</td>
+                                    <td>{{ result.professeurs_id.admin.first_name }} {{ result.professeurs_id.admin.last_name }}</td>
+                                    <td>{{ result.professeurs_id.annee_scolaire_id.session_start_year }} - {{result.professeurs_id.annee_scolaire_id.session_end_year }}</td>
+                                    <td>
+                                        <a href="{% url 'editer_matieres' result.id %}"
+                                            class="btn btn-success">Editer</a>
+                                        <a href="{% url 'supprimer_matieres' result.id %}"
+                                            class="btn btn-danger">Supprimer</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}

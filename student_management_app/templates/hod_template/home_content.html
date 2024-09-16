@@ -12,9 +12,9 @@
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3>{{ all_student_count }}</h3>
+                  <h3>{{ all_anneescolaires_count }}</h3>
 
-                  <p>Total Semaines</p>
+                  <p>Annees scolaires</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -27,9 +27,9 @@
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>{{ staff_count }}</h3>
-
-                  <p>Total Enseignants</p>
+                  <h3>{{ final_staff_nom_prenom_count }}</h3>
+ 
+                  <p> Enseignants</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -43,7 +43,7 @@
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>{{ course_count }}</h3>
+                  <h3>{{ all_classes_count }}</h3>
 
                   <p>Total Classes</p>
                 </div>
@@ -58,7 +58,7 @@
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>{{ subject_count }}</h3>
+                  <h3>{{ all_matieres_count }}</h3>
 
                   <p>Total Matieres</p>
                 </div>
@@ -69,7 +69,70 @@
               </div>
             </div>
             <!-- ./col -->
-            
+                    <!-------------- evaluation ----------------------->
+
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3>{{ all_classes_count }}</h3>
+
+                  <p>Evaluation par annee</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{% url 'manage_course' %}" class="small-box-footer">Plus info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{ all_classes_count }}</h3>
+
+                  <p>Evaluation par enseignant</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{% url 'manage_course' %}" class="small-box-footer">Plus info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{ all_classes_count }}</h3>
+
+                  <p>Evaluation par classe</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{% url 'manage_course' %}" class="small-box-footer">Plus info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>{{ all_classes_count }}</h3>
+
+                  <p>Evaluation par matiere</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{% url 'admin_evaluation_par_matiere' %}" class="small-box-footer">Plus info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+              <!--  fin  Evaluation            -->
+
+              
           </div>
           <!-- /.row -->
           <div class="row">
@@ -77,7 +140,7 @@
               <!-- PIE CHART -->
               <div class="card card-danger">
                 <div class="card-header">
-                  <h3 class="card-title">Total enseignant par niveau</h3>
+                  <h3 class="card-title">Total enseignant par annee</h3>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -224,17 +287,75 @@
   {% block custom_js %}
 
   <script>
-    // $(document).ready(function(){
-    //   var donutChartCanvas = $('#pieChart').get(0).getContext('2d')
-    //   var pieData        = {
-    //     labels: [
-    //         'Students', 
-    //         'Staffs',
-    //     ],
+    //  $(document).ready(function(){
+    //    var donutChartCanvas = $('#pieChart').get(0).getContext('2d')
+    //    var pieData        = {
+    //      labels: [
+    //          'Enseignants', 
+    //          'Annees scolaires',
+    //      ],
+    //      datasets: [
+    //        {
+    //          data: [{{ all_staffs_count }}, {{ all_anneescolaires_count }}],
+    //          backgroundColor : ['#f56954', '#00a65a'],
+    //        }
+    //      ]
+    //    }
+
+    //    //-------------
+    //    //- PIE CHART -
+    //    //-------------
+    //    // Get context with jQuery - using jQuery's .get() method.
+    //    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+    //    var pieData        = pieData;
+    //    var pieOptions     = {
+    //      maintainAspectRatio : false,
+    //      responsive : true,
+    //    }
+    //    //Create pie or douhnut chart
+    //    // You can switch between pie and douhnut using the method below.
+    //    var pieChart = new Chart(pieChartCanvas, {
+    //      type: 'pie',
+    //      data: pieData,
+    //      options: pieOptions      
+    //    })
+
+
+    //   // Get context with jQuery - using jQuery's .get() method.
+    //   var course_name_list = {{ course_name_list|safe }}
+    //   var subject_count_list = {{ subject_count_list }}
+    //   var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    //   var donutData        = {
+    //     labels: course_name_list,
     //     datasets: [
     //       {
-    //         data: [{{ all_student_count }}, {{ staff_count }}],
-    //         backgroundColor : ['#f56954', '#00a65a'],
+    //         data: subject_count_list,
+    //         backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+    //       }
+    //     ]
+    //   }
+    //   var donutOptions     = {
+    //     maintainAspectRatio : false,
+    //     responsive : true,
+    //   }
+    //   //Create pie or douhnut chart
+    //   // You can switch between pie and douhnut using the method below.
+    //   var donutChart = new Chart(donutChartCanvas, {
+    //     type: 'doughnut',
+    //     data: donutData,
+    //     options: donutOptions      
+    //   })
+
+
+    //   // Total Students in Each Course
+    //   //var donutChartCanvas = $('#pieChart2').get(0).getContext('2d')
+    //   var student_count_list_in_course = {{ student_count_list_in_course }}
+    //   var pieData2 = {
+    //     labels: course_name_list,
+    //     datasets: [
+    //       {
+    //         data: student_count_list_in_course,
+    //         backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
     //       }
     //     ]
     //   }
@@ -243,106 +364,48 @@
     //   //- PIE CHART -
     //   //-------------
     //   // Get context with jQuery - using jQuery's .get() method.
-    //   var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-    //   var pieData        = pieData;
-    //   var pieOptions     = {
+    //   var pieChartCanvas2 = $('#pieChart2').get(0).getContext('2d')
+    //   var pieData2        = pieData2;
+    //   var pieOptions2     = {
     //     maintainAspectRatio : false,
     //     responsive : true,
     //   }
-    //   //Create pie or douhnut chart
-    //   // You can switch between pie and douhnut using the method below.
-    //   var pieChart = new Chart(pieChartCanvas, {
+
+    //   var pieChart2 = new Chart(pieChartCanvas2, {
     //     type: 'pie',
-    //     data: pieData,
-    //     options: pieOptions      
+    //     data: pieData2,
+    //     options: pieOptions2      
     //   })
 
+    //   // Total Students in Each Subject
+    //   var student_count_list_in_subject = {{ student_count_list_in_subject }}
+    //   var subject_list = {{ subject_list|safe }}
+    //   var pieData3 = {
+    //     labels: subject_list,
+    //     datasets: [
+    //       {
+    //         data: student_count_list_in_subject,
+    //         backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+    //       }
+    //     ]
+    //   }
 
-      // Get context with jQuery - using jQuery's .get() method.
-      var course_name_list = {{ course_name_list|safe }}
-      var subject_count_list = {{ subject_count_list }}
-      var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-      var donutData        = {
-        labels: course_name_list,
-        datasets: [
-          {
-            data: subject_count_list,
-            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-          }
-        ]
-      }
-      var donutOptions     = {
-        maintainAspectRatio : false,
-        responsive : true,
-      }
-      //Create pie or douhnut chart
-      // You can switch between pie and douhnut using the method below.
-      var donutChart = new Chart(donutChartCanvas, {
-        type: 'doughnut',
-        data: donutData,
-        options: donutOptions      
-      })
+    //   //-------------
+    //   //- PIE CHART -
+    //   //-------------
+    //   // Get context with jQuery - using jQuery's .get() method.
+    //   var pieChartCanvas3 = $('#pieChart3').get(0).getContext('2d')
+    //   var pieData3        = pieData3;
+    //   var pieOptions3     = {
+    //     maintainAspectRatio : false,
+    //     responsive : true,
+    //   }
 
-
-      // Total Students in Each Course
-      //var donutChartCanvas = $('#pieChart2').get(0).getContext('2d')
-      var student_count_list_in_course = {{ student_count_list_in_course }}
-      var pieData2 = {
-        labels: course_name_list,
-        datasets: [
-          {
-            data: student_count_list_in_course,
-            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-          }
-        ]
-      }
-
-      //-------------
-      //- PIE CHART -
-      //-------------
-      // Get context with jQuery - using jQuery's .get() method.
-      var pieChartCanvas2 = $('#pieChart2').get(0).getContext('2d')
-      var pieData2        = pieData2;
-      var pieOptions2     = {
-        maintainAspectRatio : false,
-        responsive : true,
-      }
-
-      var pieChart2 = new Chart(pieChartCanvas2, {
-        type: 'pie',
-        data: pieData2,
-        options: pieOptions2      
-      })
-
-      // Total Students in Each Subject
-      var student_count_list_in_subject = {{ student_count_list_in_subject }}
-      var subject_list = {{ subject_list|safe }}
-      var pieData3 = {
-        labels: subject_list,
-        datasets: [
-          {
-            data: student_count_list_in_subject,
-            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-          }
-        ]
-      }
-
-      //-------------
-      //- PIE CHART -
-      //-------------
-      // Get context with jQuery - using jQuery's .get() method.
-      var pieChartCanvas3 = $('#pieChart3').get(0).getContext('2d')
-      var pieData3        = pieData3;
-      var pieOptions3     = {
-        maintainAspectRatio : false,
-        responsive : true,
-      }
-
-      var pieChart3 = new Chart(pieChartCanvas3, {
-        type: 'pie',
-        data: pieData3,
-        options: pieOptions3      
-      })
+      // var pieChart3 = new Chart(pieChartCanvas3, {
+      //   type: 'pie',
+      //   data: pieData3,
+      //   options: pieOptions3      
+      // })
 
       //-------------
       //- BAR CHART - Staff Attendance vs Leave

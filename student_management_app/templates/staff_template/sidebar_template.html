@@ -98,12 +98,11 @@
         </li>
 
         <li class="nav-item">
-          {% url 'staff_take_attendance' as staff_take_attendance %}
-          <a href=""
-            class="nav-link {% if request.path == staff_take_attendance %} active {% endif %}">
-            <i class="nav-icon fas fa-calendar-plus"></i>
+          {% url 'staff_feedback' as staff_feedback %}
+          <a href="{{ staff_feedback }}" class="nav-link {% if request.path == staff_feedback %} active {% endif %}">
+            <i class="nav-icon fas fa-comments"></i>
             <p>
-              Notifier
+              Ecrire
               {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
             </p>
           </a>

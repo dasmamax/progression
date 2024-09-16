@@ -3,10 +3,10 @@
     <select class="form-control" name="classe" id="classe" 
     hx-get="{% url 'modules_matiere_name_admin' %}" 
     hx-trigger="change" 
-    hx-target="#modules_matiere_name_admin" required>required>
+    hx-target="#modules_matiere_name_admin" required>
         <option value="">--Classe--</option>
-        {% for classe in classess %}
-            <option value="{{ classe.id }}">{{ classe.nom_classes }}</option>
+        {% for matiere in matieres %}
+            <option value="{{ classe.id }}">{{ matiere.nom_matieres	 }}</option>
         {% endfor %}
     </select>
-</div>
+</div>  

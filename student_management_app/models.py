@@ -69,7 +69,7 @@ class Semaines(models.Model):
     def __str__(self):
         return self.name
 
-
+ 
 # Professeurs /staffs ##############################
 
 class Staffs(models.Model):
@@ -111,6 +111,8 @@ class Matieres(models.Model):
     professeurs_id = models.ForeignKey(
         Staffs, on_delete=models.CASCADE, default=1)
     objects = models.Manager()
+    class Meta:
+        unique_together = ["nom_matieres", "classes_id", "professeurs_id"]
 
 # Chapitres  ###############
 
