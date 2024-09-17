@@ -6,6 +6,7 @@ from django.dispatch import receiver
 # test *********
 
 class Author(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
  
     def __str__(self):
@@ -13,6 +14,7 @@ class Author(models.Model):
  
  
 class Book(models.Model):
+    id = models.AutoField(primary_key=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     number_of_pages = models.PositiveIntegerField(default=1)
@@ -34,6 +36,7 @@ class SessionYearModel(models.Model):
 
 
 class CustomUser(AbstractUser):
+    id = models.AutoField(primary_key=True)
     user_type_data = ((1, "HOD"), (2, "Staff"),
                       (3, "Student"))
     user_type = models.CharField(

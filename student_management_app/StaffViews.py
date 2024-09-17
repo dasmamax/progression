@@ -33,7 +33,7 @@ def gerer_progressions(request):
         "staff": staff_obj
     }
     return render(request, 'staff_template/staff_gerer_progressions_template.html', context)
-
+ 
 
 def editer_progessions(request, matieres_id):
    # matiere = Matieres.objects.get(id=matieres_id)
