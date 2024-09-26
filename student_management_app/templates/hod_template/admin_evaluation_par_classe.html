@@ -9,92 +9,90 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
+    <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
                     <!-- general form elements -->
-                    <div class="card card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Suivre les progressions</h3>
                     </div>
                     <!-- /.card-header -->
-
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                    
+                    {% comment %} Display Messages {% endcomment %}
+                    {% if messages %}
+                    <div class="form-group">
+                        <div class="col-12">
+                            {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
-                                {% endif %}
-                             
+                            {% endif %}
+                            {% endfor %}
+                        </div><!--/col-12-->
+                    </div><!--/form-group-->
+                    {% endif %}
+                        
 
-                        <div class="card-body">
+                    <div class="card-body">
 
-                            <div class="form-group">
-                                <label>Annee scolaire </label>
-                                <select class="form-control" name="anneescolaire" id="anneescolaire" 
-                                 hx-get="{% url 'modules_matiere_name_admin_home' %}" 
-                                 hx-trigger="change" 
-                                 hx-target="#modules_matiere_name_admin" required>
-                                    <option value="">--Annee scolaire--</option>
-                                    {% for anneescolaire in anneescolaires %}
-                                        <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div> 
-                           
-                            <div id="modules_matiere_name_admin">
-                               {% include 'hod_template/partial/modules_matiere_name_admin.html' %} 
-                            </div>
-
-                            <div id="modules_class_and_prof_name">
-                                {% include 'hod_template/partial/modules_class_and_prof_name.html' %} 
-                            </div>
-
-                        </div>
-                        <!-- /.card-body --> 
- 
-                        <div class="card-footer" id="fetch_student_block">
-
-                            <button type="button" class="btn btn-primary" id="fetch_progression"
-                                >Afficher la progression</button>
-                        </div>
- 
-                        <!-- <div class="card-footer">
-                            <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
-                        </div> -->
-
-                        {% comment %} Displaying Students Here {% endcomment %}
-
-                        <div class="card-footer" id="student_data">
+                        <div class="form-group">
+                            <label>Annee scolaire </label>
+                            <select class="form-control" name="anneescolaire" id="anneescolaire" 
+                                hx-get="{% url 'modules_classe_name_admin_home' %}" 
+                                hx-trigger="change" 
+                                hx-target="#modules_classe_name_admin_home" required>
+                                <option value="">--Annee scolaire--</option>
+                                {% for anneescolaire in anneescolaires %}
+                                    <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+                                {% endfor %}
+                            </select>
                         </div> 
+                    
+                        <div id="modules_classe_name_admin_home">
+                            {% include 'hod_template/partial/modules_classe_name_admin_home.html' %} 
+                        </div>
 
+                        <div id="modules_prof_and_mat_name">
+                            {% include 'hod_template/partial/modules_prof_and_mat_name.html' %} 
+                        </div>
+                    
                     </div>
-                    <!-- /.card -->
+                    <!-- /.card-body --> 
 
-                </div>
-            </div>
+                    <div class="card-footer" id="fetch_student_block">
+
+                        <button type="button" class="btn btn-primary" id="fetch_progression"
+                            >Afficher la progression</button>
+                    </div>
+
+                    <!-- <div class="card-footer">
+                        <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
+                    </div> -->
+
+                    {% comment %} Displaying Students Here {% endcomment %}
+
+                    <div class="card-footer" id="student_data">
+                    </div> 
+  
+                </div><!-- /.card primary-->
+            </div><!-- /col-->
+        </div><!-- /row-->
  
-        </div><!-- /.container-fluid -->
-      </section>
+    </div><!-- /.container-fluid -->
+</section>
 
   {% endblock main_content %}
  
@@ -104,11 +102,11 @@
         $(document).ready(function(){
             // recuperation des donnees
             $("#fetch_progression").click(function(){
-                var matiere=$("#matiere").val()
+                var matiere=$("#classe").val()
                 $.ajax({
-                    url:'{% url 'admin_get_eval_par_matiere_js' %}',
+                    url:'{% url 'admin_get_eval_par_classe_js' %}',
                     type:'POST',
-                    data:{matiere:matiere},
+                    data:{classe:classe}, 
                 })
     
                 // construction du tableau d'affichache des resultats

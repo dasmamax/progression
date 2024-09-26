@@ -1,0 +1,11 @@
+<div class="form-group">
+    <label>Classe </label>
+    <select class="form-control" name="classe" id="classe" 
+    required>
+        <option value="">--Classe--</option>
+        {% for matiere in matieres %}
+            <option value="{{ matiere.classes_id_id }}">{{ matiere.classes_id.nom_classes }} {{ anneescolaire }}</option>
+        {% endfor %}
+    </select>
+    <!--<input type="hidden" name="annee_scolaire_id" id="annee_scolaire_id" value="{{ anneescolaire }}" />-->
+</div>      

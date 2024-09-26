@@ -9,8 +9,9 @@
 <div>-</div> 
  -->
 
+ <!--hx-on="htmx:afterRequest: this.remove()"-->
  <div class ="row"
- hx-on="htmx:afterRequest: this.remove()"
+ hx-on::afterRequest=" this.remove()"
  hx-target="this" 
  hx-swap="outerHTML">
       
@@ -23,14 +24,17 @@
     <div class = "col-4 col-md-3 text-center">
         {{ semaine.fin_semaines }}
     </div>
+
+      
     <div class= "col-3 align-self-end">
         <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_semaines' pk=semaine.pk %}" >Editer</button>
         <!-- <button class="btn btn-primary btn-sm" hx-get="/creer_semaines/16/editer_semaines/" >Editer</button> -->
         <button class="btn btn-danger btn-sm" 
                 hx-post="{% url 'supprimer_semaines' semaine.id %}"
-                hx-on="click:this.closest('row').remove()">Supprimer</button>
+                hx-on:click="this.closest('row').remove()">Supprimer</button>
+                <!-- htmx.org@2.0.2 uses hx-on:click and htmx.org@1.9.2 uses hx-on=click -->
     </div>
-    <hr>
+    <hr> 
 </div>
 
 <!-- <table class="table">

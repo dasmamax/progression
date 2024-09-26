@@ -1,0 +1,23 @@
+<form 
+  hx-post="{% url 'modules_prof_and_mat_name_test2'  %}" 
+  hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' 
+  hx-target="#modules_prof_and_mat_name"
+  hx-trigger="click from:#fetch_classe_info" 
+  hx-on::afterRequest="this.remove()">
+<div class="form-group">
+    <label>Annee scolaire </label>
+    <select class="form-control" name="anneescolaire" id="anneescolaire" 
+        hx-get="{% url 'modules_classe_name_admin_home_test2' %}" 
+        hx-trigger="change" 
+        hx-target="#modules_classe_name_admin_home" required>
+        <option value="">--Annee scolaire--</option>
+        {% for anneescolaire in anneescolaires %}
+            <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+        {% endfor %}
+    </select>
+</div> 
+
+<div id="modules_classe_name_admin_home">
+    {% include 'hod_template/partial/modules_classe_name_admin_home_test2.html' %} 
+</div>
+</form>

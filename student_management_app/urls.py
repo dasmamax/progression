@@ -11,13 +11,6 @@ from .import HodViews, StaffViews, StudentViews, StudentViewss
 from django.views.generic import TemplateView
 
 from student_management_app.StaffViews import (
-    create_book,
-    create_book_form,
-    detail_book,
-    update_book,
-    delete_book,
-    home_book,
-
     creer_progressions,
     detail_chapitre,
     create_chapitre_form,
@@ -54,17 +47,6 @@ urlpatterns = [
      #path('create_lecon_form/', create_lecon_form, name='create_lecon_form'),
 
      
-
-    #path('admin/', admin.site.urls),
-   #path('', TemplateView.as_view(template_name="home.html"), name='create-book'),
-    path('home_book/', home_book, name='home_book'),
-    path('create_book/', create_book, name='create_book'),
-    path('htmx/book/<pk>/', detail_book, name="detail-book"),
-    path('htmx/book/<pk>/update/', update_book, name="update-book"),
-    path('htmx/book/<pk>/delete/', delete_book, name="delete-book"),
-    path('htmx/create_book_form/', create_book_form, name='create_book_form'),
-
-
 
     # fin test ****************************
 
@@ -316,5 +298,30 @@ urlpatterns = [
      path('modules_class_and_prof_name/', HodViews.modules_class_and_prof_name, name='modules_class_and_prof_name'),
      path('admin_get_eval_par_matiere_js/', HodViews.admin_get_eval_par_matiere_js, name='admin_get_eval_par_matiere_js'),
 
+     #- Evaluation par classe
+     path('admin_evaluation_par_classe/', HodViews.admin_evaluation_par_classe, name='admin_evaluation_par_classe'),
+     path('modules_classe_name_admin_home/', HodViews.modules_classe_name_admin_home, name='modules_classe_name_admin_home'),
+     path('modules_prof_and_mat_name/', HodViews.modules_prof_and_mat_name, name='modules_prof_and_mat_name'),
+     path('admin_get_eval_par_classe_js/', HodViews.admin_get_eval_par_classe_js, name='admin_get_eval_par_classe_js'),
+
+ 
+    #               TEST
+     path('modules_prof_and_mat_name_test/', HodViews.modules_prof_and_mat_name_test, name='modules_prof_and_mat_name_test'),
+     path('admin_evaluation_par_classe_test/',HodViews.admin_evaluation_par_classe_test, name='admin_evaluation_par_classe_test'),
+      path('modules_classe_name_admin_home_test/',HodViews.modules_classe_name_admin_home_test, name='modules_classe_name_admin_home_test'),
+
+     path('modules_prof_and_mat_name_test2/', HodViews.modules_prof_and_mat_name_test2, name='modules_prof_and_mat_name_test2'),
+     path('admin_evaluation_par_classe_test2/',HodViews.admin_evaluation_par_classe_test2, name='admin_evaluation_par_classe_test2'),
+     path('modules_classe_name_admin_home_test2/',HodViews.modules_classe_name_admin_home_test2, name='modules_classe_name_admin_home_test2'),
+     path('admin_get_eval_par_classe_js_test2/', HodViews.admin_get_eval_par_classe_js_test2, name='admin_get_eval_par_classe_js_test2'),
+    
+     #- Evaluation par enseignant 
+     path('admin_evaluation_par_enseignant/', HodViews.admin_evaluation_par_enseignant, name='admin_evaluation_par_enseignant'),
+     path('modules_enseignant_name_admin_home/', HodViews.modules_enseignant_name_admin_home, name='modules_enseignant_name_admin_home'),
+     path('modules_class_and_mat_name/', HodViews.modules_class_and_mat_name, name='modules_class_and_mat_name'),
+     path('admin_get_eval_par_enseignant_js/', HodViews.admin_get_eval_par_enseignant_js, name='admin_get_eval_par_enseignant_js'),
+
 ]
+
+   
 

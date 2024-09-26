@@ -7,7 +7,7 @@ from student_management_app.models import Courses, SessionYearModel
 from django import forms
 from django.forms.models import inlineformset_factory
 
-from .models import Author, Book
+
 
 #*********** Syllabus ***************
 from .models import Chapitres, Matieres, Lecons, Semaines, SemainesLecons, SemainesLeconsReelle
@@ -86,25 +86,6 @@ class StatutForm(forms.ModelForm):
 
 # ********************* Fin syllabus 
 
-
-class BookForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = (
-            'title',
-            'number_of_pages'
-        )
-
-
-BookFormSet = inlineformset_factory(
-    Author,
-    Book,
-    form=BookForm,
-    min_num=2,  # minimum number of forms that must be filled in
-    extra=1,  # number of empty forms to display
-    can_delete=False  # show a checkbox in each form to delete the row
-)
-#fin test ***********
 
 class DateInput(forms.DateInput):
     input_type = "date"

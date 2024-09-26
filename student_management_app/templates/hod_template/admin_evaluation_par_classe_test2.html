@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Suivre les progressions
+    Suivre les progressions par classe
 {% endblock page_title %}
 
 {% block main_content %}
@@ -9,92 +9,84 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
+    <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
                     <!-- general form elements -->
-                    <div class="card card-primary">
+                <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Suivre les progressions</h3>
+                        <h3 class="card-title">Suivre les progressions par classe</h3>
                     </div>
                     <!-- /.card-header -->
-
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                    
+                    {% comment %} Display Messages {% endcomment %}
+                    {% if messages %}
+                    <div class="form-group">
+                        <div class="col-12">
+                            {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
-                                {% endif %}
-                             
+                            {% endif %}
+                            {% endfor %}
+                        </div><!--/col-12-->
+                    </div><!--/form-group-->
+                    {% endif %}
+                         
 
-                        <div class="card-body">
-
-                            <div class="form-group">
-                                <label>Annee scolaire </label>
-                                <select class="form-control" name="anneescolaire" id="anneescolaire" 
-                                 hx-get="{% url 'modules_matiere_name_admin_home' %}" 
-                                 hx-trigger="change" 
-                                 hx-target="#modules_matiere_name_admin" required>
-                                    <option value="">--Annee scolaire--</option>
-                                    {% for anneescolaire in anneescolaires %}
-                                        <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div> 
-                           
-                            <div id="modules_matiere_name_admin">
-                               {% include 'hod_template/partial/modules_matiere_name_admin.html' %} 
-                            </div>
-
-                            <div id="modules_class_and_prof_name">
-                                {% include 'hod_template/partial/modules_class_and_prof_name.html' %} 
-                            </div>
-
-                        </div>
-                        <!-- /.card-body --> 
+                    <div class="card-body">
  
+
+                        <div>
+                            {% include 'hod_template/partial/module_classe_and_annee_form_test2.html' %}
+                        </div>
+
                         <div class="card-footer" id="fetch_student_block">
-
-                            <button type="button" class="btn btn-primary" id="fetch_progression"
-                                >Afficher la progression</button>
+                            <button type="button" class="btn btn-primary" id="fetch_classe_info"
+                                >Classe info</button>
                         </div>
+
+                        <div id="modules_prof_and_mat_name">
+                            {% include 'hod_template/partial/modules_prof_and_mat_name_test2.html' %} 
+                        </div>
+                    
+                        <div class="card-footer" id="fetch_student">
+                            <button type="button" class="btn btn-primary" id="fetch_progression1"
+                                >Afficher progression</button>
+                        </div>
+
+                    </div> 
+                    <!-- /.card-body --> 
+
+                    
+
+                    <!-- <div class="card-footer">
+                        <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
+                    </div> -->
+
+                    {% comment %} Displaying Students Here {% endcomment %}
+
+                    <div class="card-footer" id="student_data">
+                    </div> 
+  
+                </div><!-- /.card primary-->
+            </div><!-- /col-->
+        </div><!-- /row-->
  
-                        <!-- <div class="card-footer">
-                            <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
-                        </div> -->
-
-                        {% comment %} Displaying Students Here {% endcomment %}
-
-                        <div class="card-footer" id="student_data">
-                        </div> 
-
-                    </div>
-                    <!-- /.card -->
-
-                </div>
-            </div>
- 
-        </div><!-- /.container-fluid -->
-      </section>
+    </div><!-- /.container-fluid -->
+</section>
 
   {% endblock main_content %}
  
@@ -103,14 +95,15 @@
     <script>
         $(document).ready(function(){
             // recuperation des donnees
-            $("#fetch_progression").click(function(){
-                var matiere=$("#matiere").val()
+            $("#fetch_progression1").click(function(){
+                var classe=$("#classe").val()
+                var anneescolaire=$("#anneescolaire").val()
                 $.ajax({
-                    url:'{% url 'admin_get_eval_par_matiere_js' %}',
+                    url:'{% url 'admin_get_eval_par_classe_js_test2' %}',
                     type:'POST',
-                    data:{matiere:matiere},
+                    data:{classe:classe, anneescolaire:anneescolaire}, 
                 })
-    
+     
                 // construction du tableau d'affichache des resultats
                 .done(function(response){
                                 var json_data=JSON.parse(response);
@@ -118,50 +111,53 @@
                                 //Displaying Attendance Date Input and Students Attendance
                                 var div_data=""
                                 div_data+="<div class='container-fluid'>"+
-                                    "<div class='row'>"+
-                                        "<div class='col-lg-6'>"+
-                                            "<!-- PIE CHART -->"+
-                                            "<div class='card card-info'>"+
-                                            "<div class='card-header'>"+
-                                                "<h3 class='card-title'>Evaluation generale de toutes les lecons(statuts)</h3>"+
-                                    
-                                                "<div class='card-tools'>"+
-                                                "<button type='button' class='btn btn-tool' data-card-widget='collapse'><i class='fas fa-minus'></i>"+
-                                                "</button>"+
-                                                "<button type='button' class='btn btn-tool' data-card-widget='remove'><i class='fas fa-times'></i></button>"+
-                                            "</div>"+
-                                            "</div>"+
-                                            "<div class='card-body'>"+
-                                            "<canvas id='pieChart' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
-                                            "</div>"+
-                                            "<!-- /.card-body -->"+
-                                            "</div>"+
-                                            "<!-- /.card -->"+
-                                        "</div>"+
-                                    
-                                        "<div class='col-lg-6'>"+
-                                            "<!-- BAR CHART -->"+
-                                            "<div class='card card-info'>"+
-                                                "<div class='card-header'>"+
-                                                "<h3 class='card-title'>Evaluation </h3>"+
-                                    
-                                                "<div class='card-tools'>"+
-                                                "<button type='button' class='btn btn-tool' data-card-widget='collapse'><i class='fas fa-minus'></i>"+
-                                                "</button>"+
-                                                "<button type='button' class='btn btn-tool' data-card-widget='remove'><i class='fas fa-times'></i></button>"+
+                                                "<div class='row'>"+
+                                                    "<div class='col-lg-6'>"+
+                                                        "<!-- PIE CHART -->"+
+                                                        "<div class='card card-info'>"+
+                                                            "<div class='card-header'>"+
+                                                                "<h3 class='card-title'>Evaluation generale de toutes les lecons de la classe</h3>"+
+                                                
+                                                                "<div class='card-tools'>"+
+                                                                    "<button type='button' class='btn btn-tool' data-card-widget='collapse'><i class='fas fa-minus'></i>"+
+                                                                    "</button>"+
+                                                                    "<button type='button' class='btn btn-tool' data-card-widget='remove'><i class='fas fa-times'></i></button>"+
+                                                                "</div>"+
+                                                            "</div>"+
+                                                            "<div class='card-body'>"+
+                                                                "<canvas id='pieChart' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
+                                                            "</div>"+
+                                                            "<!-- /.card-body -->"+
+                                                        "</div>"+
+                                                        "<!-- /.card -->"+
+                                                    "</div>"+
                                                 "</div>"+
-                                            "</div>"+  
-                                            "<div class='card-body'>"+
-                                                "<div class='chart'>"+
-                                                "<canvas id='barChart' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
+
+                                                
+                                                "<div class='row'>"+
+                                                    "<div class='col-lg-12'>"+
+                                                        "<!-- BAR CHART -->"+
+                                                        "<div class='card card-info'>"+
+                                                            "<div class='card-header'>"+
+                                                                "<h3 class='card-title'>Evaluation par classe </h3>"+
+                                                
+                                                                "<div class='card-tools'>"+
+                                                                    "<button type='button' class='btn btn-tool' data-card-widget='collapse'><i class='fas fa-minus'></i>"+
+                                                                    "</button>"+
+                                                                    "<button type='button' class='btn btn-tool' data-card-widget='remove'><i class='fas fa-times'></i></button>"+
+                                                                "</div>"+
+                                                            "</div>"+  
+                                                            "<div class='card-body'>"+
+                                                                "<div class='chart'>"+
+                                                                    "<canvas id='barChart' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
+                                                                "</div>"+
+                                                            "</div>"+
+                                                            "<!-- /.card-body -->"+
+                                                        "</div>"+
+                                                        "<!-- /.card -->"+
+                                                    "</div>"+
                                                 "</div>"+
-                                            "</div>"+
-                                            "<!-- /.card-body -->"+
-                                            "</div>"+
-                                            "<!-- /.card -->"+
-                                        "</div>"+
-                                    "</div>"+
-                                    "</div>";
+                                            "</div>";
                                     $("#student_data").html(div_data);
                                             
                                 //-------------------------------------------------------
@@ -201,14 +197,14 @@
                                 // var student_list = {{ student_list|safe }};
                                 // var attendance_present_list = {{ attendance_present_list }}
                                 // var attendance_absent_list = {{ attendance_absent_list }}
-                                var chapitre_list = json_data[0]['chapitre_list']
+                                var matiere_list = json_data[0]['matiere_list']
                                 var lecons_attente_list = json_data[0]['lecons_attente_list']
                                 var lecons_encours_list = json_data[0]['lecons_encours_list']
                                 var lecons_termine_list = json_data[0]['lecons_termine_list']
 
                                 var areaChartData2 = {
                                     // labels  : student_list,
-                                    labels  : chapitre_list,
+                                    labels  : matiere_list,
                                     datasets: [
                                                 {
                                                 label               : 'En attente',

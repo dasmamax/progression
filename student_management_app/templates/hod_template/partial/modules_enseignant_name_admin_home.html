@@ -1,0 +1,13 @@
+<div class="form-group">
+    <label>Enseignant </label>
+    <select class="form-control" name="enseignant" id="enseignant" 
+    hx-get="{% url 'modules_class_and_mat_name' %}" 
+    hx-trigger="change" 
+    hx-target="#modules_class_and_mat_name" required>
+        <option value="">--Enseignant--</option>
+        {% for staff in staffs %}
+            <option value="{{ staff.id}}">{{ staff.admin.first_name }} {{ staff.admin.last_name }}</option>
+        {% endfor %}
+    </select>
+</div>       
+  

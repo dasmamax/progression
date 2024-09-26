@@ -1,0 +1,30 @@
+ 
+<table class="table table-bordered" >
+    <colgroup>
+        <col width="30%">
+        <col width="30%">
+        <col width="30%"> 
+        <col width="10%">
+        
+    </colgroup> 
+    <thead>
+        <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+            <th class="px-2 py-2 text-center"> Niveau</th>
+            <th class="px-2 py-2 text-center">Classe</th>
+            <th class="px-2 py-2 text-center">Matiere</th>
+            <th class="px-2 py-2 text-center">Heures dues </th>
+            
+        </tr>
+    </thead>  
+    
+    <tbody>
+        {% for matiere, hours in zip_mat_hour %}
+            <tr >
+                <td class="px-2 py-1 align-middle">{{matiere.classes_id.niveaux_id.nom_niveaux}}</td>
+                <td class="px-2 py-1 align-middle">{{matiere.classes_id.nom_classes}} </td>
+                <td class="px-2 py-1 align-middle">{{matiere.nom_matieres}}</td>
+                <td class="px-2 py-1 align-middle">{{hours}} H</td>
+            </tr>
+        {% endfor %}
+    </tbody> 
+</table>   

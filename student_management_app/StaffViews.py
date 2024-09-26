@@ -15,9 +15,8 @@ from student_management_app.models import CustomUser, Staffs, AnneeScolaire, Sem
 
 from django.http.response import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
-from .forms import BookForm
 
-from .models import Lecons, Matieres, Chapitres, Classess, Niveaux, Author, Book
+from .models import Lecons, Matieres, Chapitres, Classess, Niveaux
 from .forms import ChapitreForm, LeconForm, SemainesForm, StatutForm
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
@@ -57,19 +56,15 @@ def creer_progressions(request, pk):
     chapitre = Chapitres.objects.filter(matieres_id = matiere) # matieres_id is the FK in Chapitre
     form = ChapitreForm(request.POST or None)
 
-    #author = Author.objects.get(id=pk)
-    #books = Book.objects.filter(author=author)
-    #form = BookForm(request.POST or None)
+   
 
     if request.method == "POST":
         if form.is_valid():
             chapitre = form.save(commit=False)
             chapitre.matieres_id = matiere
             chapitre.save()
-           # return redirect("detail-book", pk=book.id)
             return redirect("detail_chapitre", pk=chapitre.id)
         else:
-            #return render(request, "staff_template/partials/book_form.html", context={
             return render(request, "staff_template/partials/chapitre_form.html", context={
                 "form": form
             })
@@ -80,8 +75,6 @@ def creer_progressions(request, pk):
         "matiere": matiere,
         "chapitres": chapitre
     }
-
-    #return render(request, "staff_template/create_book.html", context)
     return render(request, "staff_template/creer_progression.html", context)
 
 def detail_chapitre(request, pk):
@@ -772,7 +765,7 @@ def get_students(request):
                                 "lecon_id"           :lecon.id,
                                 #   "classe"              :classe_model.nom_classes,
                                 "matiere"             : matiere_model.nom_matieres,
-                              }
+                              } 
                 list_data.append(data_small)
 
 

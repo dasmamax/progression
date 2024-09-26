@@ -16,8 +16,7 @@ from .forms import SemainesForm
 from django.http.response import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from django.db.models import Q # for search rechercher
-#from rest_framework.response import Response
+from django.db.models import Count, Sum, Q # for search rechercher
 
 
 def admin_home(request):
@@ -710,7 +709,7 @@ def creer_semaines(request, annee_pk):
           if form.is_valid():
               semaine = form.save()
               semaine.annee_scolaire_id = annee_scolaire
-              semaine.save()
+              semaine.save() 
               context = {'semaine': semaine}
               return render(request, "hod_template/partial/semaines_list.html", context)
 
@@ -834,7 +833,8 @@ def modules_classe_name_admin(request):
 
   
 #-------------  SUIVRE LES PROGRESSIONS: affichage des matieres apres ----#
-#                avoir selectionne la classe                             #
+#                avoir selectionne la classe                                   --- #   
+#               ce module est aussi utilise par HOME PAGE Evaluation par matiere --#                       #
 def modules_matiere_name_admin(request):
     classe = request.GET.get('classe')  
     matieres = Matieres.objects.filter(classes_id_id=classe)
@@ -924,7 +924,7 @@ def admin_evaluation_par_matiere(request):
         "anneescolaires": anneescolaires
     }  
     return render(request, "hod_template/admin_evaluation_par_matiere.html", context)
-
+ 
 # ----------- HOME PAGE affichage des matieres apres avoir choisi l'annee 
 #               scolaire
 def modules_matiere_name_admin_home(request):
@@ -937,7 +937,7 @@ def modules_matiere_name_admin_home(request):
                }
     return render(request, 'hod_template/partial/modules_matiere_name_admin.html', context)
  
-#-----------  HOME PAGE affichage de la classe et du prof apres seletion
+#-----------  HOME PAGE affichage des noms de la classe et du prof apres selection
 #----------- de la matiere dans evaluation par matiere
 def modules_class_and_prof_name(request):
 
@@ -954,33 +954,135 @@ def modules_class_and_prof_name(request):
                }
     return render(request, 'hod_template/partial/modules_class_and_prof_name.html', context)
 
-#------------- HOME PAGE Affichage desresultats  de 
+#------------- HOME PAGE Affichage des resultats  de 
 #-------------   l'evaluation apres click  sur 'afficher progression'
 @csrf_exempt
 def admin_get_eval_par_matiere_js(request):
      # Fetching All Students under Staff
-    matieres = request.POST.get("matiere")                 # session_year
-
-    # staff_obj = Staffs.objects.get(admin=request.user.id)
-    # matieres = Matieres.objects.filter(professeurs_id=staff_obj)
-
-    # classes_id_list = []
-    # for matiere in matieres:
-    #     classe = Classess.objects.get(id=matiere.classes_id.id)
-    #     classes_id_list.append(classe.id)
-    
-    # # Remove the duplicate classes in list of classes' ids
-    # final_classe = []
-    # for classe_id in classes_id_list :
-    #     if classe_id not in final_classe:
-    #         final_classe.append(classe_id)
-
-    # # count classes and matieres
-    # classes_count = len(final_classe)
-    # matieres_count = matieres.count()
-
+    matiere = request.POST.get("matiere")                
+ 
     # Fetching volume horaire total
-    chapitres = Chapitres.objects.filter(matieres_id_id=matieres)
+    chapitres = Chapitres.objects.filter(matieres_id=matiere)
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    hours_list = []
+    for lecon in lecons:
+        hour = lecon.nombre_heures
+        hours_list.append(hour)
+    hours_count= sum(hours_list)
+
+    # Fetching status of lecons of all the courses of the staff
+    lecons_attente_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+ 
+    # Fetching the status of lecons per chapitre
+    chapitre_list =[]
+    lecons_attente_list=[]
+    lecons_encours_list=[]
+    lecons_termine_list=[]
+    
+    for chapitre in chapitres:
+        chapitre_list.append(chapitre.titre_chapitres)
+        lecons = Lecons.objects.filter(chapitres_id_id=chapitre)
+        lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+        lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+        lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+        lecons_attente_list.append(lecons_attente_count)
+        lecons_encours_list.append(lecons_encours_count)
+        lecons_termine_list.append(lecons_termine_count)
+    list_data=[]
+    list={
+        "matiere":matiere,
+        "hours_count": hours_count,
+        "lecons_attente_gle_count" : lecons_attente_gle_count,
+        "lecons_encours_gle_count" :lecons_encours_gle_count,
+        "lecons_termine_gle_count" :lecons_termine_gle_count,
+        "chapitre_list":chapitre_list,
+        "lecons_attente_list" :lecons_attente_list,
+        "lecons_encours_list":lecons_encours_list,
+        "lecons_termine_list":lecons_termine_list,}
+    list_data.append(list)
+    
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+##############################################################
+# ---------------- HOME PAGE Evaluation par classe ----------
+
+def admin_evaluation_par_classe(request):
+    #matieres = Matieres.objects.all()
+    #classess = Classess.objects.all()
+    niveaux = Niveaux.objects.all()
+    staffs = Staffs.objects.all()
+    semaines =Semaines.objects.all()
+    semaineslecons =SemainesLecons.objects.all()
+    lecons= Lecons.objects.all()
+    anneescolaires = AnneeScolaire.objects.all()
+    context = {
+        #"matieres": matieres,
+        #"classess": classess,
+        "niveaux": niveaux,
+        "staffs": staffs,
+        "semaines": semaines,
+        "semaineslecons": semaineslecons,
+        "lecons": lecons,
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_classe.html", context)
+
+#-----------  HOME PAGE EVAL PAR CLASSE affichage des classes  apres seletion -#
+#----------- de l annee scol dans evaluation par classe                       -#
+
+def modules_classe_name_admin_home(request):
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)   # distinct class?
+    #distinct = Matieres.objects.values(
+    #    'classes_id'
+    #    ).annotate(
+    #    name_count=Count('classes_id')
+    #    ).filter(name_count=1)
+    #matieres = Matieres.objects.filter(classes_id__in=[item['classes_id'] for item in distinct])
+    context = {
+                'matieres' : matieres, 
+                'anneescolaire': anneescolaire
+               }
+    return render(request, 'hod_template/partial/modules_classe_name_admin_home.html', context)
+
+#-----------  HOME PAGE EVAL PAR CLASSE affichage de la liste de prof et    -#
+#             de la matiere enseignee par prof  apres selection              -#
+#----------- de la classe  dans evaluation par classe                       -#
+
+def modules_prof_and_mat_name(request):
+    # classes_id = request.GET.get('classe')  # classe= matiere.classes_id
+    # anneescolaire = request.GET.get('annee_scolaire_id') 
+    # staffs = Staffs.objects.filter(annee_scolaire_id_id=anneescolaire)
+    # matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id_id=classes_id)
+ 
+    anneescolaire = request.GET.get('anneescolaire')
+    classes_id_id = request.GET.get('classe') #matiere.classes_id_id
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id=classes_id_id)
+ 
+    # matieres = Matieres.objects.filter(classes_id_id=classes_id_id)
+    context = {
+        'matieres': matieres,
+        'classes_id_id':classes_id_id,
+        'anneescolaire':anneescolaire
+               }
+    return render(request, 'hod_template/partial/modules_prof_and_mat_name.html', context)
+
+#------------- HOME PAGE Affichage des resultats  de 
+#-------------   l'evaluation  par classe apres click  sur 'afficher progression'
+@csrf_exempt
+def admin_get_eval_par_classe_js(request):
+    
+     # Toutes les matieres de cette classe de cette annee scolaire
+    classe_id = request.POST.get("classe")     #matiere.classes_id_id  
+    anneescolaire= request.POST.get("anneescolaire")
+    staffs= Staffs.objects.filter(annee_scolaire_id=anneescolaire)          
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id_id=classe_id)
+
+    chapitres = Chapitres.objects.filter(matieres_id__in=matieres)
     lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
     hours_list = []
     for lecon in lecons:
@@ -994,39 +1096,344 @@ def admin_get_eval_par_matiere_js(request):
     lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
 
     # Fetching the status of lecons per courses
-    # matiere_list =[]
+    matiere_list =[]
     lecons_attente_list=[]
     lecons_encours_list=[]
     lecons_termine_list=[]
-    # for matiere in matieres:
-    #     matiere_list.append(matiere.nom_matieres)
-    #     # find chapters of one matiere
-    chapitres = Chapitres.objects.filter(matieres_id_id=matieres)
-    #     # Find list of lessons
-    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
-    lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
-    lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
-    lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
-    lecons_attente_list.append(lecons_attente_count)
-    lecons_encours_list.append(lecons_encours_count)
-    lecons_termine_list.append(lecons_termine_count)
+    for matiere in matieres:
+        matiere_list.append(matiere.nom_matieres)
+        # find chapters of one matiere
+        chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+        # Find list of lessons
+        lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+        lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+        lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+        lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+        lecons_attente_list.append(lecons_attente_count)
+        lecons_encours_list.append(lecons_encours_count)
+        lecons_termine_list.append(lecons_termine_count)
 
-    context={
-        # "classes_count": classes_count,
-        # "matieres_count": matieres_count,
+    list_data=[]
+    list={
+        #"matiere":matiere,
         "hours_count": hours_count,
         "lecons_attente_gle_count" : lecons_attente_gle_count,
         "lecons_encours_gle_count" :lecons_encours_gle_count,
         "lecons_termine_gle_count" :lecons_termine_gle_count,
-        # "matiere_list":matiere_list,
+        "matiere_list":matiere_list,
+        "lecons_attente_list" :lecons_attente_list,
+        "lecons_encours_list":lecons_encours_list,
+        "lecons_termine_list":lecons_termine_list,}
+    list_data.append(list)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+
+############ TEST TEST TEST EVAL PAR CLASSE
+def admin_evaluation_par_classe_test(request):
+    #matieres = Matieres.objects.all()
+    #classess = Classess.objects.all()
+    niveaux = Niveaux.objects.all()
+    staffs = Staffs.objects.all()
+    semaines =Semaines.objects.all()
+    semaineslecons =SemainesLecons.objects.all()
+    lecons= Lecons.objects.all()
+    anneescolaires = AnneeScolaire.objects.all()
+    context = {
+        #"matieres": matieres,
+        #"classess": classess,
+        "niveaux": niveaux,
+        "staffs": staffs,
+        "semaines": semaines,
+        "semaineslecons": semaineslecons,
+        "lecons": lecons,
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_classe_test.html", context)
+
+def modules_classe_name_admin_home_test(request):
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)   # distinct class?
+    context = {
+                'matieres' : matieres, 
+                'anneescolaire': anneescolaire
+               }
+    return render(request, 'hod_template/partial/modules_classe_name_admin_home_test.html', context)
+
+def modules_prof_and_mat_name_test(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method!")
+        return redirect('admin_evaluation_par_classe')
+    else:
+        anneescolaire = request.POST.get('anneescolaire')
+        classes_id_id = request.POST.get('classe') #matiere.classes_id_id
+        staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+        matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id=classes_id_id)
+    context = {
+        'matieres': matieres,
+        'anneescolaire':anneescolaire
+               } 
+    return render(request, 'hod_template/partial/modules_prof_and_mat_name_test.html', context)
+
+############ TEST TEST TEST EVAL PAR CLASSE2 ok
+def admin_evaluation_par_classe_test2(request):
+    #matieres = Matieres.objects.all()
+    #classess = Classess.objects.all()
+    niveaux = Niveaux.objects.all()
+    staffs = Staffs.objects.all()
+    semaines =Semaines.objects.all()
+    semaineslecons =SemainesLecons.objects.all()
+    lecons= Lecons.objects.all()
+    anneescolaires = AnneeScolaire.objects.all()
+    context = {
+        #"matieres": matieres,
+        #"classess": classess,
+        "niveaux": niveaux,
+        "staffs": staffs,
+        "semaines": semaines,
+        "semaineslecons": semaineslecons,
+        "lecons": lecons,
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_classe_test2.html", context)
+
+def modules_classe_name_admin_home_test2(request):
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)   # distinct class?
+    context = {
+                'matieres' : matieres, 
+                'anneescolaire': anneescolaire
+               }
+    return render(request, 'hod_template/partial/modules_classe_name_admin_home_test2.html', context)
+
+def modules_prof_and_mat_name_test2(request): 
+    if request.method != "POST":
+        messages.error(request, "Invalid Method!")
+        return redirect('admin_evaluation_par_classe')
+    else:
+        anneescolaire = request.POST.get('anneescolaire')
+        classes_id_id = request.POST.get('classe') #matiere.classes_id_id
+        staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+        matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id=classes_id_id)
+        mat_total_hours=[]
+        for matiere in matieres:
+            chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+            # Find list of lessons
+            mat_hours=Lecons.objects.filter(chapitres_id__in=chapitres).aggregate(Sum('nombre_heures')).get('nombre_heures__sum', 0.0)
+            mat_total_hours.append(mat_hours)
+    
+    context = {
+        'matieres': matieres,
+        'anneescolaire':anneescolaire,
+        "mat_total_hours":mat_total_hours,
+        "zip_mat_hour":zip(matieres,mat_total_hours) # parallel iteration with matiere and total_hours
+        
+               } 
+    return render(request, 'hod_template/partial/modules_prof_and_mat_name_test2.html', context)
+
+@csrf_exempt
+def admin_get_eval_par_classe_js_test2(request):
+    
+    #  # Toutes les matieres de cette classe de cette annee scolaire
+    classe_id = request.POST.get("classe")     #matiere.classes_id_id  
+    anneescolaire= request.POST.get("anneescolaire") #anneescolaire.id
+    staffs= Staffs.objects.filter(annee_scolaire_id=anneescolaire)          
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs, classes_id_id=classe_id)
+
+    chapitres = Chapitres.objects.filter(matieres_id__in=matieres)
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    hours_list = []
+    for lecon in lecons:   
+         hour = lecon.nombre_heures
+         hours_list.append(hour)
+    hours_count= sum(hours_list)
+
+    # # Fetching status of lecons of all the courses of the staff
+    lecons_attente_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+
+    # # Fetching the status of lecons per courses
+    matiere_list =[]
+    lecons_attente_list=[]
+    lecons_encours_list=[]
+    lecons_termine_list=[]
+    for matiere in matieres:
+        matiere_list.append(matiere.nom_matieres)
+        # find chapters of one matiere
+        chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+        # Find list of lessons
+        lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+        lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+        lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+        lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+        lecons_attente_list.append(lecons_attente_count)
+        lecons_encours_list.append(lecons_encours_count)
+        lecons_termine_list.append(lecons_termine_count)
+
+    list_data=[]
+    list={}
+    list={
+        #"matiere":matiere,
+        "hours_count": hours_count,
+        "lecons_attente_gle_count" : lecons_attente_gle_count,
+        "lecons_encours_gle_count" :lecons_encours_gle_count,
+        "lecons_termine_gle_count" :lecons_termine_gle_count,
+        "matiere_list":matiere_list,
+        "lecons_attente_list" :lecons_attente_list,
+        "lecons_encours_list":lecons_encours_list,
+        "lecons_termine_list":lecons_termine_list,}
+    list_data.append(list)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+#--------------------------------------------
+##############################################################
+# ---------------- HOME PAGE Evaluation par enseignant ----------
+
+def admin_evaluation_par_enseignant(request):
+    anneescolaires = AnneeScolaire.objects.all()
+    context = { 
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_enseignant.html", context)
+
+# ----------- HOME PAGE affichage des enseignants apres avoir choisi l'annee 
+#               scolaire
+def modules_enseignant_name_admin_home(request):
+    
+    anneescolaire = request.GET.get('anneescolaire') 
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    context = {
+                'staffs' : staffs    
+               }
+    return render(request, 'hod_template/partial/modules_enseignant_name_admin_home.html', context)
+ 
+ #-----------  HOME PAGE affichage des noms de la classe et des matieres enseignees apres selection
+#----------- du prof dans evaluation par enseignant
+def modules_class_and_mat_name(request):
+    staff = request.GET.get('enseignant')
+    matieres = Matieres.objects.filter(professeurs_id=staff)
+    #heures dues
+    mat_total_hours=[]
+    for matiere in matieres:
+            chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+            # Find list of lessons
+            mat_hours=Lecons.objects.filter(chapitres_id__in=chapitres).aggregate(Sum('nombre_heures')).get('nombre_heures__sum', 0.0)
+            mat_total_hours.append(mat_hours)
+    context = {
+        "zip_mat_hour":zip(matieres,mat_total_hours) # parallel iteration with matiere and total_hours 
+               }
+    return render(request, 'hod_template/partial/modules_class_and_mat_name.html', context)
+
+@csrf_exempt
+def admin_get_eval_par_enseignant_js(request):
+    
+    #  # Toutes les matieres de cette classe de cette annee scolaire
+    staff_id = request.POST.get("enseignant")     #staff_id  
+    # anneescolaire= request.POST.get("anneescolaire") #anneescolaire.id
+    # staffs= Staffs.objects.filter(annee_scolaire_id=anneescolaire)          
+    matieres = Matieres.objects.filter(professeurs_id=staff_id)
+
+    chapitres = Chapitres.objects.filter(matieres_id__in=matieres)
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    hours_list = []
+    for lecon in lecons:   
+         hour = lecon.nombre_heures
+         hours_list.append(hour)
+    hours_count= sum(hours_list)
+
+    # # Fetching status of lecons of all the courses of the staff
+    lecons_attente_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+
+    # # Fetching the status of lecons per courses
+
+   
+    classes_id_list=[] # gestion des matieres par classes
+    classes_nom_list=[]
+    matiere_list =[]
+    lecons_attente_list=[]
+    lecons_encours_list=[]
+    lecons_termine_list=[]
+    for matiere in matieres:
+        classes_id_list.append(matiere.classes_id_id) # gestion des matieres par classe
+        classes_nom_list.append(matiere.classes_id.nom_classes)
+        matiere_list.append(matiere.nom_matieres+" "+matiere.classes_id.nom_classes) # general list of matieres of the selected staff
+        # find chapters of one matiere
+        chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+        # Find list of lessons
+        lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+        lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+        lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+        lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+        lecons_attente_list.append(lecons_attente_count)
+        lecons_encours_list.append(lecons_encours_count)
+        lecons_termine_list.append(lecons_termine_count)
+
+    # gestion des matieres par classes
+
+    final_classes_id_list = []
+    for classesId in classes_id_list:
+        if classesId not in final_classes_id_list:
+            final_classes_id_list.append(classesId) # final list of classes of the selected staff
+    # final_classes_count = len(final_classes_id_list)
+  
+    final_classes_nom_list = []
+    for classesNom in classes_nom_list:
+        if classesNom not in final_classes_nom_list:
+            final_classes_nom_list.append(classesNom) # final list of classes of the selected staff
+            
+
+    #liste des matieres par classes
+    classe_lecons_attente_list=[]
+    classe_lecons_encours_list=[]
+    classe_lecons_termine_list=[]
+    matiere_par_class_list=[]
+    for classe in final_classes_id_list:
+        classes_matieres=Matieres.objects.filter(classes_id_id=classe)
+        for classe_matiere in classes_matieres:
+            #matiere_list.append(matiere.nom_matieres+" "+matiere.classes_id.nom_classes) # general list of matieres of the selected staff
+            # find chapters of one matiere
+            classe_chapitres = Chapitres.objects.filter(matieres_id_id=classe_matiere.id)
+            # Find list of lessons
+            classe_lecons = Lecons.objects.filter(chapitres_id__in=classe_chapitres)
+            classe_lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '1').count()
+            classe_lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '2').count()
+            classe_lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '3').count()
+            classe_lecons_attente_list.append(classe_lecons_attente_count)
+            classe_lecons_encours_list.append(classe_lecons_encours_count)
+            classe_lecons_termine_list.append(classe_lecons_termine_count)
+
+        matiere_par_class_list.append(classes_matieres) # list of matieres per class of the selected staff
+        
+
+    list_data=[]
+    list={}
+    list={
+        #"matiere":matiere,
+        "hours_count": hours_count,
+        "lecons_attente_gle_count" : lecons_attente_gle_count,
+        "lecons_encours_gle_count" :lecons_encours_gle_count,
+        "lecons_termine_gle_count" :lecons_termine_gle_count,
+        "matiere_list":matiere_list,
         "lecons_attente_list" :lecons_attente_list,
         "lecons_encours_list":lecons_encours_list,
         "lecons_termine_list":lecons_termine_list,
-    }
 
-    return render(request, "hod_template/partial/admin_get_eval_par_matiere_js.html", context)
+        "final_classes_id_list":final_classes_id_list,
+        "final_classes_nom_list":final_classes_nom_list,
+        "classe_lecons_attente_list":classe_lecons_attente_list,
+        "classe_lecons_encours_list":classe_lecons_encours_list,
+        "classe_lecons_termine_list":classe_lecons_termine_list
+            }
+    list_data.append(list)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
-##############################################################
+#--------------------------------------------------------
+
+
 
 def add_staff(request):
     return render(request, "hod_template/add_staff_template.html")
