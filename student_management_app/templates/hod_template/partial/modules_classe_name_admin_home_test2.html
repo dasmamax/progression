@@ -3,8 +3,8 @@
     <select class="form-control" name="classe" id="classe" 
     required>
         <option value="">--Classe--</option>
-        {% for matiere in matieres %}
-            <option value="{{ matiere.classes_id_id }}">{{ matiere.classes_id.nom_classes }} {{ anneescolaire }}</option>
+        {% for id, classe in zip_class_id_nom %}
+            <option value="{{ id }}">{{ classe }}</option>
         {% endfor %}
     </select>
     <!--<input type="hidden" name="annee_scolaire_id" id="annee_scolaire_id" value="{{ anneescolaire }}" />-->

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage  # To upload Profile Picture
@@ -14,9 +14,12 @@ from .forms import SemainesForm
 
 ############ lecon ##########
 from django.http.response import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Sum, Q # for search rechercher
+# Transpose and pivot table
+from collections import defaultdict
+from django_pivot.pivot import pivot
 
 
 def admin_home(request):
@@ -1200,10 +1203,29 @@ def admin_evaluation_par_classe_test2(request):
 def modules_classe_name_admin_home_test2(request):
     anneescolaire = request.GET.get('anneescolaire') 
     staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
-    matieres = Matieres.objects.filter(professeurs_id__in=staffs)   # distinct class?
+    matieres = Matieres.objects.filter(professeurs_id__in=staffs)
+
+     # distinct class
+    class_id_list=[]
+    class_nom_list=[]
+    for matiere in matieres:
+        class_id_id = matiere.classes_id_id
+        class_nom   = matiere.classes_id.nom_classes
+        class_id_list.append(class_id_id)
+        class_nom_list.append(class_nom)
+    final_classes_nom_list = []
+    for classesNom in class_nom_list:
+        if classesNom not in final_classes_nom_list:
+            final_classes_nom_list.append(classesNom)
+    final_classes_id_list = []
+    for classesId in class_id_list:
+        if classesId not in final_classes_id_list:
+            final_classes_id_list.append(classesId)
+     
     context = {
                 'matieres' : matieres, 
-                'anneescolaire': anneescolaire
+                'anneescolaire': anneescolaire,
+                'zip_class_id_nom':zip(final_classes_id_list,final_classes_nom_list)
                }
     return render(request, 'hod_template/partial/modules_classe_name_admin_home_test2.html', context)
 
@@ -1379,6 +1401,204 @@ def admin_get_eval_par_enseignant_js(request):
         if classesId not in final_classes_id_list:
             final_classes_id_list.append(classesId) # final list of classes of the selected staff
     # final_classes_count = len(final_classes_id_list)
+   
+    final_classes_nom_list = []
+    for classesNom in classes_nom_list:
+        if classesNom not in final_classes_nom_list:
+            final_classes_nom_list.append(classesNom) # final list of classes of the selected staff
+            
+
+    #liste des matieres par classes
+    classe_lecons_attente_list=[]
+    classe_lecons_encours_list=[]
+    classe_lecons_termine_list=[]
+    matiere_par_class_list=[]
+    for classe in final_classes_id_list:
+        classes_matieres=Matieres.objects.filter(classes_id_id=classe)
+        for classe_matiere in classes_matieres:
+            #matiere_list.append(matiere.nom_matieres+" "+matiere.classes_id.nom_classes) # general list of matieres of the selected staff
+            # find chapters of one matiere
+            classe_chapitres = Chapitres.objects.filter(matieres_id_id=classe_matiere.id)
+            # Find list of lessons
+            classe_lecons = Lecons.objects.filter(chapitres_id__in=classe_chapitres)
+            classe_lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '1').count()
+            classe_lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '2').count()
+            classe_lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=classe_lecons, status= '3').count()
+            classe_lecons_attente_list.append(classe_lecons_attente_count)
+            classe_lecons_encours_list.append(classe_lecons_encours_count)
+            classe_lecons_termine_list.append(classe_lecons_termine_count)
+
+        matiere_par_class_list.append(classes_matieres) # list of matieres per class of the selected staff
+        
+
+    list_data=[]
+    list={}
+    list={
+        #"matiere":matiere,
+        "hours_count": hours_count,
+        "lecons_attente_gle_count" : lecons_attente_gle_count,
+        "lecons_encours_gle_count" :lecons_encours_gle_count,
+        "lecons_termine_gle_count" :lecons_termine_gle_count,
+        "matiere_list":matiere_list,
+        "lecons_attente_list" :lecons_attente_list,
+        "lecons_encours_list":lecons_encours_list,
+        "lecons_termine_list":lecons_termine_list,
+
+        "final_classes_id_list":final_classes_id_list,
+        "final_classes_nom_list":final_classes_nom_list,
+        "classe_lecons_attente_list":classe_lecons_attente_list,
+        "classe_lecons_encours_list":classe_lecons_encours_list,
+        "classe_lecons_termine_list":classe_lecons_termine_list
+            }
+    list_data.append(list)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+#--------------------------------------------
+##############################################################
+# ---------------- HOME PAGE Evaluation par annee ----------
+def admin_eval_par_annee(request):
+    anneescolaires = AnneeScolaire.objects.all()
+    context = { 
+        "anneescolaires": anneescolaires
+    }  
+    return render(request, "hod_template/admin_evaluation_par_annee.html", context)
+
+# ----------- HOME PAGE affichage des repartitions des taches apres avoir choisi l'annee 
+#               scolaire
+def modules_repart_tache_admin_home(request):
+    anneescolaire = request.GET.get("anneescolaire")
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire) # tout le staff
+    matieres=Matieres.objects.filter(professeurs_id__in=staffs) # toutes les matieres de l'annee
+    
+    # list de matiere, prof et classe
+    class_mat_prof_list =Matieres.objects.filter(professeurs_id__in=staffs).values_list('nom_matieres','professeurs_id__admin__first_name', 'classes_id__nom_classes' ) #4
+    #list des classes avec repetition
+    classes_nom_list1= Matieres.objects.filter(professeurs_id__in=staffs).values_list('classes_id__nom_classes', flat=True)
+    #list des classes sans redondance
+    final_classes_nom_list1 = []
+    for classesNom in classes_nom_list1:
+        if classesNom not in final_classes_nom_list1:
+            final_classes_nom_list1.append(classesNom)
+    #dictionary of classes        
+    class_dict = dict([(classe,i) for i,classe in enumerate(final_classes_nom_list1)]) #3
+    # length of mat dictionary
+    mat_dict = defaultdict(lambda: [""]*len(final_classes_nom_list1)) #4
+    # filling mat list
+    for (mat_name, staf, classe) in class_mat_prof_list:
+        mat_dict[mat_name][class_dict[classe]] = staf
+    mat_list = list(mat_dict.items())    
+
+   #---------------------- pivot --------------------------#
+    # pivot_table = pivot(matieres,'nom_matieres', 'classes_id_id','professeurs_id__admin__last_name' )
+
+    # # ----------------------- dict ---------------------#
+    # matieres_transposed_dd = defaultdict(list)  
+    # for matiere in matieres:                                                        ## New   
+    #     matieres_transposed_dd[matiere.nom_matieres].append((matiere.classes_id.nom_classes, matiere.professeurs_id.admin.last_name)   )
+
+    # cols = max(matieres_transposed_dd.values())
+    # # -------------------------- fin dict ---------------#
+   
+    classes_id_list=[]
+    classes_nom_list=[]
+    for matiere in matieres:
+        classes_id_list.append(matiere.classes_id_id)
+        classes_nom_list.append(matiere.classes_id.nom_classes) 
+
+    # final_classes_id_list = []
+    # for classesId in classes_id_list:
+    #     if classesId not in final_classes_id_list:
+    #         final_classes_id_list.append(classesId)
+
+    final_classes_nom_list = []
+    for classesNom in classes_nom_list:
+        if classesNom not in final_classes_nom_list:
+            final_classes_nom_list.append(classesNom)# toutes les classes/labels
+ 
+    # matiere_nom_list=[]
+    # staff_nom_list=[]
+    # for classe in final_classes_id_list:
+    #     classes_matieres=Matieres.objects.filter(classes_id_id=classe,professeurs_id__in=staffs) # toutes les matieres de la classe
+    #     # staff_nom_list.append(classes_matieres)
+    #     for classe_matiere in classes_matieres:
+    #          matiere_nom_list.append(classe_matiere.nom_matieres)
+    #          staff_nom_list.append(classe_matiere.professeurs_id.admin.first_name+" "+classe_matiere.professeurs_id.admin.last_name)
+    
+    # final_matieres_nom_list = []
+    # for matiereNom in matiere_nom_list:
+    #     if matiereNom not in final_matieres_nom_list:
+    #         final_matieres_nom_list.append(matiereNom) # toutes les matieres/ labels
+
+    context = {
+                "matieres":matieres, # Matieres table selected
+                # 'matieres_transposed_dd':dict(matieres_transposed_dd),
+                # 'cols':cols,
+                # "final_matieres_nom_list":final_matieres_nom_list,
+                "final_classes_nom_list":final_classes_nom_list,
+                # "classes_nom_list":classes_nom_list,
+                # # "zip_mat_staff":zip(matiere_nom_list,staff_nom_list),
+                # "matiere_nom_list":matiere_nom_list,
+                # "staff_nom_list":staff_nom_list
+                # "pivot_table":pivot_table
+                'mat_list':mat_list,
+                'classes_nom_list1':classes_nom_list1,
+                "class_dict":  class_dict,
+               
+               }
+    return render(request, 'hod_template/partial/modules_repart_tache_admin_home.html', context)
+ 
+
+@csrf_exempt
+def admin_get_eval_par_annee_js(request):
+    
+    #  # Toutes les matieres de cette classe de cette annee scolaire
+    staff_id = request.POST.get("anneescolaire")     #staff_id        
+    matieres = Matieres.objects.filter(professeurs_id=staff_id)
+
+    chapitres = Chapitres.objects.filter(matieres_id__in=matieres)
+    lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+    hours_list = []
+    for lecon in lecons:   
+         hour = lecon.nombre_heures
+         hours_list.append(hour)
+    hours_count= sum(hours_list)
+
+    # # Fetching status of lecons of all the courses of the staff
+    lecons_attente_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+    lecons_encours_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+    lecons_termine_gle_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+
+    # # Fetching the status of lecons per courses
+
+   
+    classes_id_list=[] # gestion des matieres par classes
+    classes_nom_list=[]
+    matiere_list =[]
+    lecons_attente_list=[]
+    lecons_encours_list=[]
+    lecons_termine_list=[]
+    for matiere in matieres:
+        classes_id_list.append(matiere.classes_id_id) # gestion des matieres par classe
+        classes_nom_list.append(matiere.classes_id.nom_classes)
+        matiere_list.append(matiere.nom_matieres+" "+matiere.classes_id.nom_classes) # general list of matieres of the selected staff
+        # find chapters of one matiere
+        chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
+        # Find list of lessons
+        lecons = Lecons.objects.filter(chapitres_id__in=chapitres)
+        lecons_attente_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '1').count()
+        lecons_encours_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '2').count()
+        lecons_termine_count = SemainesLecons.objects.filter(lecons_id__in=lecons, status= '3').count()
+        lecons_attente_list.append(lecons_attente_count)
+        lecons_encours_list.append(lecons_encours_count)
+        lecons_termine_list.append(lecons_termine_count)
+
+    # gestion des matieres par classes
+
+    final_classes_id_list = []
+    for classesId in classes_id_list:
+        if classesId not in final_classes_id_list:
+            final_classes_id_list.append(classesId) # final list of classes of the selected staff
+    # final_classes_count = len(final_classes_id_list)
   
     final_classes_nom_list = []
     for classesNom in classes_nom_list:
@@ -1431,9 +1651,7 @@ def admin_get_eval_par_enseignant_js(request):
     list_data.append(list)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
-#--------------------------------------------------------
-
-
+#---------------------------------------------------------------------
 
 def add_staff(request):
     return render(request, "hod_template/add_staff_template.html")

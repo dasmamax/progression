@@ -321,6 +321,10 @@ urlpatterns = [
      path('modules_class_and_mat_name/', HodViews.modules_class_and_mat_name, name='modules_class_and_mat_name'),
      path('admin_get_eval_par_enseignant_js/', HodViews.admin_get_eval_par_enseignant_js, name='admin_get_eval_par_enseignant_js'),
 
+     path('admin_eval_par_annee/', HodViews.admin_eval_par_annee, name='admin_eval_par_annee'),
+     path('modules_repart_tache_admin_home/', HodViews.modules_repart_tache_admin_home, name='modules_repart_tache_admin_home'),
+     path('admin_get_eval_par_annee_js/', HodViews.admin_get_eval_par_annee_js, name='admin_get_eval_par_annee_js'),
+
 ]
 
    
