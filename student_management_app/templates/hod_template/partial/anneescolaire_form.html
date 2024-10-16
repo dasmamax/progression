@@ -1,0 +1,14 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form >
+    <div class="row">
+
+      <div class="col-4 col-md-3">
+        <label for="{{ form.une_id.id_for_label }}" class="form-label">Annee scolaire</label>
+        {% render_field form.une_id class="form-control" %}
+        <div class="invalid-feedback">{{ form.une_id.errors|first }}</div>
+      </div>
+   
+    </div>
+</form>
+  {% endwith %}

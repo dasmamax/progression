@@ -146,18 +146,36 @@ urlpatterns = [
     path('delete_sessionAnnee/<session_id>/',
          HodViews.delete_sessionAnnee, name="delete_sessionAnnee"),
 
+     # *********** for cycles ****************
+     path('creer_cycles/', HodViews.creer_cycles, name="creer_cycles"),
+     path('gerer_cycles/', HodViews.gerer_cycles, name="gerer_cycles"),
+     path("click-to-edit_cycles/<pk>/",HodViews.initial_state_cycles,name="click-to-edit-initial-state_cycles",),
+     path("creer_cycles/<pk>/editer_cycles/",HodViews.editer_cycles,name="editer_cycles"),
+     path('creer_cycles/<pk>/',HodViews.detail_cycles,name="detail_cycles"),
+     path('creer_cycles/<pk>/supprimer_cycles/', HodViews.supprimer_cycles, name='supprimer_cycles'),
+
+
     path('creer_niveaux/', HodViews.creer_niveaux, name="creer_niveaux"),
     path('creer_niveaux_save/', HodViews.creer_niveaux_save,
          name="creer_niveaux_save"),
     path('gerer_niveaux/', HodViews.gerer_niveaux, name="gerer_niveaux"),
     path('admin_search_niveaux/', HodViews.admin_search_niveaux, name="admin_search_niveaux"),
-    
+     
     path('editer_niveaux/<niveaux_id>/',
          HodViews.editer_niveaux, name="editer_niveaux"),
     path('editer_niveaux_save/', HodViews.editer_niveaux_save,
          name="editer_niveaux_save"),
     path('supprimer_niveaux/<niveaux_id>/',
          HodViews.supprimer_niveaux, name="supprimer_niveaux"),
+
+# *********** for disciplines ****************
+     path('creer_disciplines/', HodViews.creer_disciplines, name="creer_disciplines"),
+     path('gerer_disciplines/', HodViews.gerer_disciplines, name="gerer_disciplines"),
+     path("click-to-edit_discipl/<pk>/",HodViews.initial_state_discipl,name="click-to-edit-initial-state_discipl",),
+     path("creer_disciplines/<pk>/editer_disciplines/",HodViews.editer_disciplines,name="editer_disciplines"),
+     path('creer_disciplines/<pk>/',HodViews.detail_disciplines,name="detail_disciplines"),
+     path('creer_disciplines/<pk>/supprimer_disciplines/', HodViews.supprimer_disciplines, name='supprimer_disciplines'),
+
 
     path('creer_matieres/', HodViews.creer_matieres, name="creer_matieres"),
     path('creer_matieres_save/', HodViews.creer_matieres_save,
@@ -321,10 +339,12 @@ urlpatterns = [
      path('modules_class_and_mat_name/', HodViews.modules_class_and_mat_name, name='modules_class_and_mat_name'),
      path('admin_get_eval_par_enseignant_js/', HodViews.admin_get_eval_par_enseignant_js, name='admin_get_eval_par_enseignant_js'),
 
-     path('admin_eval_par_annee/', HodViews.admin_eval_par_annee, name='admin_eval_par_annee'),
+     path('admin_eval_par_discipline/', HodViews.admin_eval_par_discipline, name='admin_eval_par_discipline'),
      path('modules_repart_tache_admin_home/', HodViews.modules_repart_tache_admin_home, name='modules_repart_tache_admin_home'),
-     path('admin_get_eval_par_annee_js/', HodViews.admin_get_eval_par_annee_js, name='admin_get_eval_par_annee_js'),
+     path('admin_get_eval_par_discipline_js/', HodViews.admin_get_eval_par_discipline_js, name='admin_get_eval_par_discipline_js'),
+     path('admin_chart_par_discipline_js/', HodViews.admin_chart_par_discipline_js, name='admin_chart_par_discipline_js'),
 
+     
 ]
 
    

@@ -17,22 +17,14 @@
         <div class="invalid-feedback">{{ form.numero_semaines.errors|first }}</div>
       </div>
   
-       <!-- <div class="col-4 col-md-3">
-        <label for="{{ form.debut_semaines.id_for_label }}" class="form-label">Debut semaine</label>
-        {% render_field form.debut_semaines class="form-control" placeholder="debut semaine" %}
-        <div class="invalid-feedback">{{ form.debut_semaines.errors|first }}</div>
-      </div>    --> 
+       
         <div class="col-4 col-md-3">
         <label for="{{ form.debut_semaines.id_for_label }}" class="form-label">Debut semaine</label>
           <input type="date" class="form-control" name="debut_semaines" min="{{ anneescolaire.session_start_year|date:'Y-m-d' }}" max="{{ anneescolaire.session_end_year|date:'Y-m-d' }}">
           <div class="invalid-feedback">{{ form.debut_semaines.errors|first }}</div>
       </div> 
-
-      <!-- <div class="col-4 col-md-3">
-        <label for="{{ form.fin_semaines.id_for_label }}" class="form-label">fin semaine</label>
-        {% render_field form.fin_semaines class="form-control" placeholder="fin semaine" %}
-        <div class="invalid-feedback">{{ form.fin_semaines.errors|first }}</div>
-      </div>  -->
+ 
+      
        <div class="col-4 col-md-3">
         <label for="{{ form.fin_semaines.id_for_label }}" class="form-label">fin semaine</label>
         <input type="date" class="form-control" name="fin_semaines" min="{{ anneescolaire.session_start_year|date:'Y-m-d' }}" max="{{ anneescolaire.session_end_year|date:'Y-m-d' }}">

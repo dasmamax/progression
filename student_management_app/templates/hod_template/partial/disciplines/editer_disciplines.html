@@ -1,0 +1,37 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{% url 'detail_disciplines' pk=discipline.pk %}" 
+      hx-target="this" 
+      hx-swap="outerHTML"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' >
+    <div class ="row">
+ 
+        <div class="col"></div>
+
+        <!-- <div class = "col-4 col-md-3 text-center"> -->
+        <div class = "col text-center">
+            {{ discipline.id }}
+        </div>
+
+        <!-- <div class = "col-4 col-md-3 text-center"> -->
+        <div class = "col text-center">
+            <input type="text" class="form-control" name="nom_disciplines" value="{{ discipline.nom_disciplines }}">
+            <div class="invalid-feedback">{{ form.nom_disciplines.errors|first }}</div>
+        </div>
+ 
+
+        <!-- <div class= "col-3 align-self-end"> -->
+        <div class = "col align-self-end">
+            <button class="btn btn-primary btn-sm" >Enregister</button>
+            <button type="button" 
+                    class="btn btn-danger btn-sm"
+                    
+                    hx-get="{% url 'detail_disciplines' pk=discipline.pk %}"
+            >Fermer</button>
+        </div>
+
+        <div class="col"></div>
+        <hr>
+    </div>
+</form>
+{% endwith %}

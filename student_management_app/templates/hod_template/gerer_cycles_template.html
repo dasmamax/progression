@@ -1,0 +1,84 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Cycles
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid"> 
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Creer les cycles</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    
+                        <h3 class = mb-4 text-primary>  </h3>
+                       <div id="form-cycles">
+                        {% include 'hod_template/partial/cycles/cycles_form.html' %}
+                       </div>  
+                    
+                        
+                       <div class="my-4">
+                        <div class="row">
+                            <div class="col"> </div>
+                            <div class="col">
+                            <button type="button" class="btn btn-success me-2"
+                            hx-get ="{% url 'creer_cycles' %}"
+                            hx-target = "#form-cycles"
+                            hx-swap = "beforeend">+ Ajouter une ligne</button>
+                            <button type="button" class="btn btn-primary" id="submit-all"> Enregister tout</button>
+                            </div>
+                            <div class="col"> </div>
+                        </div>
+                        </div> 
+                        <hr />
+                   
+                        <!-- entete liste des semaines -->
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
+                            liste des cycles
+                        </h3>
+                        
+                        <div class ="row">
+                            <div class="col"></div>
+                            <div class = "col text-center">
+                               No 
+                            </div>
+                            <div class = "col text-center">
+                                Cycles 
+                            </div>
+                            <div class= "col align-self-end">
+                                Action
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                        <hr /> 
+                                <!-- fin entete liste des semaines-->
+                                <div id="cycle-list">
+                                <!-- <ul id="semaine-list" > -->
+                                    
+                                    {% for cycle in cycles %}
+                                        {% include 'hod_template/partial/cycles/cycles_list.html' %}
+                                    {% endfor %}
+                                    
+                                <!-- </ul> -->
+                            </div>
+                             
+
+
+                </div>
+                    <!-- /.card -->
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

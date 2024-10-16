@@ -50,13 +50,19 @@ Creer une matiere
                             </div>
                         </div>
                         {% endif %}
+ 
 
-
-                        <div class="card-body">
+                        <div class="card-body"> 
                             <div class="form-group">
-                                <label>Nom de la matiere </label>
-                                <input type="text" class="form-control" name="matiere"
-                                    placeholder="Entrer le nom de la matiere" required>
+                                <label>Nom de la discipline </label>
+                                <!-- <input type="text" class="form-control" name="matiere"
+                                    placeholder="Entrer le nom de la matiere" required> -->
+                                    <select class="form-control" name="disciplines" required>
+                                        <option value="">--Discipline--</option>
+                                        {% for discipline in disciplines %}
+                                        <option value="{{ discipline.id }}">{{ discipline.nom_disciplines }} </option>
+                                        {% endfor %}
+                                    </select>
                             </div>
 
                             <div class="form-group">

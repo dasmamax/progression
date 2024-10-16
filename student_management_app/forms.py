@@ -10,7 +10,7 @@ from django.forms.models import inlineformset_factory
 
 
 #*********** Syllabus ***************
-from .models import Chapitres, Matieres, Lecons, Semaines, SemainesLecons, SemainesLeconsReelle
+from .models import AnneeScolaire, Chapitres, Cycles, Disciplines, Matieres, Lecons, Semaines, SemainesLecons, SemainesLeconsReelle
 
 class LeconForm(forms.ModelForm):
     class Meta:
@@ -61,7 +61,26 @@ class SemainesForm(forms.ModelForm):
             'debut_semaines':forms.DateInput(attrs= { 'class' :"form-control" }),
             'fin_semaines': forms.DateInput(attrs= { 'class' :"form-control" })
         }
+  
+class CyclesForm(forms.ModelForm):
+    class Meta:
+        model = Cycles
+        fields = (
+            'nom_cycles',
+        )
+        widgets = {
+            'nom_cycles': forms.TextInput(attrs= { 'class' :"form-control" })
+        }
 
+class DisciplinesForm(forms.ModelForm):
+    class Meta:
+        model = Disciplines
+        fields = (
+            'nom_disciplines',
+        )
+        widgets = {
+            'nom_disciplines': forms.TextInput(attrs= { 'class' :"form-control" })
+        }
 
 class StatutForm(forms.ModelForm):
     class Meta:
@@ -75,6 +94,26 @@ class StatutForm(forms.ModelForm):
         ('3','Termine'),
         )
         status = forms.ChoiceField(label="Statut", choices=statut_list, widget=forms.Select(attrs={"class":"form-control"}))
+
+class AnneescolaireForm(forms.ModelForm):
+    class Meta:
+        model = AnneeScolaire
+        fields = (
+            'id',
+            'session_start_year',
+            'session_end_year'
+        )
+        
+    try:
+        anneescolaires = AnneeScolaire.objects.all()
+        anneescolaire_list = []
+        for anneescolaire in anneescolaires:
+            une_anneescolaire = (anneescolaire.id, str(anneescolaire.session_start_year)+" A "+str(anneescolaire.session_end_year))
+            anneescolaire_list.append(une_anneescolaire)
+            
+    except:
+        anneescolaire_list = []
+    une_id = forms.ChoiceField(label="Annee scolaire", choices=anneescolaire_list, widget=forms.Select(attrs={"class":"form-control"}))    
 
 
 #class StaffMAJForm(forms.ModelForm):

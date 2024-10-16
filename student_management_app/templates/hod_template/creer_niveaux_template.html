@@ -58,7 +58,16 @@ Creer un niveau
                                 <input type="text" class="form-control" name="niveaux"
                                     placeholder="Entrer le nom du niveau" required>
                             </div>
+                        </div>
 
+                        <div class="form-group">
+                            <label for="niveau">Cycles </label>
+                            <select class="form-control" id ="cycle" name="cycles" required>
+                                <option value="">-- Cycles --</option>
+                                {% for cycle in cycles %}
+                                <option value="{{ cycle.id }}" >{{ cycle.nom_cycles }} </option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <!-- /.card-body -->
 

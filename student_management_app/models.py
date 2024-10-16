@@ -45,7 +45,9 @@ class AnneeScolaire(models.Model):
 class Semaines(models.Model):
     id = models.AutoField(primary_key=True)
     annee_scolaire_id = models.ForeignKey(
-        AnneeScolaire, on_delete=models.CASCADE, default=1)
+         AnneeScolaire, on_delete=models.CASCADE, default=2)
+    # annee_scolaire_id = models.ForeignKey(
+    #      AnneeScolaire, on_delete=models.CASCADE)
     numero_semaines = models.PositiveIntegerField(default=1)
     debut_semaines = models.DateField()
     fin_semaines = models.DateField()
@@ -53,24 +55,33 @@ class Semaines(models.Model):
     def __str__(self):
         return self.name
 
- 
+  
 # Professeurs /staffs ##############################
 
 class Staffs(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     address = models.TextField()
+    #null=True in lieu of default = 1
+    #to handle the foreignKey failed
     annee_scolaire_id = models.ForeignKey(
-         AnneeScolaire, on_delete=models.CASCADE, default=1)
+         AnneeScolaire, on_delete=models.CASCADE, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
-
+# Cycle     ########################
+ 
+class Cycles(models.Model):
+    id = models.AutoField(primary_key=True)
+    nom_cycles = models.CharField(max_length=255)
+    objects = models.Manager()
 # Niveau     ########################
 
 class Niveaux(models.Model):
     id = models.AutoField(primary_key=True)
+    cycles_id = models.ForeignKey(
+        Cycles, on_delete=models.CASCADE, default=1)
     nom_niveaux = models.CharField(max_length=255)
     objects = models.Manager()
 
@@ -84,12 +95,19 @@ class Classess(models.Model):
         Niveaux, on_delete=models.CASCADE, default=1)
     objects = models.Manager()
 
+# Disciplines#######################
+class Disciplines(models.Model):
+    id = models.AutoField(primary_key=True)
+    nom_disciplines = models.CharField(max_length=255)
+    objects = models.Manager()
+
 # Matieres /subjects ###############
 
 
 class Matieres(models.Model):
     id = models.AutoField(primary_key=True)
-    nom_matieres = models.TextField()
+    nom_matieres = models.ForeignKey(
+        Disciplines, on_delete=models.CASCADE, default=1) # nom_matieres = disciplines_id
     classes_id = models.ForeignKey(
         Classess, on_delete=models.CASCADE, default=1)
     professeurs_id = models.ForeignKey(
@@ -97,7 +115,7 @@ class Matieres(models.Model):
     objects = models.Manager()
     class Meta:
         unique_together = ["nom_matieres", "classes_id", "professeurs_id"]
-
+ 
 # Chapitres  ###############
 
 class Chapitres(models.Model):

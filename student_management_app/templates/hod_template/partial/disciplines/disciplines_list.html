@@ -1,0 +1,37 @@
+
+ <!--hx-on="htmx:afterRequest: this.remove()"-->
+ <div class ="row"
+ hx-on::afterRequest=" this.remove()"
+ hx-target="this" 
+ hx-swap="outerHTML">
+    
+    <div class="col"></div>
+    <!-- <div class = "col-4 col-md-3 text-center"> -->
+    <div class = "col text-center">
+        {{ discipline.id }}
+    </div>  
+    <!-- <div class = "col-4 col-md-3 text-center"> -->
+    <div class = "col text-center">
+        {{ discipline.nom_disciplines }}
+    </div>
+    <!-- <div class = "col-4 col-md-3 text-center">
+        {{ semaine.fin_semaines }}
+    </div> --> 
+
+      
+    <!-- <div class= "col-3 align-self-end"> -->
+    <div class = "col align-self-end">
+        <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_disciplines' pk=discipline.pk %}" >Editer</button>
+        <button class="btn btn-danger btn-sm" 
+                hx-post="{% url 'supprimer_disciplines' discipline.id %}"
+                hx-on:click="this.closest('row').remove()">Supprimer</button>
+                <!-- htmx.org@2.0.2 uses hx-on:click and htmx.org@1.9.2 uses hx-on=click -->
+    </div>
+    <div class="col"></div>
+    <hr /> 
+</div>
+
+
+
+
+    

@@ -6,7 +6,7 @@
                                  hx-target="#modules_class_and_prof_name">
         <option value="">--Matiere--</option>
         {% for matiere in matieres %}
-            <option value="{{ matiere.id }}">{{ matiere.nom_matieres }} -- {{ matiere.classes_id.nom_classes}}</option>
+            <option value="{{ matiere.id }}">{{ matiere.nom_matieres.nom_disciplines }} -- {{ matiere.classes_id.nom_classes}}</option>
         {% endfor %}
     </select>
 </div> 

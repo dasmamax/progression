@@ -80,7 +80,7 @@ Gerer les matieres
                                 {% for matiere in matieres %}
                                 <tr>
                                     <td>{{ matiere.id }}</td>
-                                    <td>{{ matiere.nom_matieres }}</td>
+                                    <td>{{ matiere.nom_matieres.nom_disciplines }}</td>
                                     <!--<td>{{ niveau.created_at }}</td>
                                     <td>{{ niveau.updated_at }}</td> -->
                                     <td>{{ matiere.classes_id.nom_classes }}</td>

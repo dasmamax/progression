@@ -1,0 +1,225 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Suivre les progressions par discipline
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Suivre les progressions par discipline</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    
+                    {% comment %} Display Messages {% endcomment %}
+                    {% if messages %}
+                    <div class="form-group">
+                        <div class="col-12">
+                            {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div><!--/col-12-->
+                    </div><!--/form-group-->
+                    {% endif %}
+                        
+  
+                    <div class="card-body">
+
+                        <div>
+                            {% include 'hod_template/partial/disciplines/modules_discipline_annee_admin_home.html' %}
+                        </div>
+
+                        <div class="card-footer" id="fetch_student_block">
+                            <button type="button" class="btn btn-primary" id="fetch_repartition"
+                                >Repartition des taches</button>
+                        </div>
+                        
+
+                        <div id="modules_repart_tache_admin_home">
+                            {% include 'hod_template/partial/modules_repart_tache_admin_home.html' %} 
+                        </div>
+
+                    
+                    </div>
+                    <!-- /.card-body --> 
+
+                    <div class="card-footer" id="fetch_student_block">
+
+                        <button type="button" class="btn btn-primary" id="fetch_progression4"
+                            >Afficher l'evaluation</button>
+                    </div>
+
+                    <!-- <div class="card-footer">
+                        <button type="button" class="btn btn-primary" id="fetch_attendance">A partir de</button>
+                    </div> -->
+
+                    {% comment %} Displaying Students Here {% endcomment %}
+
+                    <div class="card-footer" id="student_data">
+                    </div> 
+  
+                </div><!-- /.card primary-->
+            </div><!-- /col-->
+        </div><!-- /row-->
+ 
+    </div><!-- /.container-fluid -->
+</section>
+
+  {% endblock main_content %}
+ 
+    {% block custom_js %}
+      
+    <script>
+        $(document).ready(function(){
+            // recuperation des donnees
+            $("#fetch_progression4").click(function(){
+                var anneescolaire=$("#anneescolaire").val()
+                var cycle=$("#cycle").val()
+                $.ajax({
+                    url:'{% url 'admin_get_eval_par_discipline_js' %}',
+                    type:'POST',
+                    data:{anneescolaire:anneescolaire, cycle:cycle}, 
+                })
+    
+                // construction du tableau d'affichache des resultats
+                .done(function(response){ 
+                                var json_data=JSON.parse(response);
+                                console.log(json_data)
+                                //Displaying Attendance Date Input and Students Attendance
+                                //-----------------------------------------------------
+                                var div_data=""
+                                div_data+="<div class='row mt-5'>"+
+                                                "<div class='col-md-2 mt-2'>"+
+                                               
+                                                    "<hr>"+
+                                                    "<form action='{% url 'admin_chart_par_discipline_js' %}' method='POST'>"+
+                                                        "<div class='form-group'>"+
+                                                        "<label>Discipline </label>"+
+                                                        "<select class='form-control' name='discipline' id='discipline'  required>"+
+                                                            "<option value=''>--Choisir la discipline--</option>";
+                                                            for (key in json_data) {
+                                                            div_data+= "<option value="+json_data[key]['discipline_id']+">"+json_data[key]['discipline']+json_data[key]['discipline_id']+"</option>";
+                                                            }
+                                                            
+                                                            div_data+="</select>"+
+                                                        "</div>"+ 
+                                                        "<button id='visualiser' class='btn btn-success mt-2' type='button'>Visualiser</button>"+
+                                                    "</form>"+
+                                                "</div>"+
+                                            "<div class='col-md-10'>"+
+                                            "<canvas id='myChart' width='400' height='250'></canvas>";
+                                $("#student_data").html(div_data);                               
+                            }) // function response
+
+                $(document).on("click", "#visualiser", function(){                          
+                  //  $("#fetch_progression4").click(function(){
+                    // recuperation des donnees
+                        var discipline=$("#discipline").val()
+                        var cycle=$("#cycle").val()
+                        var anneescolaire=$("#anneescolaire").val()
+                        $.ajax({
+                            url:'{% url 'admin_chart_par_discipline_js' %}',
+                            type:'POST',
+                            data:{anneescolaire:anneescolaire, cycle:cycle, discipline:discipline }, 
+                        })
+
+                        .done(function(response){
+                                var json_data=JSON.parse(response);
+                                console.log(json_data)
+
+                                // -----bar chart
+                                var classes_nom_list = json_data[0]['classes_nom_list']
+                                var classe_lecons_attente_list = json_data[0]['classe_lecons_attente_list']
+                                var classe_lecons_encours_list = json_data[0]['classe_lecons_encours_list']
+                                var classe_lecons_termine_list = json_data[0]['classe_lecons_termine_list']
+
+                                var areaChartData3 = {
+                                    // labels  : student_list,
+                                    labels  : classes_nom_list,
+                                    datasets: [
+                                                {
+                                                label               : 'En attente',
+                                                backgroundColor     : 'rgba(239, 43, 14, 1)',
+                                                borderColor         : 'rgba(239, 43, 14, 1)',
+                                                pointRadius          : false,
+                                                pointColor          : '#3b8bba',
+                                                pointStrokeColor    : 'rgba(60,141,188,1)',
+                                                pointHighlightFill  : '#fff',
+                                                pointHighlightStroke: 'rgba(60,141,188,1)',
+                                                // data                : attendance_present_list
+                                                data                : classe_lecons_attente_list
+                                                },
+                                                {
+                                                label               : 'En cours',
+                                                backgroundColor     : 'rgba(245, 186, 84, 1)',
+                                                borderColor         : 'rgba(245, 186, 84, 1)',
+                                                pointRadius         : false,
+                                                pointColor          : 'rgba(210, 214, 222, 1)',
+                                                pointStrokeColor    : '#c1c7d1',
+                                                pointHighlightFill  : '#fff',
+                                                pointHighlightStroke: 'rgba(220,220,220,1)',
+                                                // data                : attendance_absent_list
+                                                data                :  classe_lecons_encours_list
+                                                },
+                                                {
+                                                label               : 'Termine',
+                                                backgroundColor     : 'rgba(0, 166, 90, 1)',
+                                                borderColor         : 'rgba(0, 166, 90, 1)',
+                                                pointRadius         : false,
+                                                pointColor          : 'rgba(210, 214, 222, 1)',
+                                                pointStrokeColor    : '#c1c7d1',
+                                                pointHighlightFill  : '#fff',
+                                                pointHighlightStroke: 'rgba(220,220,220,1)',
+                                                // data                : attendance_absent_list
+                                                data                :  classe_lecons_termine_list
+                                                },
+                                            ]
+                                            }
+                                            var barChartCanvas3 = $('#myChart').get(0).getContext('2d')
+                                            var barChartData3 = jQuery.extend(true, {}, areaChartData3)
+                                            var temp3 = areaChartData3.datasets[0]
+                                            barChartData3.datasets[0] = temp3
+
+                                            var barChartOptions3 = {
+                                            responsive              : true,
+                                            maintainAspectRatio     : false,
+                                            datasetFill             : false
+                                            }
+
+                                            var barChart3 = new Chart(barChartCanvas3, {
+                                            type: 'bar', 
+                                            data: barChartData3,
+                                            options: barChartOptions3
+                                            })
+                        }) // done                    
+
+                })       
+            
+            }) 
+        })
+    </script>
+    {% endblock custom_js %}
+ 

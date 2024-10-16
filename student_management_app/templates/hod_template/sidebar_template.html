@@ -61,6 +61,16 @@
         </li>
 
         <li class="nav-item">
+          {% url 'gerer_cycles' as gerer_cycles %}
+          <a href="{{ gerer_cycles }}" class="nav-link {% if request.path == gerer_cycles %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Gerer les cycles
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
           {% url 'gerer_niveaux' as gerer_niveaux %}
           {% url 'editer_niveaux' niveaux_id=id as editer_niveaux %}
           <a href="{{ gerer_niveaux }}"
@@ -123,6 +133,16 @@
             <i class="nav-icon fas fa-th"></i>
             <p>
               Ajouter un professeur
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'gerer_disciplines' as gerer_disciplines %}
+          <a href="{{ gerer_disciplines }}" class="nav-link {% if request.path == gerer_disciplines %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Gerer les disciplines
             </p>
           </a>
         </li>
