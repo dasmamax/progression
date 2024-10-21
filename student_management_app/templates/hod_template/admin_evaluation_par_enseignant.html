@@ -64,7 +64,7 @@
                         <div id="modules_enseignant_name_admin_home">
                             {% include 'hod_template/partial/modules_enseignant_name_admin_home.html' %} 
                         </div>
-
+                        
                         <div id="modules_class_and_mat_name">
                             {% include 'hod_template/partial/modules_class_and_mat_name.html' %} 
                         </div>
@@ -178,7 +178,7 @@
                                                             "</div>"+  
                                                             "<div class='card-body'>"+
                                                                 "<div class='chart'>"+
-                                                                    "<canvas id='barChart3' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
+                                                                    "<canvas id='barChart4' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>"+
                                                                 "</div>"+
                                                             "</div>"+
                                                             "<!-- /.card-body -->"+
@@ -188,7 +188,7 @@
                                                 "</div>"+
                                             "</div>";
                                     $("#student_data").html(div_data);
-                                            
+                                    
                                 //-------------------------------------------------------
                 
                                 // Insertion des graphiques pie chart for general evaluation 
@@ -296,7 +296,7 @@
                                 var classe_lecons_encours_list = json_data[0]['classe_lecons_encours_list']
                                 var classe_lecons_termine_list = json_data[0]['classe_lecons_termine_list']
 
-                                var areaChartData3 = {
+                                var areaChartData4 = {
                                     // labels  : student_list,
                                     labels  : final_classes_nom_list,
                                     datasets: [
@@ -338,21 +338,21 @@
                                                 },
                                             ]
                                 }
-                                var barChartCanvas3 = $('#barChart3').get(0).getContext('2d')
-                                var barChartData3 = jQuery.extend(true, {}, areaChartData3)
-                                var temp3 = areaChartData3.datasets[0]
-                                barChartData3.datasets[0] = temp3
+                                var barChartCanvas4 = $('#barChart4').get(0).getContext('2d')
+                                var barChartData4 = jQuery.extend(true, {}, areaChartData4)
+                                var temp4 = areaChartData4.datasets[0]
+                                barChartData4.datasets[0] = temp4
 
-                                var barChartOptions3 = {
+                                var barChartOptions4 = {
                                 responsive              : true,
                                 maintainAspectRatio     : false,
                                 datasetFill             : false
                                 }
 
-                                var barChart3 = new Chart(barChartCanvas3, {
+                                var barChart4 = new Chart(barChartCanvas4, {
                                 type: 'bar', 
-                                data: barChartData3,
-                                options: barChartOptions3
+                                data: barChartData4,
+                                options: barChartOptions4
                                 })
                                 
                             }) 

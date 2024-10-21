@@ -10,7 +10,7 @@ Annee scolaire  {{ anneescolaire.session_start_year }} -- {{ anneescolaire.sessi
     <div  class="container-fluid">
 
      
-      <a class="btn btn-primary" href=" " role="button">+ Evaluation generale</a> <br />&nbsp;
+      <br />&nbsp;
         {% if messages %}
         <div class="form-group">
             <div class="col-12">
@@ -40,11 +40,11 @@ Annee scolaire  {{ anneescolaire.session_start_year }} -- {{ anneescolaire.sessi
                 <div class="card-header">
                     <div class="d-flex w-100 align-items-center justify-content-between">
                         <h4 class="card-title fw-bold">Suivi de la progression de {{ staff_obj.admin.username }} | 
-                                                        matiere:  {{ matieres.nom_matieres }} |
+                                                        matiere:  {{ matieres.nom_matieres.nom_disciplines }} |
                                                          classe de : {{ classess.nom_classes }}</h4>
-                        <div class="tools">
+                        <!-- <div class="tools">
                             <button type="button" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'><i class="fa fa-plus"></i> Add New</button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

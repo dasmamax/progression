@@ -1,11 +1,11 @@
 {% for result in results %}
                                 <tr>
-                                    <td>{{ result.id }}</td>
+                                    <td>{{ forloop.counter }}</td>
                                     <td>{{ result.classes_id.niveaux_id.nom_niveaux }}</td>
                                     <td>{{ result.classes_id.nom_classes }}</td>
-                                    <td>{{ result.nom_matieres }}</td>
+                                    <td>{{ result.nom_matieres.nom_disciplines }}</td>
                                     <!-- <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td> -->
-
+ 
                                     <td>
                                         <a href="{% url 'creer_progressions' result.id %}"
                                             class="btn btn-success">creer progression</a>

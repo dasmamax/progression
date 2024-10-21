@@ -51,13 +51,24 @@ Editer les matieres |: {{ niveau.id }}
                         </div>
                         {% endif %}
 
+                       
 
                         <div class="card-body">
                             <div class="form-group">
-                                <label>Nom de la matiere </label>
-                                <input type="text" class="form-control" name="matiere"
-                                    value="{{ matiere.nom_matieres }}" required>
+                                <label>Discipline </label>
+                                <select class="form-control" name="disciplines_id" required>
+                                    {% for discipline in disciplines %}
+                                    <option value="{{ discipline.id }}" 
+                                        {% if discipline.id == matiere.nom_matieres_id %} selected{% endif %}>
+                                        {{ discipline.nom_disciplines }} 
+                                    </option>
+                                    {% endfor %}
+                                </select>
                                 <input type="hidden" name="matieres_id" value="{{ matiere.id }}" />
+                                <!-- <label>Nom de la matiere </label>
+                                <input type="text" class="form-control" name="matiere"
+                                    value="{{ matiere.nom_matieres.nom_disciplines }}" required>
+                                <input type="hidden" name="matieres_id" value="{{ matiere.id }}" /> -->
                             </div>
 
                             <div class="form-group">
@@ -80,23 +91,23 @@ Editer les matieres |: {{ niveau.id }}
                                             <option value="{{ anneescolaire.id }}" {% if anneescolaire.id == matiere.professeurs_id.annee_scolaire_id_id %} selected
                                                 {% endif %}>{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
                                         {% endfor %}
-                                </select>
+                                </select> 
  
                                 <div id="modules_profs_name_admin">
                                     {% include 'hod_template/partial/modules_profs_edit_name_admin.html' %} 
                                 </div> 
 
-                            <!-- <div class="form-group">
+                            <!-- {% comment%}<div class="form-group">
                                 <label>Professeur </label>
                                 <select class="form-control" name="professeur">
-                                    {% for staff in staffs %}
+                                     {% for staff in staffs %}
                                     <option value="{{ staff.id }}" {% if staff.id == matiere.professeur_id.id %}
                                         selected {% endif %}>{{ staff.admin.first_name }} {{ staff.admin.last_name }}</option>
                                     {% endfor %}
                                 </select>
 
                                 <input type="hidden" name="matiere_id" value="{{ matiere.id }}" />
-                            </div> -->
+                            </div>{% endcomment%} -->
  
 
                         </div>

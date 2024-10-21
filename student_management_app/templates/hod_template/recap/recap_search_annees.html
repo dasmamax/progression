@@ -1,14 +1,11 @@
 {% for result in results %}
                                 <tr>
                                     <td>{{forloop.counter}}</td>
-                                    <td>{{ result.nom_niveaux }}</td>
+                                    <td>{{ result.session_start_year }}</td>
                                     <!--<td>{{ niveau.created_at }}</td>
                                     <td>{{ niveau.updated_at }}</td> -->
                                     <td>
-                                        <a href="{% url 'editer_niveaux' result.id %}"
-                                            class="btn btn-success">Editer</a>
-                                        <a href="{% url 'supprimer_niveaux' result.id %}"
-                                            class="btn btn-danger">Supprimer</a>
+                                        {{ result.session_end_year }} 
                                     </td>
                                 </tr>
                                 {% endfor %}

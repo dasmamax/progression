@@ -1,0 +1,93 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    liste des classes
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                    <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Listes des classes par annee scolaire</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    
+                    {% comment %} Display Messages {% endcomment %}
+                    {% if messages %}
+                    <div class="form-group">
+                        <div class="col-12">
+                            {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div><!--/col-12-->
+                    </div><!--/form-group-->
+                    {% endif %}
+                        
+
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label>Annee scolaire </label>
+                            <select class="form-control" name="anneescolaire" id="anneescolaire" 
+                                hx-get="{% url 'recap_classes_tableau' %}" 
+                                hx-trigger="change" 
+                                hx-target="#recap_classes_tableau" required>
+                                <option value="">--Annee scolaire--</option>
+                                {% for anneescolaire in anneescolaires %}
+                                    <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
+                                {% endfor %}
+                            </select> 
+                        </div>  
+
+                        <div id="recap_classes_tableau">
+                            {% include 'hod_template/recap/recap_classes_tableau.html' %} 
+                        </div>
+                    
+                    </div>
+                    <!-- /.card-body -->  
+
+                    <!-- <div class="card-footer" id="fetch_student_block">
+
+                        <button type="button" class="btn btn-primary" id="fetch_progression2"
+                            >Afficher la progression</button>
+                    </div> -->
+
+                    {% comment %} Displaying Students Here {% endcomment %}
+
+                    <div class="card-footer" id="student_data">
+                    </div> 
+  
+                </div><!-- /.card primary-->
+            </div><!-- /col-->
+        </div><!-- /row-->
+ 
+    </div><!-- /.container-fluid -->
+</section>
+
+  {% endblock main_content %}
+ 
+    
+     
+    

@@ -81,7 +81,7 @@ Gerer les classes
                             <tbody id="admin_results_classes">
                                 {% for classe in classes %}
                                 <tr>
-                                    <td>{{ classe.id }}</td>
+                                    <td>{{forloop.counter}}</td>
                                     <td>{{ classe.nom_classes }}</td>
                                     <td>{{ classe.niveaux_id.nom_niveaux }}</td>
                                     <!--<td>{{ subject.staff_id.first_name }} {{ subject.staff_id.last_name }}</td>

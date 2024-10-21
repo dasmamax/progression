@@ -1,0 +1,26 @@
+
+<table class="table table-bordered" >
+  
+    <thead>
+        <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+        <th class="px-2 py-2 text-center">No</th> 
+        <th class="px-2 py-2 text-center">Disciplines</th>
+        {% for classe in class_dict %}
+        <th class="px-2 py-2 text-center">{{classe}}</th>
+        {% endfor%}
+        </tr>
+        
+    </thead>
+    <tbody>
+        {% for row in mat_list %} 
+        <tr>
+            <th>{{ forloop.counter }}</th>
+            <th>{{ row.0 }}</th>
+            {% for class in row.1 %}
+               <td>{{ class }}</td>
+            {% endfor %}
+            </tr>
+         {% endfor %}
+            
+    </tbody>
+</table>

@@ -121,7 +121,7 @@
                                                         "<select class='form-control' name='discipline' id='discipline'  required>"+
                                                             "<option value=''>--Choisir la discipline--</option>";
                                                             for (key in json_data) {
-                                                            div_data+= "<option value="+json_data[key]['discipline_id']+">"+json_data[key]['discipline']+json_data[key]['discipline_id']+"</option>";
+                                                            div_data+= "<option value="+json_data[key]['discipline_id']+">"+json_data[key]['discipline']+"</option>";
                                                             }
                                                             
                                                             div_data+="</select>"+
@@ -129,7 +129,7 @@
                                                         "<button id='visualiser' class='btn btn-success mt-2' type='button'>Visualiser</button>"+
                                                     "</form>"+
                                                 "</div>"+
-                                            "<div class='col-md-10'>"+
+                                            "<div class='col-md-10'>"+ 
                                             "<canvas id='myChart' width='400' height='250'></canvas>";
                                 $("#student_data").html(div_data);                               
                             }) // function response
@@ -151,14 +151,14 @@
                                 console.log(json_data)
 
                                 // -----bar chart
-                                var classes_nom_list = json_data[0]['classes_nom_list']
+                                var final_classes_nom_list = json_data[0]['final_classes_nom_list']
                                 var classe_lecons_attente_list = json_data[0]['classe_lecons_attente_list']
                                 var classe_lecons_encours_list = json_data[0]['classe_lecons_encours_list']
                                 var classe_lecons_termine_list = json_data[0]['classe_lecons_termine_list']
 
                                 var areaChartData3 = {
                                     // labels  : student_list,
-                                    labels  : classes_nom_list,
+                                    labels  : final_classes_nom_list,
                                     datasets: [
                                                 {
                                                 label               : 'En attente',

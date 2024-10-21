@@ -1,17 +1,17 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-Gerer les matieres
+Les annees scolaires
 {% endblock page_title %}
 
 {% block main_content %}
 
 {% load static %}
-
+ 
 <section class="content">
     <div class="container-fluid">
- 
-        <a class="btn btn-primary" href="{% url 'creer_matieres' %}" role="button">+ Creer une matiere</a> <br />&nbsp;
+
+        <!-- <a class="btn btn-primary" href="" role="button">+ Creer niveau</a> <br />&nbsp; -->
 
         {% if messages %}
         <div class="form-group">
@@ -42,57 +42,37 @@ Gerer les matieres
                 <!-- general form elements -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Details des matieres</h3>
+                        <h3 class="card-title">Details des annees scolaires</h3>
+
                         <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <div style="text-align: center;"> <i class="fa fa-search" ></i></div>
-                                <input type="text" name="q" class="form-control float-right" placeholder="rechercher"
-                                hx-get="/admin_search_matieres/" 
+                                <input type="text" name="q" class="form-control float-right" placeholder="annee"
+                                hx-get="/recap_search_annees/"
                                 hx-trigger = "keyup changed delay:5ms"
-                                hx-target="#admin_results_matieres"> 
+                                hx-target="#recap_results_annees"> 
                             </div>
                         </div>
-                        <!-- <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right"
-                                    placeholder="Search">
-
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                </div>
-                            </div>
-                        </div> -->
+                           
+                        
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover text-nowrap">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nom de la discipline</th>
-                                    <th>Classe</th>
-                                    <th>Professeur</th>  
-                                    <th>Annee scol.</th> 
-                                    <th>Action</th>
+                                    <th>Num</th>
+                                    <th>Debut</th>
+                                    <th>Fin</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin_results_matieres">
-                                {% for matiere in matieres %}
+                            <tbody id="recap_results_annees">
+                                {% for annee in annees %}
                                 <tr>
                                     <td>{{forloop.counter}}</td>
-                                    <td>{{ matiere.nom_matieres.nom_disciplines }}</td>
-                                    <!--<td>{{ niveau.created_at }}</td>
-                                    <td>{{ niveau.updated_at }}</td> -->
-                                    <td>{{ matiere.classes_id.nom_classes }}</td>
-                                    <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td>
-                                    <td>{{ matiere.professeurs_id.annee_scolaire_id.session_start_year }} - {{ matiere.professeurs_id.annee_scolaire_id.session_end_year }}</td>
-                                    <td>
-                                        <a href="{% url 'editer_matieres' matiere.id %}"
-                                            class="btn btn-success">Editer</a>
-                                       <a href="{% url 'supprimer_matieres' matiere.id %}"
-                                            class="btn btn-danger">Supprimer</a> 
-                                            
-                                    </td>
+                                    <td>{{ annee.session_start_year }}</td>
+                                    <td>{{ annee.session_end_year }}</td>
+                                    
                                 </tr>
                                 {% endfor %}
 

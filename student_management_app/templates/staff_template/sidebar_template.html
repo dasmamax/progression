@@ -37,19 +37,19 @@
           </a>
         </li>
 
-       
-        <li class="nav-item">
+       {% comment %}
+        <!-- <li class="nav-item">
           {% url 'staff_manage_progression' as staff_manage_progression %}
           <a href="{{ staff_manage_progression }}"
             class="nav-link {% if request.path == staff_manage_progression %} active {% endif %}">
             <i class="nav-icon fas fa-comments"></i>
             <p>
-              Manage progression
-              {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-            </p>
+              Manage progression-->
+            <!--  <span class="right badge badge-danger">New</span> -->
+           <!-- </p>
           </a>
-        </li>
-
+        </li> -->
+        {% endcomment %}
         <li class="nav-item">
           {% url 'gerer_progressions' as gerer_progressions %}
           <a href="{{ gerer_progressions }}" class="nav-link {% if request.path == gerer_progressions %} active {% endif %}">
@@ -79,19 +79,6 @@
             <i class="nav-icon fas fa-calendar-plus"></i>
             <p>
               Suivre les Progressions
-              {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-            </p> 
-          </a>
-        </li>
-
-
-        <li class="nav-item">
-          {% url 'staff_take_attendance' as staff_take_attendance %}
-          <a href=""
-            class="nav-link {% if request.path == staff_take_attendance %} active {% endif %}">
-            <i class="nav-icon fas fa-calendar-plus"></i>
-            <p>
-              Voir evaluation
               {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
             </p> 
           </a>

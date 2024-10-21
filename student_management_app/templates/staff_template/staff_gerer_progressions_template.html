@@ -12,7 +12,7 @@ Progressions de  {{ staff.admin.username }}
     <div class="container-fluid">
 
      
-      <a class="btn btn-primary" href=" " role="button">+ Evaluation generale</a> <br />&nbsp;
+       <br />&nbsp;
         {% if messages %}
         <div class="form-group">
             <div class="col-12">
@@ -36,7 +36,7 @@ Progressions de  {{ staff.admin.username }}
             </div>
         </div>
         {% endif %}
-
+ 
         <div class="row">
             <div class="col-md-12">
                 <!-- general form elements -->
@@ -68,7 +68,7 @@ Progressions de  {{ staff.admin.username }}
                         <table class="table table-hover text-nowrap">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Niveaux</th>
                                     <th>Classes</th>
                                     <th>Matieres</th>  
@@ -78,10 +78,10 @@ Progressions de  {{ staff.admin.username }}
                             <tbody id="staff_results_progressions">
                                 {% for matiere in matieres %}
                                 <tr>
-                                    <td>{{ matiere.id }}</td>
+                                    <td>{{ forloop.counter }}</td>
                                     <td>{{ matiere.classes_id.niveaux_id.nom_niveaux }}</td>
                                     <td>{{ matiere.classes_id.nom_classes }}</td>
-                                    <td>{{ matiere.nom_matieres }}</td>
+                                    <td>{{ matiere.nom_matieres.nom_disciplines }}</td>
                                     <!-- <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td> -->
 
                                     <td>
@@ -91,7 +91,7 @@ Progressions de  {{ staff.admin.username }}
                                         <a href="{% url 'staff_suivi_progression' matiere.id %}"
                                             class="btn btn-success">Voir le suivi </a>
 
-                                        <a href=" "
+                                        <a href="#"
                                             class="btn btn-success">Imprimer la progression</a>
                                     </td>
                                 </tr>

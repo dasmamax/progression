@@ -5,9 +5,10 @@
     <thead>
         <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
             <th class="px-2 py-2 text-center">No</th>
+            <th class="px-2 py-2 text-center">Disciplines </th>
             <th class="px-2 py-2 text-center">classes</th>
             <th class="px-2 py-2 text-center">Nom du professeur</th>
-            <th class="px-2 py-2 text-center">Disciplines </th>
+            
             <!-- <th class="px-2 py-2 text-center">volume horaire du</th> -->
         </tr>
     </thead>   
@@ -16,9 +17,10 @@
         {% for matiere in matieres %}
             <tr >
                 <td class="px-2 py-1 align-middle">{{forloop.counter}} </td>
+                <td class="px-2 py-1 align-middle">{{matiere.nom_matieres.nom_disciplines}}</td>
                 <td class="px-2 py-1 align-middle">{{matiere.classes_id.nom_classes	}} </td>
                 <td class="px-2 py-1 align-middle">{{matiere.professeurs_id.admin.last_name}} {{matiere.professeurs_id.admin.first_name}}</td>
-                <td class="px-2 py-1 align-middle">{{matiere.nom_matieres.nom_disciplines}}</td>
+                
                 <!-- <td class="px-2 py-1 align-middle">{{ hours }} H</td> -->
             </tr>
         {% endfor %}
@@ -36,7 +38,7 @@
         {% endfor%}
         </tr>
         
-    </thead>
+    </thead> 
     <tbody>
         {% for row in mat_list %} 
         <tr>
@@ -45,7 +47,7 @@
             {% for class in row.1 %}
                <td>{{ class }}</td>
             {% endfor %}
-            </tr>
+        </tr>
          {% endfor %}
             
     </tbody>

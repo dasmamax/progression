@@ -134,6 +134,7 @@ urlpatterns = [
          name="admin_profile_update"),
 
     # Syllabus
+    
     path('creer_annees_scolaires/', HodViews.creer_annees_scolaires, name="creer_annees_scolaires"),
     path('creer_annees_scolaires_save/', HodViews.creer_annees_scolaires_save, name="creer_annees_scolaires_save"),
     path('manage_sessionAnnee/', HodViews.manage_sessionAnnee, name="manage_sessionAnnee"),
@@ -303,8 +304,8 @@ urlpatterns = [
      path('admin_get_progression_matiere/',HodViews.admin_get_progression_matiere, name='admin_get_progression_matiere'),
 
      #********** test rechercher ****************
-     path('rechercher/', HodViews.rechercher, name='rechercher'),
-     path('search/', HodViews.search, name='search'),
+     # path('rechercher/', HodViews.rechercher, name='rechercher'),
+     # path('search/', HodViews.search, name='search'),
      #           fin test rechercher 
        
      path('modules/', StaffViews.modules_classe_name, name='modules'),
@@ -344,7 +345,21 @@ urlpatterns = [
      path('admin_get_eval_par_discipline_js/', HodViews.admin_get_eval_par_discipline_js, name='admin_get_eval_par_discipline_js'),
      path('admin_chart_par_discipline_js/', HodViews.admin_chart_par_discipline_js, name='admin_chart_par_discipline_js'),
 
-     
+     #- Recap page d'accueil  
+     path('recap_annees_scolaires/', HodViews.recap_annees_scolaires, name='recap_annees_scolaires'),
+     path('recap_search_annees/', HodViews.recap_search_annees, name='recap_search_annees'),
+     path('recap_staffs/', HodViews.recap_staffs, name='recap_staffs'),
+     path('recap_staffs_list/', HodViews.recap_staffs_list, name='recap_staffs_list'),
+     path('recap_search_staffs/', HodViews.recap_search_staffs, name='recap_search_staffs'),
+     path('recap_classes/', HodViews.recap_classes, name='recap_classes'),
+     path('recap_classes_tableau/', HodViews.recap_classes_tableau, name='recap_classes_tableau'),
+     path('recap_matieres/', HodViews.recap_matieres, name='recap_matieres'),
+     path('recap_matieres_list/', HodViews.recap_matieres_list, name='recap_matieres_list'),
+     path('recap_search_matieres/', HodViews.recap_search_matieres, name='recap_search_matieres'),
+
+      #- upload/download files
+     # path('upload/', HodViews.upload_file, name='upload_file'),
+     # path('download/<int:file_id>/', HodViews.download_file, name='download_file'),
 ]
 
    

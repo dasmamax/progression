@@ -6,8 +6,9 @@
   hx-target="#semaine-list"
   hx-swap="beforeend" 
   hx-trigger="click from:#submit-all"
-  hx-on::afterRequest="this.remove()">
+  hx-on::after-request="this.remove()"> <!-- afterRequest doesn t work-->
   <!-- hx-on="htmx:afterRequest: this.remove()"-->
+  <!--hx-on::afterRequest="this.remove()-->
     
     <div class="row">
 

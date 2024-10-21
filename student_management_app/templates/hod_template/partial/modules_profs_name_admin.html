@@ -1,9 +1,12 @@
                                 <label>Professeur </label>
                                 <select class="form-control" name="staffs" id="staffs" required>
                                     <option value="">--Professeur--</option>
+                                    <!--<input list = "list_staff" class="form-control" name="staffs" id="staffs" required>--> <!-- nouveau-->
+                                    <!--<datalist id = "list_staff" >--> <!-- nouveau-->
                                     {% for staff in staffs %}
                                     <option value="{{ staff.id }}">{{ staff.admin.first_name }} {{ staff.admin.last_name }} </option>
                                     {% endfor %}
+                                    <!--</datalist>--> <!-- nouveau-->
                                 </select>
                                 </div>
  

@@ -55,9 +55,7 @@ def creer_progressions(request, pk):
     matiere = Matieres.objects.get(id = pk)
     chapitre = Chapitres.objects.filter(matieres_id = matiere) # matieres_id is the FK in Chapitre
     form = ChapitreForm(request.POST or None)
-
-   
-
+  
     if request.method == "POST":
         if form.is_valid():
             chapitre = form.save(commit=False)
@@ -333,7 +331,7 @@ def supprimer_lecon(request, pk):
 
     #return render(request, "staff_template/creer_progression.html", context)
     return render(request, "staff_template/chapitre_detail.html", context)
-
+ 
 #******************* gestion du suivi de la progression *************************
 #******************* a partir de gerer les progressions ************************
 def staff_suivi_progression (request, pk): #ancien
@@ -371,12 +369,17 @@ def staff_suivi_progression (request, pk): #ancien
     return render(request, "staff_template/staff_suivi_progression.html", context)
 
 def staff_search_progressions(request):
+    staff_obj = Staffs.objects.get(admin=request.user.id)
+    matieres = Matieres.objects.filter(professeurs_id=staff_obj)
     q= request.GET.get('q')
     print(q)
-    
+     
     if q:
-        results =Matieres.objects.filter(Q(nom_matieres__icontains=q)) \
-        .order_by("nom_matieres", "-id")[0:20]
+        # results =Matieres.objects.filter(Q(nom_matieres__nom_disciplines__icontains=q)) \
+        results =matieres.filter(Q(nom_matieres__nom_disciplines__icontains=q) |
+                                 Q(classes_id__nom_classes__icontains=q) |
+                                 Q(classes_id__niveaux_id__nom_niveaux__icontains=q)) \
+        .order_by("nom_matieres__nom_disciplines", "-id")[0:20] 
     else:
         results=[]
  
@@ -566,7 +569,7 @@ def staff_home(request):
     lecons_encours_list=[]
     lecons_termine_list=[]
     for matiere in matieres:
-        matiere_list.append(matiere.nom_matieres)
+        matiere_list.append(matiere.nom_matieres.nom_disciplines+" "+matiere.classes_id.nom_classes) 
         # find chapters of one matiere
         chapitres = Chapitres.objects.filter(matieres_id_id=matiere.id)
         # Find list of lessons
@@ -764,10 +767,10 @@ def get_students(request):
 
                                 "lecon_id"           :lecon.id,
                                 #   "classe"              :classe_model.nom_classes,
-                                "matiere"             : matiere_model.nom_matieres,
+                                "matiere"             : matiere_model.nom_matieres.nom_disciplines,
                               } 
                 list_data.append(data_small)
-
+ 
 
     # students = Students.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
 

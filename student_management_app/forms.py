@@ -11,6 +11,8 @@ from django.forms.models import inlineformset_factory
 
 #*********** Syllabus ***************
 from .models import AnneeScolaire, Chapitres, Cycles, Disciplines, Matieres, Lecons, Semaines, SemainesLecons, SemainesLeconsReelle
+# from .models import UploadedFile
+
 
 class LeconForm(forms.ModelForm):
     class Meta:
@@ -38,7 +40,7 @@ ChapitreFormSet = inlineformset_factory(
 )
 
 LeconFormSet = inlineformset_factory(
-    Chapitres,
+    Chapitres, 
     Lecons,
     form=LeconForm,
     min_num=2,  # minimum number of forms that must be filled in
@@ -114,6 +116,13 @@ class AnneescolaireForm(forms.ModelForm):
     except:
         anneescolaire_list = []
     une_id = forms.ChoiceField(label="Annee scolaire", choices=anneescolaire_list, widget=forms.Select(attrs={"class":"form-control"}))    
+
+
+
+# class UploadFileForm(forms.ModelForm):
+#     class Meta:
+#         model = UploadedFile
+#         fields = ('file',)
 
 
 #class StaffMAJForm(forms.ModelForm):

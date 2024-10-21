@@ -69,7 +69,7 @@
                                  hx-target="#modules_classe_name" >
                                     <option value="" disabled selected hidden>Choisir le cours...</option>
                                     {% for matiere in matieres %}
-                                        <option value="{{ matiere.id }}">{{ matiere.nom_matieres }}</option>
+                                        <option value="{{ matiere.id }}">{{ matiere.nom_matieres.nom_disciplines }} - {{ matiere.classes_id.nom_classes }}</option>
                                         {% endfor %}
                                 </select> 
                                
@@ -133,7 +133,7 @@
                 var json_data=JSON.parse(response);
                 console.log(json_data)
                 //Displaying Attendance Date Input and Students Attendance
-                var div_data="<div class='form-group'><label>Attendance Date: </label> <input type='date' name='attendance_date' id='attendance_date' class='form-control' /></div>"
+                var div_data=""
                 // div_data+="<div class='form-group'><div class='row'>"
                 // table preparation
                 div_data+="<div class='container-fluid' >"+
@@ -166,48 +166,55 @@
                     "<td class='px-2 py-1 align-middle' id="+json_data[key]['semaines_id']+ ">"+json_data[key]['debut_fin_semaines']+"</td>"+
                     "<td class='px-2 py-1 align-middle'>"+json_data[key]['titre_chapitres']+"</td>"+
                     "<td class='px-2 py-1 align-middle'>"+json_data[key]['detail_lecons']+"<p class='m-0 text-truncate'></p></td>"+
-                    "<td class='px-2 py-1 align-middle'>"+ json_data[key]['nombre_heures']+" H</td>"+
-                    // "<td class='px-2 py-1 align-middle'><div class='col-lg-2'><div class='form-check'><input type='checkbox' checked='checked' name='student_data[]' value='"+ json_data[key]['semainelecon_id'] +"' />  <label class='form-check-label'>"+ json_data[key]['statut']+" </label></div></div></td> "+
-                    
+                    "<td class='px-2 py-1 align-middle'>"+ json_data[key]['nombre_heures']+" H</td>"+         
 
-                    "<td class='px-2 py-1 align-middle'>"+
-                    "<label for="+json_data[key]['lecon_id']+ " class='control-label'>Statut</label>"+
-                    "<select  name='student_data[]' id="+json_data[key]['lecon_id']+ "class='form-control'>"
+                    "<td class='px-2 py-1 align-middle'>"
+                    // "<label for="+json_data[key]['lecon_id']+ " class='control-label'>Statut</label>"+
+                    // "<select  name='student_data[]' id="+json_data[key]['lecon_id']+ "class='form-control'>"
                     if ( json_data[key]['statut'] == '1' )
                         {
-                            div_data+="<option value="+json_data[key]['lecon_id']+ " selected='selected'>"+json_data[key]['statut']+ "</option>"
+                            // div_data+="<option value="+json_data[key]['lecon_id']+ " selected='selected'>"+json_data[key]['statut']+ "</option>"
+                            div_data+="En attente"
                         }
-                    else 
-                        {
-                            div_data+="<option value="+json_data[key]['lecon_id']+ " >1</option>"
-                        }
+                    else {
+                        // {
+                        //     // div_data+="<option value="+json_data[key]['lecon_id']+ " >1</option>"
+                        //     div_data+="En attente"
+                        // }
                        
                     if ( json_data[key]['statut'] == '2' )
                         {
-                            div_data+="<option value="+json_data[key]['lecon_id']+ " selected='selected'>"+json_data[key]['statut']+ "</option>"
+                            // div_data+="<option value="+json_data[key]['lecon_id']+ " selected='selected'>"+json_data[key]['statut']+ "</option>"
+                            div_data+="En cours"
                         }
                         
-                    else
-                        {
-                            div_data+="<option value="+json_data[key]['lecon_id']+ " >2</option>"
-                        }
+                    // else
+                    //     {
+                    //         // div_data+="<option value="+json_data[key]['lecon_id']+ " >2</option>"
+                    //         div_data+="En cours"
+                    //     }
                         
-                    if ( json_data[key]['statut'] == '3')
-                        {
-                            div_data+="<option value="+json_data[key]['lecon_id']+ "  selected='selected'>"+json_data[key]['statut']+ "</option>"
-                        }
+                    // if ( json_data[key]['statut'] == '3')
+                    //     {
+                    //         // div_data+="<option value="+json_data[key]['lecon_id']+ "  selected='selected'>"+json_data[key]['statut']+ "</option>"
+                    //         div_data+="Termine"
+                    //     }
                        
                     else 
-                           { div_data+="<option value="+json_data[key]['lecon_id']+" >3</option>" }
+                           { 
+                            // div_data+="<option value="+json_data[key]['lecon_id']+" >3</option>" 
+                            div_data+="Termine"
+                        }}
                     div_data+="</select>"
-                   
+                div_data+="</td>" 
+                div_data+="</tr>"  
                 }
                 div_data+="</tbody>";
                 div_data+="</table>";
 
                 // div_data+="</div></div>";
                 // div_data+="<div class='form-group'>";
-                div_data+="<button id='save_attendance' class='btn btn-success' type='button'>Enregistrer</button>";
+                // div_data+="<button id='save_attendance' class='btn btn-success' type='button'>Enregistrer</button>";
                 div_data+="</div>";
                 $("#student_data").html(div_data);
 
