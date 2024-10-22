@@ -19,7 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Sum, Q # for search rechercher
 # Transpose and pivot table
 from collections import defaultdict
-from django_pivot.pivot import pivot
+# from django_pivot.pivot import pivot
 from collections import OrderedDict # to sort the dictionary (table 2 entries)
 # from .models import UploadedFile # to upload/dowload file
 # from .forms import UploadFileForm # to upload/dowload file
