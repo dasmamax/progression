@@ -62,7 +62,7 @@ Gerer les matieres
                                 </div>
                             </div>
                         </div> -->
-                    </div>
+                    </div> 
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover text-nowrap">
@@ -77,41 +77,25 @@ Gerer les matieres
                                 </tr>
                             </thead>
                             <tbody id="admin_results_matieres">
-                                {% for matiere in matieres %}
-                                <tr>
-                                    <td>{{forloop.counter}}</td>
-                                    <td>{{ matiere.nom_matieres.nom_disciplines }}</td>
-                                    <!--<td>{{ niveau.created_at }}</td>
-                                    <td>{{ niveau.updated_at }}</td> -->
-                                    <td>{{ matiere.classes_id.nom_classes }}</td>
-                                    <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td>
-                                    <td>{{ matiere.professeurs_id.annee_scolaire_id.session_start_year }} - {{ matiere.professeurs_id.annee_scolaire_id.session_end_year }}</td>
-                                    <td>
-                                        <a href="{% url 'editer_matieres' matiere.id %}"
-                                            class="btn btn-success">Editer</a>
-                                       <a href="{% url 'supprimer_matieres' matiere.id %}"
-                                            class="btn btn-danger">Supprimer</a> 
-                                            
-                                    </td>
-                                </tr>
-                                {% endfor %}
-
+                               {% include 'hod_template/partial/delete_modal/matieres_list.html'%}
                             </tbody>
-                        </table>
+                        </table>  
                     </div>
                     <!-- /.card-body -->
-                </div>
+                </div>  
                 <!-- /.card -->
 
             </div>
         </div>
 
-    </div><!-- /.container-fluid -->
+    </div><!-- /.container-fluid --> 
 </section>
+
 <!-- search security-->
 <script>
     document.body.addEventListener('htmx:configRequest', (event) => {
       event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
     })
   </script> 
+
 {% endblock main_content %}

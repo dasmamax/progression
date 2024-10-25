@@ -25,7 +25,7 @@ Annee scolaire : {{ anneescolaire.session_start_year }} au {{ anneescolaire.sess
                        <div id="form-semaines">
                         {% include 'hod_template/partial/semaines_form.html' %}
                        </div> 
-                    
+                     
                        <div class="my-4">
                         <button type="button" class="btn btn-success me-2"
                         hx-get ="{% url 'creer_semaines' annee_pk=anneescolaire.id %}"

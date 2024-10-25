@@ -7,7 +7,7 @@ hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="modal-content">
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body"> 
     <div class="mb-3">
       <label for="{{ form.nombre_heures.id_for_label }}" class="form-label">vol. horaire prev.</label>
       {% render_field form.nombre_heures class="form-control" %}
@@ -18,7 +18,7 @@ hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="modal-content">
       <label>Semaine </label>
       <select class="form-control" name="semaine">
         {% for semaine in semaines %}
-        <option value="{{ semaine.id }}" {% if semaine.id == semaine_R.id %} selected {% endif %}> {{ semaine.debut_semaines }} au {{ semaine.fin_semaines }}</option>
+        <option value="{{ semaine.id }}" {% if semaine.id == semaine_R.id %} selected {% endif %}> semaine {{semaine.numero_semaines}}: {{ semaine.debut_semaines }} au {{ semaine.fin_semaines }}</option>
         {% endfor %}
       </select>
     </div>
@@ -54,7 +54,24 @@ hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="modal-content">
 
   <div class="modal-footer">
     {% if lecons %}
-    <button type="button" class="btn btn-danger" hx-post="{% url 'supprimer_lecon' pk=lecons.pk %}">Supprimer</button>
+    {%comment%} <!-- <button type="button" class="btn btn-danger" hx-post="{% url 'supprimer_lecon' pk=lecons.pk %}">Supprimer</button> -->{%endcomment%}
+    <button type="button" class="btn btn-danger"
+      hx-post="{% url 'supprimer_lecon' pk=lecons.pk %}" 
+     
+      hx-trigger='confirmed'
+      onClick="Swal.fire({title: 'Confirmation', 
+              text:'Voulez-vous supprimer cette lecon?',
+              type: 'warning',
+              showCancelButton: true, 
+              confirmButtonColor: '#DD6B55',
+              confirmButtonText: 'Oui',
+              cancelButtonText:  'Annuler',
+              closeOnConfirm: true, 
+              allowOutsideClick: false    
+              }
+              ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })">
+      Supprimer
+    </button>
     <span class="flex-grow-1"></span>
     {% endif %}
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

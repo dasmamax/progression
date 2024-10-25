@@ -80,27 +80,10 @@
                                 <th>Derniere connexion</th>
                                 <th>Date d'enregistrement</th>
                                 <th>Action</th>
-                                </tr>
+                                </tr> 
                             </thead>
                             <tbody id="admin_results_professeurs">
-                                {% for staff in staffs %}
-                                <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ staff.admin.first_name }}</td>
-                                <td>{{ staff.admin.last_name }}</td>
-                                <td>{{ staff.admin.username }}</td>
-                                <td>{{ staff.admin.email }}</td>
-                                <td>{{ staff.address }}</td>
-                                <td>{{ staff.annee_scolaire_id.session_start_year }} {{ staff.annee_scolaire_id.session_end_year }} </td>
-                                <td>{{ staff.admin.last_login }}</td>
-                                <td>{{ staff.admin.date_joined }}</td>
-                                <td>
-                                    <a href="{% url 'editer_professeurs' staff.admin.id %}" class="btn btn-success">Editer</a> 
-                                    <a href="{% url 'supprimer_professeurs' staff.admin.id %}" class="btn btn-danger">Supprimer</a>
-                                </td>
-                                </tr>
-                                {% endfor %}
-                                
+                                {% include 'hod_template/partial/delete_modal/professeurs_list.html'%}  
                             </tbody>
                             </table>
                         </div>

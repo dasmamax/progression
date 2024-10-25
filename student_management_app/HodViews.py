@@ -30,6 +30,7 @@ def admin_home(request):
     all_classes_count = Classess.objects.all().count()
     all_staffs_count = Staffs.objects.all().count()
     all_matieres_count = Matieres.objects.all().count()
+    all_disciplines_count = Disciplines.objects.all().count()
     
 
 
@@ -120,6 +121,7 @@ def admin_home(request):
          "all_staffs_count":all_staffs_count,
          "final_staff_nom_prenom_count":final_staff_nom_prenom_count,
          "all_matieres_count":all_matieres_count,
+         "all_disciplines_count":all_disciplines_count,
         
         "all_student_count": all_student_count,
         "subject_count": subject_count,
@@ -155,7 +157,7 @@ def recap_search_annees(request):
     if q:
         results =AnneeScolaire.objects.filter(Q(session_start_year__icontains=q) |
                                             Q(session_end_year__icontains=q)) \
-        .order_by("session_start_year", "-id")[0:20]
+        .order_by("session_start_year", "-id")[0:200]
  
     else: 
         results=[]
@@ -170,9 +172,9 @@ def recap_staffs(request):
     }  
     return render(request, "hod_template/recap/recap_staffs_template.html", context)
 
-def recap_staffs_list(request):
+def recap_staffs_list(request): 
     anneescolaire = request.GET.get('anneescolaire')
-    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire).order_by("admin__first_name")
     context = {
                 'staffs' : staffs    
                }
@@ -186,7 +188,7 @@ def recap_search_staffs(request):
                                            Q(last_name__icontains=q,user_type='2') |
                                            Q(staffs__annee_scolaire_id__session_start_year__icontains=q,user_type='2')|
                                            Q(staffs__annee_scolaire_id__session_end_year__icontains=q,user_type='2'),) \
-        .order_by("first_name", "-id")[0:20]
+        .order_by("first_name", "-id")[0:200]
     else:
         results=[]
     return render(request, "hod_template/recap/recap_search_staffs.html", {"results":results})
@@ -286,7 +288,7 @@ def recap_search_matieres(request):
                                          Q(professeurs_id__admin__last_name__icontains=q) |
                                          Q(professeurs_id__annee_scolaire_id__session_start_year__icontains=q) |
                                          Q(professeurs_id__annee_scolaire_id__session_end_year__icontains=q)) \
-        .order_by("nom_matieres", "-id")[0:20]
+        .order_by("nom_matieres", "-id")[0:200]
     else:
         results=[]
     return render(request, "hod_template/recap/recap_search_matieres.html", {"results":results})
@@ -328,7 +330,7 @@ def admin_search_annee(request):
  
     if q:
         results =AnneeScolaire.objects.filter(Q(session_start_year__icontains=q)) \
-        .order_by("session_start_year", "-id")[0:20]
+        .order_by("session_start_year", "-id")[0:200]
  
     else:
         results=[]
@@ -501,7 +503,7 @@ def admin_search_niveaux(request):
  
     if q:
         results =Niveaux.objects.filter(Q(nom_niveaux__icontains=q)) \
-        .order_by("nom_niveaux", "-id")[0:20]
+        .order_by("nom_niveaux", "-id")[0:200]
  
     else:
         results=[]
@@ -540,12 +542,12 @@ def editer_niveaux_save(request):
 def supprimer_niveaux(request, niveaux_id):
     niveau = Niveaux.objects.get(id=niveaux_id)
     try:
-        niveau.delete()
-        messages.success(request, "Niveau supprime.")
-        return redirect('gerer_niveaux')
+        niveau.delete() 
+        niveaux = Niveaux.objects.all()
+        return render(request, "hod_template/partial/delete_modal/niveaux_list.html",{"niveaux":niveaux})
     except:
         messages.error(request, "Echec de la suppression.")
-        return redirect('gerer_niveaux')
+        return render(request, "hod_template/partial/delete_modal/niveaux_list.html",{"niveaux":niveaux})
 
 # ####################   Disciplines
 
@@ -663,7 +665,7 @@ def creer_matieres_save(request):
  
 
 def gerer_matieres(request):
-    matieres = Matieres.objects.all()
+    matieres = Matieres.objects.all().order_by("nom_matieres__nom_disciplines")
     context = {
         "matieres": matieres
     }
@@ -680,7 +682,7 @@ def admin_search_matieres(request):
                                          Q(professeurs_id__admin__last_name__icontains=q) |
                                          Q(professeurs_id__annee_scolaire_id__session_start_year__icontains=q) |
                                          Q(professeurs_id__annee_scolaire_id__session_end_year__icontains=q)) \
-        .order_by("nom_matieres", "-id")[0:20]
+        .order_by("nom_matieres", "-id")[0:200]
     else:
         results=[]
  
@@ -740,14 +742,23 @@ def editer_matieres_save(request):
 
 
 def supprimer_matieres(request, matieres_id):
+    # matiere = Matieres.objects.get(id=matieres_id)
+    # try:
+    #     matiere.delete()
+    #     messages.success(request, "Matiere supprimee.")
+    #     return redirect('gerer_matieres')
+    # except:
+    #     messages.error(request, "Echec de suppression de la matiere.")
+    #     return redirect('gerer_matieres')
     matiere = Matieres.objects.get(id=matieres_id)
-    try:
-        matiere.delete()
-        messages.success(request, "Matiere supprimee.")
-        return redirect('gerer_matieres')
+    try: 
+         matiere.delete() 
+         matieres= Matieres.objects.all() 
+         return render(request, "hod_template/partial/delete_modal/matieres_list.html",{"matieres":matieres})
     except:
-        messages.error(request, "Echec de suppression de la matiere.")
-        return redirect('gerer_matieres')
+         messages.error(request, "Echec de suppression de la matiere.")
+         return render(request, "hod_template/partial/delete_modal/matieres_list.html",{"matieres":matieres})
+
 
 ##########################   Classes  ##########
 
@@ -793,7 +804,7 @@ def admin_search_classes(request):
  
     if q:
         results =Classess.objects.filter(Q(nom_classes__icontains=q)) \
-        .order_by("nom_classes", "-id")[0:20]
+        .order_by("nom_classes", "-id")[0:200]
  
     else:
         results=[]
@@ -843,11 +854,11 @@ def supprimer_classes(request, classes_id):
     classe = Classess.objects.get(id=classes_id)
     try:
         classe.delete()
-        messages.success(request, "Classe supprimee.")
-        return redirect('gerer_classes')
+        classes = Classess.objects.all()
+        return render(request, "hod_template/partial/delete_modal/classes_list.html",{"classes":classes})
     except:
         messages.error(request, "Echec de suppression de la classe.")
-        return redirect('gerer_Classes')
+        return render(request, "hod_template/partial/delete_modal/classes_list.html",{"classes":classes})
 
 ####### Professeurs   ################################
 
@@ -859,7 +870,7 @@ def creer_professeurs(request):
     #    session_year_list.append(single_session_year) 
     context ={
         "anneescolaire": annee_scolaire,
-        "form":AnneescolaireForm()
+        "form":AnneescolaireForm() 
     }
     return render(request, 'hod_template/creer_professeurs_template.html', context)
 
@@ -911,7 +922,7 @@ def admin_search_professeurs(request):
                                            Q(last_name__icontains=q,user_type='2') |
                                            Q(staffs__annee_scolaire_id__session_start_year__icontains=q,user_type='2')|
                                            Q(staffs__annee_scolaire_id__session_end_year__icontains=q,user_type='2'),) \
-        .order_by("first_name", "-id")[0:20]
+        .order_by("first_name", "-id")[0:200]
     else:
         results=[]
  
@@ -973,11 +984,12 @@ def supprimer_professeurs(request, staff_id):
     try:
         staff.admin.delete() # to delete the staff in CustomerUser
         staff.delete()
-        messages.success(request, "Professeur supprime.")
-        return redirect('gerer_professeurs')
+        staffs = Staffs.objects.all().order_by("admin__first_name")# ajout pour delete modal
+
+        return render(request, "hod_template/partial/delete_modal/professeurs_list.html",{"staffs":staffs})
     except:
         messages.error(request, "Echec de la suppression.")
-        return redirect('manage_staff')
+        return render(request, "hod_template/partial/delete_modal/professeurs_list.html",{"staffs":staffs})
 
 
 ##################### Gestion semaine ###############################
@@ -1039,7 +1051,7 @@ def gerer_semaines(request, annee_pk):
     #  anneescolaire = get_object_or_404(SessionYearModel, id=annee_pk)
     anneescolaire = get_object_or_404(AnneeScolaire, id=annee_pk)
     context ={ 'form': SemainesForm(), 
-               'semaines':Semaines.objects.all(),
+               'semaines':Semaines.objects.all().order_by("numero_semaines"),
                'anneescolaire':anneescolaire}
     return render(request, "hod_template/gerer_semaines_template.html", context)
 
@@ -1235,7 +1247,7 @@ def modules_matiere_name_admin_home(request):
                }
     return render(request, 'hod_template/partial/modules_matiere_name_admin.html', context)
  
-#-----------  HOME PAGE affichage des noms de la classe et du prof apres selection
+#-----------  HOME PAGE affichage du tableau du suivi (ancien affichage des noms de la classe et du prof) apres selection
 #----------- de la matiere dans evaluation par matiere
 def modules_class_and_prof_name(request):
 
@@ -1244,44 +1256,27 @@ def modules_class_and_prof_name(request):
     classe_name =  matiere.classes_id.nom_classes
     professeur_fname = matiere.professeurs_id.admin.first_name
     professeur_lname = matiere.professeurs_id.admin.last_name
-
-    context = {'classe_name': classe_name,
-               'professeur_fname': professeur_fname,
-               'professeur_lname': professeur_lname
-
-               }
-#------------------------------------
-    # matiere_id = request.GET.get('matiere')  # matiere = matiere.id
-    # matiere = Matieres.objects.get(id=matiere_id)
-    # classe_name =  matiere.classes_id.nom_classes
-    # professeur_fname = matiere.professeurs_id.admin.first_name
-    # professeur_lname = matiere.professeurs_id.admin.last_name
     # # recuperation de la liste des chapitres          
-    # chapitres = Chapitres.objects.filter(matieres_id = matiere)  
+    chapitres = Chapitres.objects.filter(matieres_id = matiere)  
     
     # #recuperation de la classe 
-    # classess = Classess.objects.get(id = matiere.classes_id_id)  
+    classess = Classess.objects.get(id = matiere.classes_id_id)  
 
-    # lecons = Lecons.objects.all()
-    # semaines = Semaines.objects.all()
-    # semaineslecons = SemainesLecons.objects.all()
+    lecons = Lecons.objects.all()
+    semaines = Semaines.objects.all()
+    semaineslecons = SemainesLecons.objects.all()
 
-
-    # #recuperation de l'annee scolaire
-    # # anneescolaire = AnneeScolaire.objects.get(id = staff_obj.annee_scolaire_id_id)
-
-    # context = {
-    #             "anneescolaire" : anneescolaire,
-    #             "staff_obj"     : staff_obj,
-    #             "chapitres"     : chapitres,
-    #             "lecons"        : lecons,
-    #             "semaines"      : semaines,
-    #             "semaineslecons" : semaineslecons,
-    #             "matieres"      : matiere,
-    #             "classess"      :  classess
-    #             }
-    #--------------------------------------------
-    return render(request, 'hod_template/partial/modules_class_and_prof_name.html', context)
+    context = {
+    #             #"anneescolaire" : anneescolaire,
+    #             #"staff_obj"     : staff_obj,
+                 "chapitres"     : chapitres,
+                 "lecons"        : lecons,
+                 "semaines"      : semaines,
+                 "semaineslecons" : semaineslecons,
+                 "matieres"      : matiere,
+                 "classess"      :  classess
+                 }
+    return render(request, 'hod_template/partial/admin_progression_detail.html', context)
 
 #------------- HOME PAGE Affichage des resultats  de 
 #-------------   l'evaluation apres click  sur 'afficher progression'
@@ -1631,7 +1626,8 @@ def admin_get_eval_par_classe_js_test2(request):
         "matiere_list":matiere_list,
         "lecons_attente_list" :lecons_attente_list,
         "lecons_encours_list":lecons_encours_list,
-        "lecons_termine_list":lecons_termine_list,}
+        "lecons_termine_list":lecons_termine_list,
+        "nom_classe":matiere.classes_id.nom_classes}
     list_data.append(list)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
@@ -1651,7 +1647,7 @@ def admin_evaluation_par_enseignant(request):
 def modules_enseignant_name_admin_home(request):
     
     anneescolaire = request.GET.get('anneescolaire') 
-    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire)
+    staffs = Staffs.objects.filter(annee_scolaire_id=anneescolaire).order_by('admin__first_name')
     context = {
                 'staffs' : staffs    
                }
@@ -2731,7 +2727,7 @@ def admin_profile_update(request):
             messages.error(request, "Failed to Update Profile")
             return redirect('admin_profile')
 
-
+ 
 def staff_profile(request):
     pass
 

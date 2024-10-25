@@ -43,12 +43,14 @@ class AnneeScolaire(models.Model):
     session_start_year = models.DateField()
     session_end_year = models.DateField()
     objects = models.Manager()
+   
 
 # Semaine ##############################
 class Semaines(models.Model):
     id = models.AutoField(primary_key=True)
     annee_scolaire_id = models.ForeignKey(
-         AnneeScolaire, on_delete=models.CASCADE, default=2)
+        #  AnneeScolaire, on_delete=models.CASCADE, default=2)
+         AnneeScolaire, on_delete=models.PROTECT, default=2) # IMPOSSIBLE DE SUPPRIMER ANNEE SI SEMAINE
     # annee_scolaire_id = models.ForeignKey(
     #      AnneeScolaire, on_delete=models.CASCADE)
     numero_semaines = models.PositiveIntegerField(default=1)
@@ -68,7 +70,8 @@ class Staffs(models.Model):
     #null=True in lieu of default = 1
     #to handle the foreignKey failed
     annee_scolaire_id = models.ForeignKey(
-         AnneeScolaire, on_delete=models.CASCADE, null=True) 
+        AnneeScolaire, on_delete=models.CASCADE, null=True) 
+        #  AnneeScolaire, on_delete=models.PROTECT, null=True)  # IMPOSSIBLE DE SUPPRIMER ANNEE SI STAFF
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()

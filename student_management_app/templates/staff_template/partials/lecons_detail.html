@@ -9,7 +9,7 @@
      </td>
  </tr>
 {% endfor %} -->
-
+ 
 
 <!--    test -->
 {% for semainelecon in semaineslecons %}
@@ -19,7 +19,7 @@
                 {% if semainelecon.semaines_id_id == semaine.id %}
 
                 <tr id="lecon-{{ lecon.pk }}" class="movie-row">
-                    <td>{{ lecon.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td> {{ semaine.debut_semaines }} au {{ semaine.fin_semaines }} </td>
                     <td>{{ lecon.detail_lecons }}</td>
                     <td>{{ lecon.nombre_heures }} H</td>

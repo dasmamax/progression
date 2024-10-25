@@ -27,7 +27,7 @@ from student_management_app.StaffViews import (
 
 #fin test ****************
 
-urlpatterns = [
+urlpatterns = [ 
     
     #test ********************************
 
@@ -307,10 +307,10 @@ urlpatterns = [
      # path('rechercher/', HodViews.rechercher, name='rechercher'),
      # path('search/', HodViews.search, name='search'),
      #           fin test rechercher 
-       
+        
      path('modules/', StaffViews.modules_classe_name, name='modules'),
 
-     #****************** Home page admin ***********
+     #****************** Home page admin *********** 
      #- Evaluation par matiere
      path('admin_evaluation_par_matiere/', HodViews.admin_evaluation_par_matiere, name='admin_evaluation_par_matiere'),
      path('modules_matiere_name_admin_home/', HodViews.modules_matiere_name_admin_home, name='modules_matiere_name_admin_home'),
@@ -356,6 +356,8 @@ urlpatterns = [
      path('recap_matieres/', HodViews.recap_matieres, name='recap_matieres'),
      path('recap_matieres_list/', HodViews.recap_matieres_list, name='recap_matieres_list'),
      path('recap_search_matieres/', HodViews.recap_search_matieres, name='recap_search_matieres'),
+    
+        
 
       #- upload/download files
      # path('upload/', HodViews.upload_file, name='upload_file'),

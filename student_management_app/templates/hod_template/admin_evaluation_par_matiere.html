@@ -47,7 +47,7 @@
                              
 
                         <div class="card-body">
-
+ 
                             <div class="form-group">
                                 <label>Annee scolaire </label>
                                 <select class="form-control" name="anneescolaire" id="anneescolaire" 
@@ -58,7 +58,7 @@
                                     {% for anneescolaire in anneescolaires %}
                                         <option value="{{ anneescolaire.id }}">{{ anneescolaire.session_start_year }} - {{ anneescolaire.session_end_year }}</option>
                                     {% endfor %}
-                                </select>
+                                </select> 
                             </div> 
                            
                             <div id="modules_matiere_name_admin">
@@ -66,16 +66,16 @@
                             </div>
 
                             <div id="modules_class_and_prof_name">
-                                {% include 'hod_template/partial/modules_class_and_prof_name.html' %} 
+                               {% include 'hod_template/partial/admin_progression_detail.html' %}
                             </div>
-
+ 
                         </div>
                         <!-- /.card-body --> 
  
                         <div class="card-footer" id="fetch_student_block">
 
                             <button type="button" class="btn btn-primary" id="fetch_progression"
-                                >Afficher la progression</button>
+                                >Afficher la visualisation</button>
                         </div>
  
                         <!-- <div class="card-footer">

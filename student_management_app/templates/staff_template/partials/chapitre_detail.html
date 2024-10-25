@@ -39,10 +39,31 @@
                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Editer chapitre
             </button>
-            <button hx-post="{% url 'delete_chapitre' chapitres.id %}" hx-swap="outerHTML swap:1s"
+            {%comment%}<!-- <button hx-post="{% url 'delete_chapitre' chapitres.id %}" hx-swap="outerHTML swap:1s"
                 class="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                 Supprimer chapitre
+            </button> -->{%endcomment%}
+
+            <button class="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    hx-post="{% url 'delete_chapitre' chapitres.id %}" 
+                    hx-swap="outerHTML"
+                    
+                    hx-trigger='confirmed'
+                    onClick="Swal.fire({title: 'Confirmation', 
+                            text:'Voulez-vous supprimer {{ chapitres.titre_chapitres }} ? Cette action supprimera les lecons liees',
+                            type: 'warning',
+                            showCancelButton: true, 
+                            confirmButtonColor: '#DD6B55',
+                            confirmButtonText: 'Oui',
+                            cancelButtonText:  'Annuler',
+                            closeOnConfirm: true, 
+                            allowOutsideClick: false    
+                            }
+                            ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })">
+                    Supprimer chapitre
             </button>
+           
+        
     
         <!-- for lessons entry -->
         

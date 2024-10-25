@@ -1,0 +1,30 @@
+
+{% for niveau in niveaux %} 
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{ niveau.nom_niveaux }}</td>
+                                    <td>
+                                        <a href="{% url 'editer_niveaux' niveau.id %}"
+                                            class="btn btn-success">Editer</a>
+                                       {%comment%} <!-- <a href="{% url 'supprimer_niveaux' niveau.id %}"
+                                            class="btn btn-danger">Supprimer</a> -->{%endcomment%}
+                                    <button type="button" class="btn btn-danger" 
+                                        hx-delete="{% url 'supprimer_niveaux' niveau.id %}"
+                                        hx-trigger='confirmed' 
+                                        onClick="Swal.fire({title: 'Confirmation', 
+                                        text:'Voulez-vous supprimer {{ niveau.nom_niveaux }} ? Cette action supprimera toutes les classes de ce niveau.',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#DD6B55',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText:  'Annuler',
+                                        closeOnConfirm: true,
+                                        allowOutsideClick: false    
+                                        }
+                                        ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+                                        hx-target="#admin_results_niveaux">
+                                        Supprimer 
+                                    </button>  
+                                    </td>
+                                </tr>
+                                {% endfor %}

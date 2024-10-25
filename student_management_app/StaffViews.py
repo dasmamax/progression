@@ -294,7 +294,6 @@ def supprimer_lecon(request, pk):
                           "showMessage": f"{lecon.detail_lecons} supprimee."})
     return response
 
-
 # def creer_lecons(request, pk):
    
     chapitre = Lecons.objects.get(id = pk)
@@ -363,9 +362,12 @@ def staff_suivi_progression (request, pk): #ancien
                 "matieres"      : matiere,
                 "classess"      :  classess
                 }
+
+    #( 
     # le fichier staff_suivi_progression2.html est la methode d'envoi de la 
     #  progression a l'administrateur pour evaluation.
     #return render(request, "staff_template/staff_suivi_progression2.html", context)
+    #)
     return render(request, "staff_template/staff_suivi_progression.html", context)
 
 def staff_search_progressions(request):
@@ -503,14 +505,51 @@ def staff_progression_list(request, pk):
     lecons = Lecons.objects.all()
     semaines = Semaines.objects.all()
     semaineslecons = SemainesLecons.objects.all()
+
+#--------------------- list trie----------------------------
+    staff_suivi_progression_list =[]
+    # semlecon_list=[]
+    list=[]
+    for chapitre in chapitres:
+        for lecon in lecons:   
+            if chapitre.id == lecon.chapitres_id_id:    # <!--recuperation des lecons du chapitre -->
+                for semainelecon in semaineslecons:
+                    if semainelecon.lecons_id_id == lecon.id:  # <!--recuperation des semaineslecons (statuts)      -->
+                        for semaine in semaines:  
+                            if semainelecon.semaines_id_id == semaine.id:  #<!--recuperation de la semaine -->
+                                ay= str(semaine.debut_semaines) + " au " + str(semaine.fin_semaines)
+                                # if semainelecon.status == '1':
+                                #     leconstatut= "En attente"
+                                # elif semainelecon.status == '2':
+                                #     leconstatut= "En cours"
+                                # elif semainelecon.status == '3':
+                                #     leconstatut= "Termine"
+                                list=[semaine.numero_semaines,
+                                      ay,
+                                    #   [semaine.debut_semaines,semaine.fin_semaines],
+                                      chapitre.titre_chapitres,
+                                      lecon.detail_lecons,
+                                      lecon.nombre_heures,
+                                    #   leconstatut,
+                                      semainelecon.status,
+                                      semainelecon.id
+                                     ]
+                                staff_suivi_progression_list.append(list)
+                                # semlecon_list.append(semainelecon)
     context = {
-                "chapitres"     : chapitres,
-                "lecons"        : lecons,
-                "semaines"      : semaines,
-                "semaineslecons" : semaineslecons,
-                "matieres"      : matiere,
-                }
-    return render(request, "staff_template/partials/staff_progression_list.html", context)
+        "staff_suivi_progression_list":sorted(staff_suivi_progression_list)
+    } 
+#--------------------- fin trie ---------------------------------
+    # context = {
+    #             "chapitres"     : chapitres,
+    #             "lecons"        : lecons,
+    #             "semaines"      : semaines,
+    #             "semaineslecons" : semaineslecons,
+    #             "matieres"      : matiere,
+    #             }
+    # return render(request, "staff_template/partials/staff_progression_list.html", context)
+    return render(request, "staff_template/partials/staff_progression_list_trie.html", context)
+
 
 
 #@api_view(["GET", "PUT"])

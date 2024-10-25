@@ -4,12 +4,12 @@
   hx-post="{% url 'creer_semaines' annee_pk=anneescolaire.id %}" 
   hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' 
   hx-target="#semaine-list"
-  hx-swap="beforeend" 
+  hx-swap="beforeend"  
   hx-trigger="click from:#submit-all"
   hx-on::after-request="this.remove()"> <!-- afterRequest doesn t work-->
   <!-- hx-on="htmx:afterRequest: this.remove()"-->
   <!--hx-on::afterRequest="this.remove()-->
-    
+     
     <div class="row">
 
       <div class="col-4 col-md-3">

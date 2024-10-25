@@ -1,0 +1,79 @@
+{% load static %}
+<h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
+    <p ><b>Cours de {{matieres.nom_matieres.nom_disciplines}}</b></p>
+</h3>
+
+<div hx-target="this" class="container-fluid" >
+    <table class="table table-bordered" id="product-list">
+        <colgroup>
+            <col width="5%">
+            <col width="10%">
+            <col width="15%">
+            <col width="25%">
+            <col width="20%">
+            <col width="15%">
+            <col width="10%">
+        </colgroup>
+        <thead>
+            <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+                <th class="px-2 py-2 text-center">chap ID </th>
+                <th class="px-2 py-2 text-center">Semaines</th>
+                <th class="px-2 py-2 text-center">Chapitres</th>
+                <th class="px-2 py-2 text-center">Contenus Lecons</th>
+                
+                <th class="px-2 py-2 text-center">Vol.H.P.</th>
+                <th class="px-2 py-2 text-center">Statuts</th>
+                <th class="px-2 py-2 text-center">Actions</th> 
+            </tr>
+        </thead> 
+         
+     <tbody>
+        {% for chapitre in chapitres %}
+        {% for lecon in lecons %}   
+           {% if chapitre.id == lecon.chapitres_id_id %}    <!--recuperation des lecons du chapitre -->
+             {% for semainelecon in semaineslecons %}  
+                 {% if semainelecon.lecons_id_id == lecon.id %} <!--recuperation des semaineslecons (statuts)      -->
+                    {% for semaine in semaines %}  
+                        {% if semainelecon.semaines_id_id == semaine.id %}  <!--recuperation de la semaine -->
+                              
+                        <tr >
+                            <td class="px-2 py-1 align-middle">{{ chapitre.id }}</td>
+                            <td class="px-2 py-1 align-middle">{{ semaine.debut_semaines}} au {{ semaine.fin_semaines }}</td>
+                            <td class="px-2 py-1 align-middle">{{ chapitre.titre_chapitres }}</td>
+                            <td class="px-2 py-1 align-middle">{{ lecon.detail_lecons}}<p class="m-0 text-truncate"></p></td>
+                            <td class="px-2 py-1 align-middle">{{ lecon.nombre_heures}} H</td> 
+                            <td class="px-2 py-1 align-middle">
+                                {% if semainelecon.status == '1' %}
+                                <span class="badge bg-danger bg-gradient rounded-pill px-2">En attente</span> 
+                                {% elif semainelecon.status == '2'%}
+                                <span class="badge bg-warning bg-gradient rounded-pill px-2">En cours</span>
+                                {% elif semainelecon.status == '3'%} 
+                                <span class="badge bg-success bg-gradient rounded-pill px-2">Termine</span>
+                                {% endif %} 
+                            </td>
+                            <td class="px-2 py-1 align-middle text-center">
+                               
+                                    <a class="btn btn-outline-primary btn-sm edit-data" 
+                                    hx-get="{% url 'editer_status' pk=semainelecon.pk %}" 
+                                    hx-target="#dialog" 
+                                    title="Editer">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                            </td>
+                        </tr>
+         
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {% endfor %}
+            
+           </tbody>
+
+    </table>   
+</div> 
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.6.1/dist/htmx.min.js"></script>

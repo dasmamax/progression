@@ -1,0 +1,30 @@
+{% for progress in staff_suivi_progression_list %}
+    
+
+<tr >  
+    <td class="px-2 py-1 align-middle">{{progress.0}} </td>
+    <td class="px-2 py-1 align-middle">{{progress.1}}</td>
+    <td class="px-2 py-1 align-middle">{{progress.2}}</td>
+    <td class="px-2 py-1 align-middle">{{progress.3}}<p class="m-0 text-truncate"></p></td>
+    <td class="px-2 py-1 align-middle text-center">{{progress.4}} H</td> 
+    <td class="px-2 py-1 align-middle text-center">
+        {% if progress.5 == '1' %}
+                        <span class="badge bg-danger bg-gradient rounded-pill px-2">En attente</span> 
+                        {% elif progress.5 == '2'%}
+                        <span class="badge bg-warning bg-gradient rounded-pill px-2">En cours</span>
+                        {% elif progress.5 == '3'%} 
+                        <span class="badge bg-success bg-gradient rounded-pill px-2">Termine</span>
+                        {% endif %} 
+    </td>
+    <td class="px-2 py-1 align-middle text-center">
+       
+            <a class="btn btn-outline-primary btn-sm edit-data" 
+            hx-get="{% url 'editer_status' pk=progress.6 %}" 
+            hx-target="#dialog" 
+            title="Editer">
+                <i class="fa fa-edit"></i> 
+            </a>
+    </td>
+</tr>
+{% endfor %}
+

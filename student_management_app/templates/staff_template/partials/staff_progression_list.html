@@ -9,8 +9,8 @@
             {% for semaine in semaines %}  
                 {% if semainelecon.semaines_id_id == semaine.id %}  <!--recuperation de la semaine -->
                      
-                <tr >
-                    <td class="px-2 py-1 align-middle">{{ chapitre.id }}</td>
+                <tr >  
+                    <td class="px-2 py-1 align-middle">{{ semaine.numero_semaines }}</td>
                     <td class="px-2 py-1 align-middle">{{ semaine.debut_semaines}} au {{ semaine.fin_semaines }}</td>
                     <td class="px-2 py-1 align-middle">{{ chapitre.titre_chapitres }}</td>
                     <td class="px-2 py-1 align-middle">{{ lecon.detail_lecons}}<p class="m-0 text-truncate"></p></td>
@@ -30,7 +30,7 @@
                             hx-get="{% url 'editer_status' pk=semainelecon.pk %}" 
                             hx-target="#dialog" 
                             title="Editer">
-                                <i class="fa fa-edit"></i>
+                                <i class="fa fa-edit"></i> 
                             </a>
                     </td>
                 </tr>

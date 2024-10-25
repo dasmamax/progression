@@ -1,0 +1,49 @@
+<script src="https://common.olemiss.edu/_js/sweet-alert/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://common.olemiss.edu/_js/sweet-alert/sweet-alert.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% for matiere in matieres %}
+<tr>
+    <td>{{forloop.counter}}</td>
+    <td>{{ matiere.nom_matieres.nom_disciplines }}</td>
+    <!--<td>{{ niveau.created_at }}</td>
+    <td>{{ niveau.updated_at }}</td> -->
+    <td>{{ matiere.classes_id.nom_classes }}</td>
+    <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td>
+    <td>{{ matiere.professeurs_id.annee_scolaire_id.session_start_year }} - {{ matiere.professeurs_id.annee_scolaire_id.session_end_year }}</td>
+    <td>
+        <a href="{% url 'editer_matieres' matiere.id %}"
+            class="btn btn-success">Editer</a> 
+       
+            
+            {%comment%}<!-- <a href="{% url 'supprimer_matieres' matiere.id %}"
+            class="btn btn-danger">Supprimer</a>   --> {%endcomment%} 
+              
+            {%comment%}<!-- <button type="button" class="btn btn-danger"
+        hx-delete="{% url 'supprimer_matieres' matiere.id %}"
+        hx-target="#admin_results_matieres"
+        hx-confirm="Voulez-vous supprimer?">
+            Supprimer
+            </button>  -->{%endcomment%} 
+        
+            <button type="button" class="btn btn-danger" 
+                    hx-delete="{% url 'supprimer_matieres' matiere.id %}"
+                    hx-trigger='confirmed'
+                    onClick="Swal.fire({title: 'Confirmation', 
+                                        text:'Voulez-vous supprimer {{ matiere.nom_matieres.nom_disciplines }} de {{ matiere.classes_id.nom_classes }} ? Cette action supprimera le contenu des cours',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#DD6B55',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText:  'Annuler',
+                                        closeOnConfirm: true,
+                                        allowOutsideClick: false    
+                                        }
+                                        ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+                    hx-target="#admin_results_matieres">
+                    Supprimer 
+            </button>  
+    </td>
+
+</tr>
+{% endfor %}

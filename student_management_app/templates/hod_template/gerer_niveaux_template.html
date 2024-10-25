@@ -75,22 +75,8 @@ Gerer les niveaux
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin_results_niveaux">
-                                {% for niveau in niveaux %}
-                                <tr>
-                                    <td>{{forloop.counter}}</td>
-                                    <td>{{ niveau.nom_niveaux }}</td>
-                                    <!--<td>{{ niveau.created_at }}</td>
-                                    <td>{{ niveau.updated_at }}</td> -->
-                                    <td>
-                                        <a href="{% url 'editer_niveaux' niveau.id %}"
-                                            class="btn btn-success">Editer</a>
-                                        <a href="{% url 'supprimer_niveaux' niveau.id %}"
-                                            class="btn btn-danger">Supprimer</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-
+                            <tbody id="admin_results_niveaux"> 
+                                {% include 'hod_template/partial/delete_modal/niveaux_list.html'%}  
                             </tbody>
                         </table>
                     </div>
