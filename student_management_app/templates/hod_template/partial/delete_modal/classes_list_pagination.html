@@ -1,0 +1,50 @@
+{% if classes %}
+{% for classe in classes %}
+<tr>
+    <td colspan="1">{{classe.id}}</td>
+    <td colspan="1">{{ classe.nom_classes }}</td>
+    <td colspan="1">{{ classe.niveaux_id.nom_niveaux }}</td>
+    <td colspan="1">
+        <a href="{% url 'editer_classes' classe.id %}"
+            class="btn btn-success">Editer</a>
+        <button type="button" class="btn btn-danger" 
+        hx-delete="{% url 'supprimer_classes' classe.id %}"
+        hx-trigger='confirmed'  
+        onClick="Swal.fire({title: 'Confirmation', 
+        text:'Voulez-vous supprimer {{ classe.nom_classes }} ? Cette action supprimera les cours de cette classe.',
+        type: 'warning',
+        showCancelButton: true,   
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Oui',
+        cancelButtonText:  'Annuler',
+        closeOnConfirm: true, 
+        allowOutsideClick: false    
+        }
+        ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+        hx-target="#admin_results_classes_p"> 
+        Supprimer 
+    </button>   
+    </td>
+</tr>
+{% endfor %}
+{% else %}
+    <tr>
+        <td colspan="4" style="text-align:center">Aucun resultat</td>
+    </tr>   
+
+{% endif %}
+{% if classes.has_next %}
+<tr id="load-more_c">  
+<td colspan="4">
+        <button
+            class="ui button primary"
+            hx-get="{% url 'admin_search_classes_pagination'  %}" 
+            hx-vals='{"page": "{{ classes.next_page_number }}", "search": "{{ search }}"}'
+            hx-target="#load-more_c" 
+            hx-swap="outerHTML"
+        >
+            Afficher plus...
+        </button>
+</td>
+</tr>
+{% endif %}

@@ -97,14 +97,20 @@
   {% endblock main_content %}
  
     {% block custom_js %}
-     
+    <!--for labeling chart js /percentage -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js" 
+    integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer"></script>
+
     <script>
         $(document).ready(function(){
             // recuperation des donnees
             $("#fetch_progression2").click(function(){
                 var enseignant=$("#enseignant").val()
                 $.ajax({
-                    url:'{% url 'admin_get_eval_par_enseignant_js' %}',
+                    url:"{% url 'admin_get_eval_par_enseignant_js' %}",
                     type:'POST',
                     data:{enseignant:enseignant}, 
                 })
@@ -209,16 +215,37 @@
                                 //Code for Pie Chart
                                     var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
                                     var pieData        = pieData;
-                                    var pieOptions     = {
+                                    var pieOptions     = 
+                                        {
                                     maintainAspectRatio : false,
-                                    responsive : true,
+                                    responsive : true
+                                    
                                     }
+                                    
                                     //Create pie or douhnut chart
                                     // You can switch between pie and douhnut using the method below.
                                     var pieChart = new Chart(pieChartCanvas, {
                                     type: 'pie',
                                     data: pieData,
-                                    options: pieOptions      
+                                    options: pieOptions,
+                                    options: { plugins:{ tooltip:{enabled:false},
+                                                         datalabels: { 
+                                                            align: 'center', 
+                                                            formatter:(value, context) => {
+                                                                const datapoints = context.chart.data.datasets[0].data; //retreive teh value of variable = data 
+                                                                function totalSum(total, datapoint){
+                                                                    return total + datapoint;
+                                                                }
+                                                                const totalValue = datapoints.reduce(totalSum, 0);
+                                                                const percentageValue = (value / totalValue*100).toFixed(1);
+                                                                const display = [`${value}`, `${percentageValue}%`]
+                                                                return display; // display the result
+                                                            },
+                                                            color: '#fff',
+                                                         } }
+                                            },       
+                                    plugins: [ChartDataLabels]
+                                    
                                     })
 
                                 //------------------Bar chart------------------------------------------

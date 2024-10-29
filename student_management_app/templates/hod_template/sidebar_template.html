@@ -66,18 +66,18 @@
             <i class="nav-icon fas fa-th"></i>
             <p>
               Gerer les cycles
-            </p>
+            </p> 
           </a>
         </li>
 
         <li class="nav-item">
-          {% url 'gerer_niveaux' as gerer_niveaux %}
+          {% url 'gerer_niveaux_pagination' as gerer_niveaux_pagination %}
           {% url 'editer_niveaux' niveaux_id=id as editer_niveaux %}
-          <a href="{{ gerer_niveaux }}"
-            class="nav-link {% if request.path == gerer_niveaux %} active {% endif %} {% if request.path == editer_niveaux %} active {% endif %}">
+          <a href="{{ gerer_niveaux_pagination }}"
+            class="nav-link {% if request.path == gerer_niveaux_pagination %} active {% endif %} {% if request.path == editer_niveaux %} active {% endif %}">
             <i class="nav-icon fas fa-chalkboard"></i>
             <p>
-              Gerer les niveaux
+              Gerer les niveaux 
             </p>
           </a>
         </li>
@@ -93,12 +93,12 @@
         </li>
 
         <li class="nav-item">
-          {% url 'gerer_classes' as gerer_classes %}
+          {% url 'gerer_classes_pagination' as gerer_classes_pagination %}
           {% url 'editer_classes' classes_id=id as editer_classes %}
-          <a href="{{ gerer_classes }}"
-            class="nav-link {% if request.path == gerer_classes %} active {% endif %} {% if request.path == editer_classes %} active {% endif %}">
+          <a href="{{ gerer_classes_pagination }}"
+            class="nav-link {% if request.path == gerer_classes_pagination %} active {% endif %} {% if request.path == editer_classes %} active {% endif %}">
             <i class="nav-icon fas fa-chalkboard"></i>
-            <p>
+            <p> 
               Gerer les classes
             </p>
           </a>
@@ -115,17 +115,17 @@
         </li>
 
         <li class="nav-item">
-          {% url 'gerer_professeurs' as gerer_professeurs %}
+          {% url 'gerer_professeurs_pagination' as gerer_professeurs_pagination %}
           {% url 'editer_professeurs' professeurs_id=id as editer_professeurs %}
-          <a href="{{ gerer_professeurs }}"
-            class="nav-link {% if request.path == gerer_professeurs %} active {% endif %} {% if request.path == editer_professeurs %} active {% endif %}">
+          <a href="{{ gerer_professeurs_pagination }}"
+            class="nav-link {% if request.path == gerer_professeurs_pagination %} active {% endif %} {% if request.path == editer_professeurs %} active {% endif %}">
             <i class="nav-icon fas fa-chalkboard"></i>
             <p>
               Gerer les professeurs
             </p>
           </a>
         </li>
-
+ 
 
         <li class="nav-item">
           {% url 'creer_professeurs' as creer_professeurs %}
@@ -148,10 +148,10 @@
         </li>
 
         <li class="nav-item">
-          {% url 'gerer_matieres' as gerer_matieres %}
+          {% url 'gerer_matieres_pagination' as gerer_matieres_pagination %}
           {% url 'editer_matieres' matieres_id=id as editer_matieres %}
-          <a href="{{gerer_matieres }}"
-            class="nav-link {% if request.path == gerer_matieres %} active {% endif %} {% if request.path == editer_matieres %} active {% endif %}">
+          <a href="{{gerer_matieres_pagination }}"
+            class="nav-link {% if request.path == gerer_matieres_pagination %} active {% endif %} {% if request.path == editer_matieres %} active {% endif %}">
             <i class="nav-icon fas fa-chalkboard"></i>
             <p>
               Gerer les matieres

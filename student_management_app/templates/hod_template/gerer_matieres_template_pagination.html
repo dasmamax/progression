@@ -1,0 +1,96 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Gerer les matieres
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+ 
+        <a class="btn btn-primary" href="{% url 'creer_matieres' %}" role="button">+ Creer une matiere</a> <br />&nbsp;
+
+        {% if messages %}
+        <div class="form-group">
+            <div class="col-12">
+                {% for message in messages %}
+                {% if message.tags == "error" %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% elif message.tags == "success" %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Details des matieres</h3>
+                        
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <form  
+                                    class="centred ui form"
+                                    hx-get="{% url 'admin_search_matieres_pagination' %}" 
+                                    hx-target="#admin_results_matieres_p"
+                                    hx-trigger="submit, input delay:5ms"
+                                >   
+                                <input type="text" class="form-control float-right" name="search" placeholder="Rechercher..." value="{{ search }}">
+                                </form><!-- fin nouveau -->
+                            </div>
+                        </div>  
+
+                    </div> 
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom de la discipline</th>
+                                    <th>Classe</th>
+                                    <th>Professeur</th>  
+                                    <th>Annee scol.</th> 
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin_results_matieres_p">
+                               {% include 'hod_template/partial/delete_modal/matieres_list_pagination.html'%}
+                            </tbody>
+                        </table>  
+                    </div>
+                    <!-- /.card-body -->
+                </div>  
+                <!-- /.card -->
+
+            </div>
+        </div>
+
+    </div><!-- /.container-fluid --> 
+</section>
+
+<!-- search security-->
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+  </script> 
+
+{% endblock main_content %}

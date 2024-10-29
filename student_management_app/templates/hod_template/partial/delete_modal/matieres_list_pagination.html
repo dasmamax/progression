@@ -1,0 +1,57 @@
+{% if matieres %}
+{% for matiere in matieres %}
+<tr>
+    <td colspan="1">{{matiere.id}}</td>
+    <td colspan="1">{{ matiere.nom_matieres.nom_disciplines }}</td>
+    <!--<td>{{ niveau.created_at }}</td>
+    <td>{{ niveau.updated_at }}</td> -->
+    <td colspan="1">{{ matiere.classes_id.nom_classes }}</td>
+    <td colspan="1">{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td>
+    <td colspan="1">{{ matiere.professeurs_id.annee_scolaire_id.session_start_year }} - {{ matiere.professeurs_id.annee_scolaire_id.session_end_year }}</td>
+    <td colspan="1">
+        <a href="{% url 'editer_matieres' matiere.id %}"
+            class="btn btn-success">Editer</a> 
+       
+            <button type="button" class="btn btn-danger" 
+                    hx-delete="{% url 'supprimer_matieres' matiere.id %}"
+                    hx-trigger='confirmed'
+                    onClick="Swal.fire({title: 'Confirmation', 
+                                        text:'Voulez-vous supprimer {{ matiere.nom_matieres.nom_disciplines }} de {{ matiere.classes_id.nom_classes }} ? Cette action supprimera le contenu des cours',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#DD6B55',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText:  'Annuler',
+                                        closeOnConfirm: true,
+                                        allowOutsideClick: false    
+                                        }
+                                        ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+                    hx-target="#admin_results_matieres_p">
+                    Supprimer 
+            </button>  
+    </td>
+
+</tr>
+{% endfor %}
+{% else %}
+    <tr>
+        <td colspan="6" style="text-align:center">Aucun resultat</td>
+    </tr>   
+
+{% endif %}
+{% if matieres.has_next %}
+<tr id="load-more_m">  
+<td colspan="6">
+        <button
+            class="ui button primary"
+            hx-get="{% url 'admin_search_matieres_pagination'  %}" 
+            hx-vals='{"page": "{{ matieres.next_page_number }}", "search": "{{ search }}"}'
+            hx-target="#load-more_m" 
+            hx-swap="outerHTML"
+        >
+            Afficher plus...
+        </button>
+</td>
+</tr>
+{% endif %}
+

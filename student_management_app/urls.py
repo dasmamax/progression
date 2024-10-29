@@ -356,10 +356,20 @@ urlpatterns = [
      path('recap_matieres/', HodViews.recap_matieres, name='recap_matieres'),
      path('recap_matieres_list/', HodViews.recap_matieres_list, name='recap_matieres_list'),
      path('recap_search_matieres/', HodViews.recap_search_matieres, name='recap_search_matieres'),
-    
-        
-
-      #- upload/download files
+     
+     #- gestion de la pagination 
+     path('gerer_niveaux_pagination/', HodViews.gerer_niveaux_pagination, name="gerer_niveaux_pagination"),
+     path('admin_search_niveaux_pagination/', HodViews.admin_search_niveaux_pagination, name="admin_search_niveaux_pagination"),
+     path('gerer_classes_pagination/', HodViews.gerer_classes_pagination, name="gerer_classes_pagination"),
+     path('admin_search_classes_pagination/', HodViews.admin_search_classes_pagination, name="admin_search_classes_pagination"),
+     path('gerer_professeurs_pagination/', HodViews.gerer_professeurs_pagination, name="gerer_professeurs_pagination"),
+     path('admin_search_professeurs_pagination/', HodViews.admin_search_professeurs_pagination, name="admin_search_professeurs_pagination"),
+     path('gerer_matieres_pagination/', HodViews.gerer_matieres_pagination, name="gerer_matieres_pagination"),
+     path('admin_search_matieres_pagination/', HodViews.admin_search_matieres_pagination, name="admin_search_matieres_pagination"),
+     path('gerer_progessions_pagination/', StaffViews.gerer_progessions_pagination, name="gerer_progessions_pagination"),
+     path('staff_search_progressions_pagination/', StaffViews.staff_search_progressions_pagination, name="staff_search_progressions_pagination"),
+  
+      #- upload/download files 
      # path('upload/', HodViews.upload_file, name='upload_file'),
      # path('download/<int:file_id>/', HodViews.download_file, name='download_file'),
 ]

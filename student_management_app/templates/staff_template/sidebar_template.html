@@ -51,8 +51,8 @@
         </li> -->
         {% endcomment %}
         <li class="nav-item">
-          {% url 'gerer_progressions' as gerer_progressions %}
-          <a href="{{ gerer_progressions }}" class="nav-link {% if request.path == gerer_progressions %} active {% endif %}">
+          {% url 'gerer_progessions_pagination' as gerer_progessions_pagination %}
+          <a href="{{ gerer_progessions_pagination }}" class="nav-link {% if request.path == gerer_progessions_pagination %} active {% endif %}">
             <i class="nav-icon fas fa-tasks"></i>
             <p>
               Gerer les progressions

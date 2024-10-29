@@ -5,12 +5,14 @@ from django.core.files.storage import FileSystemStorage  # To upload Profile Pic
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
-import json
- 
+import json 
+   
 from student_management_app.models import Semaines, SemainesLecons, Chapitres, Lecons, Cycles, Niveaux, Disciplines, Matieres, Classess, AnneeScolaire, CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
 from .forms import AddStudentForm, EditStudentForm, DisciplinesForm, CyclesForm, AnneescolaireForm
 from .forms import SemainesForm
-#from .forms_prof import AddProfesseurForm, EditStudentForm
+#for pagination
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+POSTS_PER_PAGE = 20
 
 ############ lecon ##########
 from django.http.response import HttpResponse, HttpResponseNotAllowed
@@ -532,7 +534,7 @@ def editer_niveaux_save(request):
             niveau.save()
 
             messages.success(request, "Niveau mis a jour.")
-            return redirect('/editer_niveaux/'+niveaux_id)
+            return redirect('/gerer_niveaux_pagination/')
 
         except:
             messages.error(request, "Echec de la mise a jour.")
@@ -548,6 +550,38 @@ def supprimer_niveaux(request, niveaux_id):
     except:
         messages.error(request, "Echec de la suppression.")
         return render(request, "hod_template/partial/delete_modal/niveaux_list.html",{"niveaux":niveaux})
+
+# test pagination
+ 
+def gerer_niveaux_pagination(request):
+    niveaux, search = _search_posts_niveaux(request)
+    context = {"niveaux": niveaux, "search": search}
+    return render(request, 'hod_template/gerer_niveaux_template_pagination.html', context)
+
+def admin_search_niveaux_pagination(request):
+    niveaux, search = _search_posts_niveaux(request)
+    context = {"niveaux": niveaux, "search": search}
+    return render(request, "hod_template/partial/delete_modal/niveaux_list_pagination.html", context)
+ 
+
+def _search_posts_niveaux(request):
+    search = request.GET.get("search")
+    page = request.GET.get("page")
+    niveaux = Niveaux.objects.all().order_by("-nom_niveaux")
+    if search:
+        niveaux = niveaux.filter(nom_niveaux__icontains=search).order_by("-nom_niveaux")
+
+    paginator = Paginator(niveaux, POSTS_PER_PAGE)
+    try:
+        niveaux = paginator.page(page)
+    except PageNotAnInteger:
+        niveaux = paginator.page(1)
+    except EmptyPage:
+        niveaux = paginator.page(paginator.num_pages)
+
+    return niveaux, search or ""
+
+# fin test pagination 
 
 # ####################   Disciplines
 
@@ -734,7 +768,7 @@ def editer_matieres_save(request):
             matiere.save()
 
             messages.success(request, "Matiere mise a jour.")
-            return redirect('/editer_matieres/'+matieres_id)
+            return redirect('/gerer_matieres_pagination/')
 
         except:
             messages.error(request, "Echec de mise a jour de la matiere.")
@@ -759,6 +793,43 @@ def supprimer_matieres(request, matieres_id):
          messages.error(request, "Echec de suppression de la matiere.")
          return render(request, "hod_template/partial/delete_modal/matieres_list.html",{"matieres":matieres})
 
+# test pagination
+
+def gerer_matieres_pagination(request):
+    matieres, search = _search_posts_matieres(request)
+    context = {"matieres": matieres, "search": search}
+    return render(request, 'hod_template/gerer_matieres_template_pagination.html', context)
+
+def admin_search_matieres_pagination(request):
+    matieres, search = _search_posts_matieres(request)
+    context = {"matieres": matieres, "search": search}
+    return render(request, "hod_template/partial/delete_modal/matieres_list_pagination.html", context)
+ 
+def _search_posts_matieres(request):
+    search = request.GET.get("search")
+    page = request.GET.get("page")
+    matieres = Matieres.objects.all().order_by("nom_matieres__nom_disciplines")
+    if search:
+        matieres = matieres.filter(Q(nom_matieres__nom_disciplines__icontains=search) |
+                                         Q(classes_id__nom_classes__icontains=search) |
+                                         Q(professeurs_id__admin__first_name__icontains=search) |
+                                         Q(professeurs_id__admin__last_name__icontains=search) |
+                                         Q(professeurs_id__annee_scolaire_id__session_start_year__icontains=search) |
+                                         Q(professeurs_id__annee_scolaire_id__session_end_year__icontains=search)) \
+        .order_by("nom_matieres__nom_disciplines")
+        # matieres = matieres.filter(nom_matieres__nom_disciplines__icontains=search).order_by("nom_matieres__nom_disciplines")
+
+    paginator = Paginator(matieres, POSTS_PER_PAGE)
+    try:
+        matieres = paginator.page(page)
+    except PageNotAnInteger:
+        matieres = paginator.page(1)
+    except EmptyPage:
+        matieres = paginator.page(paginator.num_pages)
+
+    return matieres, search or ""
+
+# fin test pagination 
 
 ##########################   Classes  ##########
 
@@ -804,7 +875,7 @@ def admin_search_classes(request):
  
     if q:
         results =Classess.objects.filter(Q(nom_classes__icontains=q)) \
-        .order_by("nom_classes", "-id")[0:200]
+        .order_by("-nom_classes", "-id")[0:200]
  
     else:
         results=[]
@@ -843,7 +914,7 @@ def editer_classes_save(request):
             messages.success(request, "Classe mise a jour.")
             # return redirect('/editer_classes/'+classes_id)
             # return redirect('/edit_subject/'+subject_id)
-            return HttpResponseRedirect(reverse("editer_classes", kwargs={"classes_id": classes_id}))
+            return HttpResponseRedirect(reverse("gerer_classes_pagination"))
         except:
             messages.error(request, "Echec de mise a jour de la classe.")
             # return redirect('/editer_classes/'+classes_id)
@@ -859,6 +930,38 @@ def supprimer_classes(request, classes_id):
     except:
         messages.error(request, "Echec de suppression de la classe.")
         return render(request, "hod_template/partial/delete_modal/classes_list.html",{"classes":classes})
+
+# test pagination 
+
+def gerer_classes_pagination(request):
+    classes, search = _search_posts_classes(request)
+    context = {"classes": classes, "search": search}
+    return render(request, 'hod_template/gerer_classes_template_pagination.html', context)
+
+def admin_search_classes_pagination(request):
+    classes, search = _search_posts_classes(request)
+    context = {"classes": classes, "search": search}
+    return render(request, "hod_template/partial/delete_modal/classes_list_pagination.html", context)
+ 
+def _search_posts_classes(request):
+    search = request.GET.get("search")
+    page = request.GET.get("page")
+    classes = Classess.objects.all().order_by("-nom_classes")
+    if search:
+        classes = classes.filter(Q(nom_classes__icontains=search)|
+                                 Q(niveaux_id__nom_niveaux__icontains=search))\
+                                    .order_by("-nom_classes")
+
+    paginator = Paginator(classes, POSTS_PER_PAGE)
+    try:
+        classes = paginator.page(page)
+    except PageNotAnInteger:
+        classes = paginator.page(1)
+    except EmptyPage:
+        classes = paginator.page(paginator.num_pages)
+    return classes, search or ""
+
+# fin test pagination 
 
 ####### Professeurs   ################################
 
@@ -973,7 +1076,7 @@ def editer_professeurs_save(request):
             staff_model.save()
 
             messages.success(request, "professeur mis a jour.")
-            return redirect('/editer_professeurs/'+staff_id)
+            return redirect('/gerer_professeurs_pagination/')
 
         except:
             messages.error(request, "Echec de mise a jour du professeur.")
@@ -991,7 +1094,40 @@ def supprimer_professeurs(request, staff_id):
         messages.error(request, "Echec de la suppression.")
         return render(request, "hod_template/partial/delete_modal/professeurs_list.html",{"staffs":staffs})
 
+# test pagination 
 
+def gerer_professeurs_pagination(request):
+    staffs, search = _search_posts_profs(request)
+    context = {"staffs": staffs, "search": search}
+    return render(request, 'hod_template/gerer_professeurs_template_pagination.html', context)
+
+def admin_search_professeurs_pagination(request):
+    staffs, search = _search_posts_profs(request)
+    context = {"staffs": staffs, "search": search}
+    return render(request, "hod_template/partial/delete_modal/professeurs_list_pagination.html", context)
+ 
+def _search_posts_profs(request):
+    POSTS_PER_PAGE_PROFS=50
+    search = request.GET.get("search")
+    page = request.GET.get("page")
+    staffs = Staffs.objects.all().order_by("admin__first_name", "admin__last_name")
+    if search:
+        staffs =staffs.filter(Q(admin__first_name__icontains=search,admin__user_type='2') | 
+                                           Q(admin__last_name__icontains=search,admin__user_type='2') |
+                                           Q(annee_scolaire_id__session_start_year__icontains=search,admin__user_type='2')|
+                                           Q(annee_scolaire_id__session_end_year__icontains=search,admin__user_type='2'),) \
+        .order_by("admin__first_name", "admin__last_name")
+        # staffs =staffs.filter(admin__first_name__icontains=search,admin__user_type='2')
+    paginator = Paginator(staffs, POSTS_PER_PAGE_PROFS)
+    try:
+        staffs = paginator.page(page)
+    except PageNotAnInteger:
+        staffs = paginator.page(1)
+    except EmptyPage:
+        staffs = paginator.page(paginator.num_pages)
+    return staffs, search or ""
+
+# fin test pagination 
 ##################### Gestion semaine ###############################
 
 # def creer_semaines(request):

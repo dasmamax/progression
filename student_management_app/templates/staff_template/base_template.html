@@ -32,7 +32,17 @@
   <link rel="stylesheet" href="{% static "summernote/summernote-bs4.css" %}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
+<!-- pagination -->
+  <link rel="stylesheet" type="text/css" href="{% static 'semantic/semantic.min.css' %}">
+    <script type="text/javascript" src="{% static 'semantic/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'semantic/semantic.min.js' %}"></script>
+    <style>
+        main {
+           padding-top: 1rem;
+           padding-bottom: 3rem;
+        }
+    </style>
+  <script type="text/javascript" src="{% static 'htmx.min.js' %}"></script>
     {% comment %} For Custom CSS {% endcomment %}
 
     {% block custom_css %}

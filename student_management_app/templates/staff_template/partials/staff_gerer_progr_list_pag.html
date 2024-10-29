@@ -1,0 +1,42 @@
+{% if matieres %}
+{% for matiere in matieres %}
+                                <tr>
+                                    <td td colspan="1">{{ matiere.id }}</td>
+                                    <td td colspan="1">{{ matiere.classes_id.niveaux_id.nom_niveaux }}</td>
+                                    <td td colspan="1">{{ matiere.classes_id.nom_classes }}</td>
+                                    <td td colspan="1">{{ matiere.nom_matieres.nom_disciplines }}</td>
+                                    <!-- <td>{{ matiere.professeurs_id.admin.first_name }} {{ matiere.professeurs_id.admin.last_name }}</td> -->
+
+                                    <td td colspan="1">
+                                        <a href="{% url 'creer_progressions' matiere.id %}"
+                                            class="btn btn-success">creer progression</a>
+                                        
+                                        <a href="{% url 'staff_suivi_progression' matiere.id %}"
+                                            class="btn btn-success">Voir le suivi </a>
+
+                                        <a href="#"
+                                            class="btn btn-success">Imprimer la progression</a>
+                                    </td>
+                                </tr>
+{% endfor %}
+{% else %}
+    <tr>
+        <td colspan="5" style="text-align:center">Aucun resultat</td>
+    </tr>   
+
+{% endif %}
+{% if matieres.has_next %}
+<tr id="load-more_m">
+<td colspan="5">
+        <button
+            class="ui button primary"
+            hx-get="{% url 'staff_search_progressions_pagination'  %}" 
+            hx-vals='{"page": "{{ matieres.next_page_number }}", "search": "{{ search }}"}'
+            hx-target="#load-more_m" 
+            hx-swap="outerHTML"
+        >
+            Afficher plus...
+        </button>
+</td>
+</tr>
+{% endif %}

@@ -21,6 +21,9 @@ from .forms import ChapitreForm, LeconForm, SemainesForm, StatutForm
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q # for search rechercher
+#for pagination
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+POSTS_PER_PAGE = 5
 
 # gestion de pages intermediaire avant Htmx
 
@@ -46,6 +49,45 @@ def editer_progessions(request, matieres_id):
     }
     return render(request, 'staff_template/editer_progressions_template.html', context)
 
+# test pagination de la page de gerer progression
+ 
+def gerer_progessions_pagination(request):
+    matieres, search = _search_posts_progessions(request)
+    staff_obj = Staffs.objects.get(admin=request.user.id)
+    context = {"matieres": matieres, "search": search, "staff":staff_obj}
+    return render(request, 'staff_template/staff_gerer_progressions_template_pagination.html', context)
+
+def staff_search_progressions_pagination(request):
+    matieres, search = _search_posts_progessions(request)
+    context = {"matieres": matieres, "search": search}
+    return render(request, "staff_template/partials/staff_gerer_progr_list_pag.html", context)
+ 
+def _search_posts_progessions(request):
+    staff_obj = Staffs.objects.get(admin=request.user.id)
+    matieres = Matieres.objects.filter(professeurs_id=staff_obj)
+
+    search = request.GET.get("search")
+    page = request.GET.get("page")
+
+    # matieres = Matieres.objects.all().order_by("nom_matieres__nom_disciplines")
+    if search:
+        matieres = matieres.filter(Q(nom_matieres__nom_disciplines__icontains=search) |
+                                 Q(classes_id__nom_classes__icontains=search) |
+                                 Q(classes_id__niveaux_id__nom_niveaux__icontains=search)) \
+        .order_by("nom_matieres__nom_disciplines")
+
+    paginator = Paginator(matieres, POSTS_PER_PAGE)
+    try:
+        matieres = paginator.page(page)
+    except PageNotAnInteger:
+        matieres = paginator.page(1)
+    except EmptyPage:
+        matieres = paginator.page(paginator.num_pages)
+
+    return matieres, search or ""
+
+# fin test pagination 
+# fin test pagination 
 # fin gestion page intermediaire avant Htmx
 
 #gestion de la progression d'une matiere apres avoir choisi la matiere

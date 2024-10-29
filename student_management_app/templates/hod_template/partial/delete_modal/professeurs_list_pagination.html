@@ -1,0 +1,56 @@
+{% if staffs %}
+{% for staff in staffs %} 
+<tr> 
+<td>{{staff.id}}</td>
+<td>{{ staff.admin.first_name }}</td>
+<td>{{ staff.admin.last_name }}</td>
+<td>{{ staff.admin.username }}</td>
+<td>{{ staff.admin.email }}</td>
+<td>{{ staff.address }}</td>
+<td>{{ staff.annee_scolaire_id.session_start_year }} {{ staff.annee_scolaire_id.session_end_year }} </td>
+<td>{{ staff.admin.last_login }}</td>
+<td>{{ staff.admin.date_joined }}</td>
+<td>
+    <a href="{% url 'editer_professeurs' staff.admin.id %}" class="btn btn-success">Editer</a> 
+   {%comment%} <!-- <a href="{% url 'supprimer_professeurs' staff.admin.id %}" class="btn btn-danger">Supprimer</a> -->{%endcomment%}
+    <button type="button" class="btn btn-danger" 
+                    hx-delete="{% url 'supprimer_professeurs' staff.admin.id %}"
+                    hx-trigger='confirmed'
+                    onClick="Swal.fire({title: 'Confirmation', 
+                                        text:'Voulez-vous supprimer {{ staff.admin.first_name }} {{ staff.admin.last_name }} ? Cette action supprimera ses cours.',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#DD6B55',
+                                        confirmButtonText: 'Oui',
+                                        cancelButtonText:  'Annuler',
+                                        closeOnConfirm: true,
+                                        allowOutsideClick: false    
+                                        }
+                                        ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+                    hx-target="#admin_results_professeurs_p">
+                    Supprimer 
+            </button>  
+</td>
+</tr>
+{% endfor %} 
+{% else %}
+    <tr>
+        <td colspan="10" style="text-align:center">Aucun resultat</td>
+    </tr>   
+
+{% endif %}
+{% if staffs.has_next %}
+<tr id="load-more_p">  
+<td colspan="10">
+        <button
+            class="ui button primary"
+            hx-get="{% url 'admin_search_professeurs_pagination'  %}" 
+            hx-vals='{"page": "{{ staffs.next_page_number }}", "search": "{{ search }}"}'
+            hx-target="#load-more_p" 
+            hx-swap="outerHTML"
+        >
+            Afficher plus...
+        </button>
+</td>
+</tr>
+{% endif %}

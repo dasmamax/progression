@@ -29,12 +29,28 @@
     <div class= "col-3 align-self-end">
         <button class="btn btn-primary btn-sm" hx-get="{% url 'editer_semaines' pk=semaine.pk %}" >Editer</button>
         <!-- <button class="btn btn-primary btn-sm" hx-get="/creer_semaines/16/editer_semaines/" >Editer</button> -->
-        <button class="btn btn-danger btn-sm" 
+        {%comment%}<!-- <button class="btn btn-danger btn-sm" 
                 hx-post="{% url 'supprimer_semaines' semaine.id %}"
-                hx-on:click="this.closest('row').remove()">Supprimer</button>
+                hx-on:click="this.closest('row').remove()">Supprimer</button> -->{%endcomment%}
                 <!-- htmx.org@2.0.2 uses hx-on:click and htmx.org@1.9.2 uses hx-on=click -->
-    </div>
-    <hr> 
+    
+        <button class="btn btn-danger btn-sm" 
+        hx-post="{% url 'supprimer_semaines' semaine.id %}"
+        hx-trigger='confirmed'
+        onClick="Swal.fire({title: 'Confirmation', 
+            text:'Voulez-vous supprimer la semaine {{ semaine.numero_semaines }} ? Cette action supprimera les lecons liees.',
+            type: 'warning',
+            showCancelButton: true, 
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Oui',
+            cancelButtonText:  'Annuler',
+            closeOnConfirm: true, 
+            allowOutsideClick: false    
+            }
+            ).then((result)=>{ if(result.isConfirmed){ htmx.trigger(this, 'confirmed'); } })"
+        hx-on:click="this.closest('row').remove()">Supprimer</button>
+            </div>
+    <hr>  
 </div>
 
 <!-- <table class="table">
