@@ -647,19 +647,19 @@ def detail_disciplines(request, pk):
 
 
 def creer_matieres(request):
-    classes = Classess.objects.all().order_by('niveaux_id_id')
+    classes = Classess.objects.all().order_by('nom_classes')
     disciplines = Disciplines.objects.all().order_by('nom_disciplines')
     anneescolaires= AnneeScolaire.objects.all()
     #professeurs = CustomUser.objects.filter(user_type='2')
     context = {
         "classess": classes,
-        "disciplines": disciplines,
+        "disciplines": disciplines, 
         "anneescolaires": anneescolaires
     }
     return render(request, "hod_template/creer_matieres_template.html", context)
 
 # pour recuperer les prof de l annee pour creer la matiere
-def modules_profs_name_admin(request):
+def modules_profs_name_admin(request): 
     anneescolaire = request.GET.get('anneescolaire') 
     staffs = Staffs.objects.filter(annee_scolaire_id_id=anneescolaire).order_by('admin__first_name')
     context = {
@@ -946,11 +946,11 @@ def admin_search_classes_pagination(request):
 def _search_posts_classes(request):
     search = request.GET.get("search")
     page = request.GET.get("page")
-    classes = Classess.objects.all().order_by("-nom_classes")
+    classes = Classess.objects.all().order_by("nom_classes")
     if search:
         classes = classes.filter(Q(nom_classes__icontains=search)|
                                  Q(niveaux_id__nom_niveaux__icontains=search))\
-                                    .order_by("-nom_classes")
+                                    .order_by("nom_classes")
 
     paginator = Paginator(classes, POSTS_PER_PAGE)
     try:
@@ -1925,7 +1925,7 @@ def admin_get_eval_par_enseignant_js(request):
             matiere_par_class_list.append(classes_matieres) # list of matieres per class of the selected staff   
 
     list_data=[]
-    list={}
+    list={} 
     list={
         #"matiere":matiere,
         "hours_count": hours_count,

@@ -203,7 +203,7 @@ def creer_lecons(request, pk):
             "chapitres": chapitre,
             "anneescolaire": annee_scolaire,
             "staff": staff_obj,
-            "semaines": semaine
+            "semaines": semaine.order_by("numero_semaines")
     })
 
 
