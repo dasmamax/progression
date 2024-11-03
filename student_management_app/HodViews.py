@@ -946,11 +946,11 @@ def admin_search_classes_pagination(request):
 def _search_posts_classes(request):
     search = request.GET.get("search")
     page = request.GET.get("page")
-    classes = Classess.objects.all().order_by("nom_classes")
+    classes = Classess.objects.all().order_by("-niveaux_id__nom_niveaux", "nom_classes")
     if search:
         classes = classes.filter(Q(nom_classes__icontains=search)|
                                  Q(niveaux_id__nom_niveaux__icontains=search))\
-                                    .order_by("nom_classes")
+                                    .order_by("-niveaux_id__nom_niveaux", "nom_classes")
 
     paginator = Paginator(classes, POSTS_PER_PAGE)
     try:
