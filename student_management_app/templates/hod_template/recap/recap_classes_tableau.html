@@ -17,7 +17,11 @@
             <th>{{ forloop.counter }}</th>
             <th>{{ row.0 }}</th>
             {% for class in row.1 %}
-               <td>{{ class }}</td>
+                {% if not  class  %}
+                    <td>- </td>
+                {% else %}
+                <td>{{ class }} H</td>
+                {% endif%}
             {% endfor %}
             </tr>
          {% endfor %}

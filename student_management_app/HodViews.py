@@ -258,7 +258,7 @@ def recap_classes_tableau(request):
                 'mat_list':mat_list,
                 'classes_nom_list1':classes_nom_list1,
                 "class_dict":  class_dict,
-               }
+               } 
     
     return render(request, 'hod_template/recap/recap_classes_tableau.html', context)
 
